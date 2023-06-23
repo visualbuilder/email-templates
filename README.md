@@ -14,6 +14,12 @@ You can install the package via composer:
 composer require visualbuilder/email-templates
 ```
 
+You can publish the config file with:
+
+```bash
+php artisan vendor:publish --provider="Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider"
+```
+
 ## Usage
 
 ```php
