@@ -11,5 +11,21 @@ return [
             'model' => '\\App\\Models\\User'],
     ],
     //Guards who are authorised to edit templates
-    'editor-guards'=>['vbadmin','web']
+    'editor-guards'=>['vbadmin','web'],
+    // Form Field Labels
+    'field-labels' => [
+        'template-name' => 'Template Display Name',
+        'template-name-hint' => '(For admin view only)',
+        'key' => 'Key',
+        'key-hint' => '(Must match each language version)',
+        'lang' => 'Language',
+        'email-from' => 'Send Email From',
+        'email-to' => 'Send Email To User Type',
+        'subject' => 'Subject Line',
+        'header' => 'Preheader Text',
+        'header-hint' => '(Only shows on some email clients)',
+        'title' => 'Title',
+        'title-hint' => '(Displays large at very top of email)',
+        'content' => 'Content',
+    ]
 ];
