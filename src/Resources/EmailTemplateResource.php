@@ -99,6 +99,7 @@ class EmailTemplateResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()->label("Preview"),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -120,6 +121,7 @@ class EmailTemplateResource extends Resource
             'index' => Pages\ListEmailTemplates::route('/'),
             'create' => Pages\CreateEmailTemplate::route('/create'),
             'edit' => Pages\EditEmailTemplate::route('/{record}/edit'),
+            'view' => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }    
 }

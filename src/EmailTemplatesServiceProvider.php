@@ -76,7 +76,8 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     {
         $package->name("email-template-filament-plugin")
             ->hasMigrations(['create_email_templates_table'])
-            ->hasConfigFile('email-templates');
+            ->hasConfigFile('email-templates')
+            ->hasViews('visual-builder/email-templates');
 
     }
 }
