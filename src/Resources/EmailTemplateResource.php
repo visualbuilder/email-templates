@@ -57,13 +57,8 @@ class EmailTemplateResource extends Resource
                         TextInput::make('from')
                             ->label(__(config('email-templates.field-labels.email-from')))
                             ->required(),
-                        Select::make('send_to')
-                            ->label(__(config('email-templates.field-labels.email-to')))
-                            ->options([
-                                'Admin' => 'Admin',
-                                'User' => 'User',
-                            ])
-                            ->required(),
+                        TextInput::make('send_to')
+                            ->label(__(config('email-templates.field-labels.email-to'))),
                     ]),
                     
                     Grid::make(['default' => 1])->schema([
