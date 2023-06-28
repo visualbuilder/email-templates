@@ -46,7 +46,7 @@ class EmailTemplateResource extends Resource
                         TextInput::make('key')
                             ->label(__(config('email-templates.field-labels.key')))
                             ->hint(__(config('email-templates.field-labels.key-hint')))
-                            ->required()->unique(),
+                            ->required()->unique(ignorable: fn ($record) => $record),
                         Select::make('language')
                             ->label(__(config('email-templates.field-labels.lang')))
                             ->options([
