@@ -4,7 +4,11 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
 ![GitHub Actions](https://github.com/visualbuilder/email-templates/actions/workflows/main.yml/badge.svg)
 
-This package provides content management capability for email templates allowing users to edit content, include model attributes that can be replaced at run time.
+This package provides:-
+ - Content management for email templates allowing authorised users to edit email template content in the admin.
+ - Templates can include model attribute tokens which are replaced at run time.
+ - Templates can be saved with different locales for multi-lingual capability.
+ - A generic method for creating mail classes to simplify adding new templates. 
 
 ## Installation
 
@@ -14,16 +18,40 @@ You can install the package via composer:
 composer require visualbuilder/email-templates
 ```
 
-Publish the migrations to create the email templates table and migrate
+Publish the config file with:
+```bash
+php artisan vendor:publish --provider="Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider"
+```
+
+In the newly created config file ``config/email-templates.php`` you can override default settings:-
+```php
+    'default-locale'=>'en_GB',
+    'header-colour' => '#4a2725',
+    
+    //Models who can receive emails
+    'recipients'    => [
+        (object)[
+            'id'    => 'user',
+            'name'  => 'User',
+            'model' => '\\App\\Models\\User'],
+    ],
+    
+    //Guards who are authorised to edit templates
+    'editor-guards'=>['web'],
+```
+
+Now publish the migrations and create the email templates table
 ```bash
 php artisan vendor:publish --tag=email-template-filament-plugin-migrations
 php artisan migrate
 ```
 
-You can publish the config file with:
+Finally, a seeder has been created with some of the typical laravel authentication email templates.
+You can edit these first in the published file at ``database/seeders/EmailTemplateSeeder.php`` or just publish them and edit in the admin panel.
 
 ```bash
-php artisan vendor:publish --provider="Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider"
+php artisan vendor:publish --tag=email-template-filament-plugin-seeds
+php artisan db:seed --class=EmailTemplateSeeder
 ```
 
 ## Usage

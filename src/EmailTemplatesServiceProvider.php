@@ -5,16 +5,16 @@ namespace Visualbuilder\EmailTemplates;
 use Filament\PluginServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
-
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Request;
 
 class EmailTemplatesServiceProvider extends PluginServiceProvider
 {
-    // public static string $name = "email-template-filament-plugin";
 
     protected array $resources = [
         EmailTemplateResource::class,
     ];
-    
+
 
     public function configurePackage(Package $package): void
     {
@@ -25,4 +25,18 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->runsMigrations();
 
     }
+
+    public function boot()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishResources();
+        }
+    }
+
+    protected function publishResources()
+    {
+        $this->publishes([__DIR__ . '/../database/seeders/EmailTemplateSeeder.php' => database_path('seeders/EmailTemplateSeeder.php'),
+                         ], 'email-template-filament-plugin-seeds');
+    }
+
 }

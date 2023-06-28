@@ -11,7 +11,7 @@ return [
             'model' => '\\App\\Models\\User'],
     ],
     //Guards who are authorised to edit templates
-    'editor-guards'=>['vbadmin','web'],
+    'editor-guards'=>['web'],
     // Form Field Labels
     'field-labels' => [
         'template-name' => 'Template Display Name',

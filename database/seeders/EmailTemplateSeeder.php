@@ -1,5 +1,6 @@
 <?php
-namespace Visualbuilder\EmailTemplates\Database\Seeders;
+
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
@@ -60,7 +61,7 @@ class EmailTemplateSeeder extends Seeder
 <div>##button url='##verificationUrl##' title='Verify Email Address'##</div>"
             ]
         ];
-        
+
         EmailTemplate::factory()
             ->createMany($emailTemplates);
     }
