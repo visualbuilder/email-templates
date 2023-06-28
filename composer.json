@@ -25,7 +25,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Visualbuilder\\EmailTemplates\\": "src"
+            "Visualbuilder\\EmailTemplates\\": "src",
+            "Visualbuilder\\EmailTemplates\\Database\\Factories\\": "database/factories/",
+            "Visualbuilder\\EmailTemplates\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {

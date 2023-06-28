@@ -14,6 +14,12 @@ You can install the package via composer:
 composer require visualbuilder/email-templates
 ```
 
+Publish the migrations to create the email templates table and migrate
+```bash
+php artisan vendor:publish --tag=email-template-filament-plugin-migrations
+php artisan migrate
+```
+
 You can publish the config file with:
 
 ```bash
