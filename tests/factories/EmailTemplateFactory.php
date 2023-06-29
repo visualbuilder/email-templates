@@ -26,10 +26,10 @@ class EmailTemplateFactory extends Factory
 		return [
 		        'key'        => Str::random(20),
 		        'language'   => config('email-templates.default-locale'),
-                'view'       => 'emails.generic_email',
+                'view'       => config('email-templates.default-view'),
                 'cc'         => null,
-                'bcc'         => null,
-		        'send_to'   => 'user',
+                'bcc'        => null,
+		        'send_to'    => 'user',
 		        'from'       => $this->faker->email,
 		        'name'       => $this->faker->name,
 		        'preheader'  => $this->faker->sentence,

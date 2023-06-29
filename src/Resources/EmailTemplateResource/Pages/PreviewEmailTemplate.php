@@ -9,5 +9,10 @@ class PreviewEmailTemplate extends ViewRecord
 {
     protected static string $resource = EmailTemplateResource::class;
 
-    protected static string $view = 'vendor.visual-builder.email-templates.preview-email-template';
+    protected static string $view;
+    
+    public function __construct()
+    {
+        self::$view = 'vendor.visual-builder.email-templates.'.config('email-templates.default-view');
+    }
 }

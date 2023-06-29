@@ -2,6 +2,7 @@
 
 return [
     'default-locale'=>'en_GB',
+    'default-view'=>'preview-email-template',
     'header-colour' => '#4a2725',
     //Models who can receive emails
     'recipients'    => [
