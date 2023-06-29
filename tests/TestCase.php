@@ -52,4 +52,9 @@ class TestCase extends Orchestra
         $this->loadLaravelMigrations();
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
     }
+
+    protected function defineDatabaseFactories()
+    {
+        $this->withFactories(__DIR__ . '/factories');
+    }
 }

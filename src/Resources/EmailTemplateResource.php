@@ -50,7 +50,7 @@ class EmailTemplateResource extends Resource
                         Select::make('language')
                             ->label(__(config('email-templates.field-labels.lang')))
                             ->options([
-                                'British' => 'British',
+                                'en_GB' => 'British',
                             ])
                             ->required(),
                         
