@@ -28,6 +28,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
 
     public function boot()
     {
+        parent::boot();
         if ($this->app->runningInConsole()) {
             $this->publishResources();
         }
