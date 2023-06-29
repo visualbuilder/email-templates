@@ -20,10 +20,10 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
 
     public function configurePackage(Package $package): void
     {
-        $package->name("email-template-filament-plugin")
+        $package->name("filament-email-templates")
             ->hasMigrations(['create_email_templates_table'])
             ->hasConfigFile('email-templates')
-            ->hasViews('visual-builder/email-templates')
+            ->hasViews('vb-email-templates')
             ->runsMigrations();
 
     }
@@ -45,7 +45,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     protected function publishResources()
     {
         $this->publishes([__DIR__ . '/../database/seeders/EmailTemplateSeeder.php' => database_path('seeders/EmailTemplateSeeder.php'),
-                         ], 'email-template-filament-plugin-seeds');
+                         ], 'filament-email-templates-seeds');
     }
 
 }

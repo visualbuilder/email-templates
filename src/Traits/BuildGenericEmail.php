@@ -35,7 +35,7 @@ trait BuildGenericEmail
 		}
 
 		return $this->from($template->from,config('app.name'))
-		            ->view('emails.generic_email')
+		            ->view('email.generic_email')
 		            ->subject($this->tokenHelper->replaceTokens($template->subject, $this))
 		            ->to($this->sendTo)
 		            ->with(['content'       => $this->tokenHelper->replaceTokens($template->content, $this),

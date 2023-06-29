@@ -71,26 +71,26 @@
 </head>
 <body style="background-color: #2b323c; margin: 0 !important; padding: 0 !important;">
 
-    <!-- General details -->
-    <table style="color: #fff;">
-        <tr>
-            <td width="150px">Send From</td>
-            <td>{{ $data['from'] ?? '' }}</td>
-        </tr>
-        <tr>
-            <td>Send To</td>
-            <td>{{ $data['send_to'] ?? '' }}</td>
-        </tr>
-        <tr>
-            <td>Subject</td>
-            <td>{{ $data['subject'] ?? '' }}</td>
-        </tr>
-        <tr>
-            <td>Pre-header</td>
-            <td>{{ $data['preheader'] ?? '' }}</td>
-        </tr>
-    </table>
-    <hr>
+{{--    <!-- General details -->--}}
+{{--    <table style="color: #fff;">--}}
+{{--        <tr>--}}
+{{--            <td width="150px">Send From</td>--}}
+{{--            <td>{{ $data['from'] ?? '' }}</td>--}}
+{{--        </tr>--}}
+{{--        <tr>--}}
+{{--            <td>Send To</td>--}}
+{{--            <td>{{ $data['send_to'] ?? '' }}</td>--}}
+{{--        </tr>--}}
+{{--        <tr>--}}
+{{--            <td>Subject</td>--}}
+{{--            <td>{{ $data['subject'] ?? '' }}</td>--}}
+{{--        </tr>--}}
+{{--        <tr>--}}
+{{--            <td>Pre-header</td>--}}
+{{--            <td>{{ $data['preheader'] ?? '' }}</td>--}}
+{{--        </tr>--}}
+{{--    </table>--}}
+{{--    <hr>--}}
     <!-- HIDDEN PREHEADER TEXT -->
     <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
         {{ $data['preheader'] ?? '' }}
