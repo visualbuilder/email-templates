@@ -4,6 +4,8 @@ namespace Visualbuilder\EmailTemplates;
 
 use Filament\PluginServiceProvider;
 use Spatie\LaravelPackageTools\Package;
+use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Request;
@@ -24,6 +26,12 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasViews('visual-builder/email-templates')
             ->runsMigrations();
 
+    }
+
+    public function register()
+    {
+        parent::register();
+        $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
     }
 
     public function boot()

@@ -59,7 +59,22 @@ class EmailTemplateSeeder extends Seeder
                 'preheader' => 'Gain Access Now',
                 'content'   => "<p>Dear ##user-firstname##,<br> Please click the button below to verify your email address.</p>
 <div>##button url='##verificationUrl##' title='Verify Email Address'##</div>"
-            ]
+            ],
+            [
+                'key'       => 'user-login',
+                'from'      => config('mail.from.address'),
+                'name'      => 'User Logged In',
+                'title'     => 'Login Success for '.config('app.name'),
+                'send_to'   => 'user',
+                'subject'   => 'Login Success for '.config('app.name'),
+                'preheader' => 'Login Success for '.config('app.name'),
+                'content'   => "<p>Hi ##user-firstname##,<br>You have been logged into ##config.app.name##.</p>
+                                <p>If this was not you please contact: </p>
+                                <p>You can disable this email in your account notification preferences.</p>
+                                <p>Kind Regards<br>
+                                ##config.app.name##</p>
+                                "
+            ],
         ];
 
         EmailTemplate::factory()
