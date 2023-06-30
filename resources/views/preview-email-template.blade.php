@@ -1,7 +1,7 @@
-@include('vendor.visual-builder.email-templates.header')
+@include('vb-email-templates::email.header')
 
-@include('vendor.visual-builder.email-templates.hero_title')
+@include('vb-email-templates::email.hero_title')
 
-@include('vendor.visual-builder.email-templates.content')
+@include('vb-email-templates::email.content')
 
-@include('vendor.visual-builder.email-templates.footer')
+@include('vb-email-templates::email.footer')

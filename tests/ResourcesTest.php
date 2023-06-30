@@ -159,8 +159,8 @@ it('can force delete email template', function () {
 });
 
 // preview tests
-// it('can preview email template', function () {
-//     get(EmailTemplateResource::getUrl('view',[
-//         'record' => EmailTemplate::factory()->create()
-//     ]))->assertSuccessful();
-// });
+it('can preview email template', function () {
+    get(EmailTemplateResource::getUrl('view',[
+        'record' => EmailTemplate::factory()->create()
+    ]))->assertSuccessful();
+});
