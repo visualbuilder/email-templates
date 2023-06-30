@@ -3,12 +3,15 @@
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 use Filament\Pages\Actions\DeleteAction;
+use Filament\Pages\Actions\RestoreAction;
+use Filament\Pages\Actions\ForceDeleteAction;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 
+// listing tests
 it('can access email template list page', function () {
     get(EmailTemplateResource::getUrl('index'))
         ->assertSuccessful();
@@ -21,6 +24,7 @@ it('can list email templates', function () {
         ->assertCanSeeTableRecords($emailTemplates);
 });
 
+// create tests
 it('can access email template create page', function () {
     get(EmailTemplateResource::getUrl('create'))
         ->assertSuccessful();
@@ -64,6 +68,7 @@ it('can create email template', function () {
     ]);
 });
 
+// edit tests
 it('can access email template edit page', function () {
     $newData = EmailTemplate::factory()->create();
     get(EmailTemplateResource::getUrl('edit', $newData->id))
@@ -111,13 +116,51 @@ it('can update email template', function () {
     ]);
 });
 
+// delete and restore tests
 it('can delete email template', function () {
     $emailTemplate = EmailTemplate::factory()->create();
  
-    $test = livewire(EditEmailTemplate::class, [
+    livewire(EditEmailTemplate::class, [
         'record' => $emailTemplate->getRouteKey(),
-    ])
-        ->callPageAction(DeleteAction::class);
-        dd($test);
+    ])->callPageAction(DeleteAction::class);
+
+    $this->assertSoftDeleted($emailTemplate);
+});
+
+it('can restore email template', function () {
+    $emailTemplate = EmailTemplate::factory()->create();
+ 
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailTemplate->getRouteKey(),
+    ])->callPageAction(DeleteAction::class);
+
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailTemplate->getRouteKey(),
+    ])->callPageAction(RestoreAction::class);
+
+    $this->assertDatabaseHas(EmailTemplate::class, [
+        'id' => $emailTemplate->getRouteKey(),
+        'deleted_at' => null,
+    ]);
+});
+
+it('can force delete email template', function () {
+    $emailTemplate = EmailTemplate::factory()->create();
+ 
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailTemplate->getRouteKey(),
+    ])->callPageAction(DeleteAction::class);
+
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailTemplate->getRouteKey(),
+    ])->callPageAction(ForceDeleteAction::class);
+    
     $this->assertModelMissing($emailTemplate);
 });
+
+// preview tests
+// it('can preview email template', function () {
+//     get(EmailTemplateResource::getUrl('view',[
+//         'record' => EmailTemplate::factory()->create()
+//     ]))->assertSuccessful();
+// });
