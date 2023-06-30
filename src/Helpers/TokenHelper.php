@@ -10,12 +10,12 @@ class TokenHelper implements TokenHelperInterface
     {
         // Replace singular tokens.
         // These are for password reset and email verification
-        if (isset($models->tokenUrl)) {
-            $content = str_replace('##tokenURL##', $models->tokenUrl, $content);
+        if (isset($model->tokenUrl)) {
+            $content = str_replace('##tokenURL##', $model->tokenUrl, $content);
         }
         
-        if (isset($models->verificationUrl)) {
-            $content = str_replace('##verificationUrl##', $models->verificationUrl, $content);
+        if (isset($model->verificationUrl)) {
+            $content = str_replace('##verificationUrl##', $model->verificationUrl, $content);
         }
         
         // Replace model-attribute tokens.
@@ -28,8 +28,8 @@ class TokenHelper implements TokenHelperInterface
                 $modelKey = $matches[1][$i];
                 $attributeKey = $matches[2][$i];
                 
-                if (isset($models->$modelKey) && isset($models->$modelKey->$attributeKey)) {
-                    $content = str_replace($matches[0][$i], $models->$modelKey->$attributeKey, $content);
+                if (isset($model->$modelKey) && isset($model->$modelKey->$attributeKey)) {
+                    $content = str_replace($matches[0][$i], $model->$modelKey->$attributeKey, $content);
                 }
             }
         }
