@@ -7,10 +7,7 @@ return [
     
     //Models who can receive emails
     'recipients'    => [
-        (object)[
-            'id'    => 'user',
-            'name'  => 'User',
-            'model' => '\\App\\Models\\User'],
+        '\\App\\Models\\User',
     ],
     
     //Guards who are authorised to edit email templates
