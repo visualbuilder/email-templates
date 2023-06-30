@@ -32,6 +32,10 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     {
         parent::register();
         $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/email-template-form-fields.php', 'email-template-form-fields'
+        );
     }
 
     public function boot()

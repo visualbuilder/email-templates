@@ -37,44 +37,44 @@ class EmailTemplateResource extends Resource
                             ->afterStateUpdated(function (Closure $set, $state) {
                                 $set('key', Str::slug($state));
                             })
-                            ->label(__(config('email-templates.field-labels.template-name')))
-                            ->hint(__(config('email-templates.field-labels.template-name-hint')))
+                            ->label(__(config('email-template-form-fields.labels.template-name')))
+                            ->hint(__(config('email-template-form-fields.labels.template-name-hint')))
                             ->required(),                    
                     ]),
                     
                     Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])->schema([
                         TextInput::make('key')
-                            ->label(__(config('email-templates.field-labels.key')))
-                            ->hint(__(config('email-templates.field-labels.key-hint')))
+                            ->label(__(config('email-template-form-fields.labels.key')))
+                            ->hint(__(config('email-template-form-fields.labels.key-hint')))
                             ->required()->unique(ignorable: fn ($record) => $record),
                         Select::make('language')
-                            ->label(__(config('email-templates.field-labels.lang')))
+                            ->label(__(config('email-template-form-fields.labels.lang')))
                             ->options([
                                 'en_GB' => 'British',
                             ])
                             ->required(),
                         
                         TextInput::make('from')
-                            ->label(__(config('email-templates.field-labels.email-from')))
+                            ->label(__(config('email-template-form-fields.labels.email-from')))
                             ->required(),
                         TextInput::make('send_to')
-                            ->label(__(config('email-templates.field-labels.email-to'))),
+                            ->label(__(config('email-template-form-fields.labels.email-to'))),
                     ]),
                     
                     Grid::make(['default' => 1])->schema([
                         TextInput::make('subject')
-                            ->label(__(config('email-templates.field-labels.subject'))),
+                            ->label(__(config('email-template-form-fields.labels.subject'))),
 
                         TextInput::make('preheader')
-                            ->label(__(config('email-templates.field-labels.header')))
-                            ->hint(__(config('email-templates.field-labels.header-hint'))),
+                            ->label(__(config('email-template-form-fields.labels.header')))
+                            ->hint(__(config('email-template-form-fields.labels.header-hint'))),
 
                         TextInput::make('title')
-                            ->label(__(config('email-templates.field-labels.title')))
-                            ->hint(__(config('email-templates.field-labels.title-hint'))),
+                            ->label(__(config('email-template-form-fields.labels.title')))
+                            ->hint(__(config('email-template-form-fields.labels.title-hint'))),
 
                         RichEditor::make('content')
-                            ->label(__(config('email-templates.field-labels.content'))),
+                            ->label(__(config('email-template-form-fields.labels.content'))),
                     ]),
                     
                 ])
