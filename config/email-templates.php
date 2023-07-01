@@ -60,6 +60,7 @@ return [
     'config_keys'      => [
         'app.name',
         'app.url',
+        'email-templates.customer-services'
         // Add other safe config keys here.
         // We don't want to allow all config keys they may contain secret keys or credentials
     ],
