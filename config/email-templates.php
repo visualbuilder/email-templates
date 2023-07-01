@@ -18,16 +18,19 @@ return [
     'logo_width'       => '200',
     'logo_height'      => '200',
     
+    //Content Width in Pixels
+    'content_width'    => '600',
+    
     //Background Colours
     'header_bg_color'  => '#424242',
     'body_bg_color'    => '#f4f4f4',
     'content_bg_color' => '#fefefe',
     'footer_bg_color'  => '#646464',
-    'callout_bg_color' => '#d2d2d2',
+    'callout_bg_color' => '#700000',
     
     //Text Colours
     'body_color'       => '#333333',
-    'callout_color'    => '#666666',
+    'callout_color'    => '#ffffff',
     'anchor_color'     => '#ff7978',
     
     //Options for alternative languages

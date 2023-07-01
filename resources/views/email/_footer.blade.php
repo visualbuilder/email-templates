@@ -2,11 +2,11 @@
 <tr>
     <td bgcolor="{{config('email-templates.footer_bg_color')}}" align="center" style="padding: 0px 10px 0px 10px;">
         <!--[if (gte mso 9)|(IE)]>
-        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="{{config('email-templates.content_width')}}">
             <tr>
-                <td align="center" valign="top" width="600">
+                <td align="center" valign="top" width="{{config('email-templates.content_width')}}">
         <![endif]-->
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin-bottom: 30px" >
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: {{config('email-templates.content_width')}}px; margin-bottom: 30px" >
             <!-- NAVIGATION -->
             <tr>
                 <td bgcolor="{{config('email-templates.body_bg_color')}}" align="left" style="padding: 30px 30px 30px 30px; color: {{config('email-templates.body_color')}}; border-radius: 4px 4px 4px 4px;

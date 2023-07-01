@@ -1,12 +1,12 @@
 <!-- HERO -->
-<tr class="bg-primary-500">  <!-- Used primary color class of theme -->
+<tr>
     <td bgcolor="{{config('email-templates.header_bg_color')}}" align="center" style="padding: 0px 10px 0px 10px;color: {{config('email-templates.body_color')}};">
         <!--[if (gte mso 9)|(IE)]>
-        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="{{config('email-templates.content_width')}}">
             <tr>
-                <td align="center" valign="top" width="600">
+                <td align="center" valign="top" width="{{config('email-templates.content_width')}}">
         <![endif]-->
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" >
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: {{config('email-templates.content_width')}}px;" >
             <tr>
                 <td bgcolor="{{config('email-templates.content_bg_color')}}" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: {{config('email-templates
                 .body_color')}}; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">

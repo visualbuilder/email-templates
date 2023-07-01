@@ -60,7 +60,7 @@
         }
 
         /* MOBILE STYLES */
-        @media screen and (max-width:600px){
+        @media screen and (max-width:{{config('email-templates.content_width')}}px){
             h1 {
                 font-size: 24px !important;
                 line-height: 24px !important;
@@ -80,14 +80,14 @@
 
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
         <!-- LOGO -->
-        <tr class="bg-primary-500">  <!-- Used primary color class of theme -->
+        <tr>
             <td bgcolor="{{config('email-templates.header_bg_color')}}" align="center" style="background-color: {{config('email-templates.header_bg_color')}}">
                 <!--[if (gte mso 9)|(IE)]>
-                <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="{{config('email-templates.content_width')}}">
                     <tr>
-                        <td align="center" valign="top" width="600">
+                        <td align="center" valign="top" width="{{config('email-templates.content_width')}}">
                 <![endif]-->
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" >
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: {{config('email-templates.content_width')}}px;" >
                     <tr>
                         <td align="center" valign="top" style="padding: 30px 10px 30px 10px;">
                             <a href="{{\Illuminate\Support\Facades\URL::to('/')}}" target="_blank" title="{{config('app.name')}}">
