@@ -1,4 +1,4 @@
-@inject('tokenHelper','\Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface')
+@inject('tokenHelper','Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface')
 
 <h2 class="filament-header-heading text-2xl font-bold tracking-tight">Preview Email</h2>
 
