@@ -1,9 +1,9 @@
-@include('emails.header')
+@include('vendor.vb-email-templates.email._header')
 
-@include('emails.hero_title')
+@include('vendor.vb-email-templates.email._hero_title')
 
-@include('emails.content')
+@include('vendor.vb-email-templates.email._content')
 
-@include('emails.support_block')
+@include('vendor.vb-email-templates.email._support_block')
 
-@include('emails.footer')
+@include('vendor.vb-email-templates.email._footer')

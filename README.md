@@ -18,7 +18,7 @@
 
 ### This package provides:-
 - Content management for email templates allowing authorised users to edit email template content in the admin.
-- Templates can include model attribute tokens or config values which will be replaced, eg ##user.firstname## or ##config.app.name##
+- Templates can include model attribute tokens or config values which will be replaced, eg ##user.name## or ##config.app.name##
 - Templates can be saved with different locales for multi-lingual capability.
 - A generic method for quickly creating mail classes to speed up adding new templates and faster automation possiblities.
 
@@ -39,8 +39,8 @@ composer require visualbuilder/email-templates
 
 2. In the newly created config file ``config/email-templates.php`` you can override default settings:-
 ```php
-    'default-locale'=>'en_GB',
-    'header-colour' => '#4a2725',
+    'default_locale'=>'en_GB',
+    'header_bg_color' => '#4a2725',
     
     //Models who can receive email
     'recipients'    => [
@@ -51,7 +51,7 @@ composer require visualbuilder/email-templates
     ],
     
     //Guards who are authorised to edit templates
-    'editor-guards'=>['web'],
+    'editor_guards'=>['web'],
 ```
 
 3.  Publish migrations and create the email templates table

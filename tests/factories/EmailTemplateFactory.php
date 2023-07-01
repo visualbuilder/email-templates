@@ -25,8 +25,8 @@ class EmailTemplateFactory extends Factory
 	{
 		return [
 		        'key'        => Str::random(20),
-		        'language'   => config('email-templates.default-locale'),
-                'view'       => config('email-templates.default-view'),
+		        'language'   => config('email-templates.default_locale'),
+                'view'       => config('email-templates.default_view'),
                 'cc'         => null,
                 'bcc'        => null,
 		        'send_to'    => 'user',

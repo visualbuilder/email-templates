@@ -20,7 +20,7 @@ class TokenHelper implements TokenHelperInterface
         
         // Replace model-attribute tokens.
         // Will look for pattern ##model.attribute## and replace the value if found.
-        // Eg ##user.firstname##
+        // Eg ##user.name##
         preg_match_all('/##(.*?)\.(.*?)##/', $content, $matches);
         
         if (count($matches) > 0 && count($matches[0]) > 0) {
@@ -35,7 +35,7 @@ class TokenHelper implements TokenHelperInterface
         }
         
         // Replace config tokens.
-        $allowedConfigKeys = config('email-templates.config-keys');
+        $allowedConfigKeys = config('email-templates.config_keys');
         
         preg_match_all('/##config\.(.*?)##/', $content, $matches);
         if (count($matches) > 0 && count($matches[0]) > 0) {

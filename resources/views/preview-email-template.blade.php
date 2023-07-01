@@ -1,7 +1,7 @@
-@include('vb-email-templates::email.header')
+@include('vb-email-templates::email._header')
 
-@include('vb-email-templates::email.hero_title')
+@include('vb-email-templates::email._hero_title')
 
-@include('vb-email-templates::email.content')
+@include('vb-email-templates::email._content')
 
-@include('vb-email-templates::email.footer')
+@include('vb-email-templates::email._footer')

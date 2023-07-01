@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('email_templates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key', 191)->comment('Must be unique when combined with language');
-            $table->string('language', 8)->default(config('email-templates.default-locale'),);
+            $table->string('language', 8)->default(config('email-templates.default_locale'),);
             $table->string('name', 191)->nullable()->comment('Friendly Name');
-            $table->string('view', 191)->default(config('email-templates.default-view'))->comment('Blade Template to load into');
+            $table->string('view', 191)->default(config('email-templates.default_view'))->comment('Blade Template to load into');
             $table->string('from', 191)->nullable()->comment('From address to override system default');
             $table->string('send_to',191)->nullable()->comment('The Notifiable model class');
             $table->json('cc')->nullable();
