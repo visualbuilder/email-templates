@@ -111,6 +111,15 @@ For reference this is done in the `EmailTemplatesAuthServiceProvider`.
 
 This can be disabled in the config.
 
+To Enable email verification ensure the User model implements the Laravel MustVerifyEmail contract:-
+
+```php
+class User extends Authenticatable implements MustVerifyEmail
+```
+
+and include the **verified** middleware in your routes. 
+
+
 #### User Request Password Reset
 Another Laravel built in notification, but to enable the custom email just add this function to your authenticatable user model.
 

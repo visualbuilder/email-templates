@@ -13,7 +13,7 @@ class PreviewEmailTemplate extends ViewRecord
     
     public function __construct()
     {
-        // self::$view = 'vendor.visual-builder.email-templates.'.config('email-templates.default_view');
-        self::$view = 'vb-email-templates::'.config('email-templates.default_view');
+        self::$view = 'vb-email-templates::show';
     }
+    
 }

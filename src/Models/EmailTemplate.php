@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Visualbuilder\Core\Models\User;
+
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 
 /**
@@ -34,7 +35,7 @@ use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 class EmailTemplate extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     /**
      * @var array
      */
@@ -55,27 +56,27 @@ class EmailTemplate extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
-    
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->setTableFromConfig();
     }
-    
+
     public function setTableFromConfig()
     {
         $this->table = config('email-templates.table_name');
     }
-    
+
     protected $dates = ['deleted_at'];
-    
+
     public static function findEmailByKey($key, $language = null) {
         return self::query()
             ->language($language ?? config('email-templates.default_locale'))
             ->where("key", $key)
             ->firstOrFail();
     }
-    
+
     /**
      * public function missingTranslations()
      * {
@@ -99,11 +100,11 @@ class EmailTemplate extends Model
      * );
      * }
      **/
-    
+
     public static function getSendToSelectOptions() {
         return collect(config('emailTemplate.recipients'));
     }
-    
+
     public static function getEmailPreviewData() {
         $model = (object) [];
         //Setup some data for previewing email template
@@ -114,16 +115,16 @@ class EmailTemplate extends Model
         $model->plainText       = Str::random(32);
         return $model;
     }
-    
+
     protected static function newFactory() {
         return EmailTemplateFactory::new();
     }
-    
-    
+
+
     public function __toString() {
         return $this->name ?? class_basename($this);
     }
-    
+
     /**
      * Efficient method to return requested template locale or default language template in one query
      *
@@ -137,8 +138,8 @@ class EmailTemplate extends Model
         return $query->whereIn('language', $languages)
             ->orderByRaw('field(language, ?, ?)', $languages);
     }
-    
-    
+
+
     public function viewName(): Attribute
     {
         return new Attribute(

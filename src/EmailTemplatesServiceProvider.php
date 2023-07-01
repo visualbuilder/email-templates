@@ -6,8 +6,10 @@ use Filament\PluginServiceProvider;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Request;
 use Spatie\LaravelPackageTools\Package;
+use Illuminate\Support\Facades\Route;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
+use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class EmailTemplatesServiceProvider extends PluginServiceProvider
@@ -39,6 +41,8 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
         if($this->app->runningInConsole()) {
             $this->publishResources();
         }
+        
+        $this->registerRoutes();
     }
     
     protected function publishResources() {
@@ -50,5 +54,15 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
         $this->publishes([
                              __DIR__.'/../media/' => public_path('media/email-templates'),
                          ], 'filament-email-templates-media');
+    }
+    
+    /**
+     * Register custom routes.
+     * We may want to move these to a separate file.
+     * @return void
+     */
+    public function registerRoutes()
+    {
+        Route::get('/admin/email-templates/{record}/preview', [EmailTemplateController::class, 'preview'])->name('email-template.preview');
     }
 }
