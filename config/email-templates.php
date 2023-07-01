@@ -8,7 +8,6 @@ return [
     //This is the default html email template blade file to use when creating new content
     'default_view'     => 'generic_email',
     
-    
     //Default Email Styling
     'logo'             => 'media/email-templates/logo.png',
     
@@ -35,6 +34,8 @@ return [
     //Note that Laravel default locale is just 'en'
     //We are being more specific to cater for Engrish vs USA languages
     'default_locale'   => 'en_GB',
+    
+    //These will be included in the language picker when editing an email template
     'languages'        => [
         'en_GB' => ['display' => 'British', 'flag-icon' => 'gb'],
         'en_US' => ['display' => 'USA', 'flag-icon' => 'us'],
@@ -62,4 +63,14 @@ return [
         // Add other safe config keys here.
         // We don't want to allow all config keys they may contain secret keys or credentials
     ],
+    
+    //Most built-in emails can be automatically sent with minimal setup,
+    //except "request password reset" requires a function in the User's model.  See readme.md for details
+    'send_emails'      => [
+        'new_user_registered'    => true,
+        'verification'           => true,
+        'user_verified'          => true,
+        'login'                  => true,
+        'password_reset_success' => true,
+    ]
 ];

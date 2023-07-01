@@ -61,6 +61,19 @@ class EmailTemplateSeeder extends Seeder
 <div>##button url='##verificationUrl##' title='Verify Email Address'##</div>"
             ],
             [
+                'key'       => 'user-verified',
+                'from'      => config('mail.from.address'),
+                'name'      => 'User Verified',
+                'title'     => 'Verification Success',
+                'send_to'   => 'user',
+                'subject'   => 'Verification success for '.config('app.name'),
+                'preheader' => 'Verification success for'.config('app.name'),
+                'content'   => "<p>Hi ##user.name##,</p>
+                                <p>Your email address ##user.email## has been verified on ##config.app.name##</p>
+                                <p>Kind Regards,<br>
+                                ##config.app.name##</p>"
+            ],
+            [
                 'key'       => 'user-login',
                 'from'      => config('mail.from.address'),
                 'name'      => 'User Logged In',

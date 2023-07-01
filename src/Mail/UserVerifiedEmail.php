@@ -2,18 +2,17 @@
 
 namespace Visualbuilder\EmailTemplates\Mail;
 
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
-use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
-class UserRegisteredEmail extends Mailable
+class UserVerifiedEmail extends Mailable
 {
     use Queueable, SerializesModels, BuildGenericEmail;
 	
-	public $template = 'user-welcome';
+	public $template = 'user-verified';
 
 	public $sendTo;
 	

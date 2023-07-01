@@ -84,10 +84,13 @@ You can of course edit the header, logo, footer etc or replace it with your own 
 
 ### Implementing out of the box templates
 
-Emails may be sent directly, via a notification or from an event listener.  The following email templates are included to get you started and show different methods of sending.
+Emails may be sent directly, via a notification or from via an event listener.  
+
+The following email templates are included to get you started and show different methods of sending.
 
  - **User Registered**  - Welcome them to the platform
  - **User Verify Email** - Check they are human
+ - **User Verified Email** - Yes they are
  - **User Request Password Reset** - Let them change the password
  - **User Password Reset Success** - Yay, you changed your password
  - **User Locked Out** - Oops - What to do now?
@@ -96,86 +99,42 @@ Emails may be sent directly, via a notification or from an event listener.  The 
 Not all systems will require a login notification,  but it's good practice for security so include here.
 
 #### New User Registered Email
-A new **Registered** event is triggered when creating a new user, by default if email verification is required a send verification email event is triggered.
+A new **Registered** event is triggered when creating a new user.
 
-Its polite and good practice to welcome your user so we think this deserves a different email.
+It's good practice to welcome the new user to your platform with a friendly email, so we've included a listener for the Illuminate\Auth\Events\Registered Event
+and will send the email if enabled in the config.
 
-To hook into this event create a new Listener and Notification class.
+#### User Verify Email
+This notification is built in to Laravel so we have overidden the default toMail function to use our custom email template.
+
+For reference this is done in the `EmailTemplatesAuthServiceProvider`.
+
+This can be disabled in the config.
+
+#### User Request Password Reset
+Another Laravel built in notification, but to enable the custom email just add this function to your authenticatable user model.
 
 ```php
-<?php
-
-namespace App\Listeners;
-
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Notifications\UserRegisteredNotification;
-
-class NewUserRegisteredListener
-{
-    /**
-     * Handle the event.
+/**
+     * @param $token
      *
-     * @param  object  $event
      * @return void
      */
-    public function handle( Registered $event)
+    public function sendPasswordResetNotification($token)
     {
-        return $event->user->notify(new UserRegisteredNotification());
-    }   
-}
+        $url = \Illuminate\Support\Facades\URL::secure(route('password.reset', ['token' => $token, 'email' =>$this->email]));
+
+        $this->notify(new \Visualbuilder\EmailTemplates\Notifications\UserResetPasswordRequestNotification($url));
+    }
 ```
 
-```php
-<?php
 
-namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
 
-class UserRegisteredNotification extends Notification implements ShouldQueue
-{
-    use Queueable, HasUserPreferences;
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function via($notifiable)
-    {
-        return ['mail'];
-    }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-         return (new \Visualbuilder\EmailTemplates\Mail\UserRegisteredEmail($notifiable  ));
-    }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [];
-    }
 
-}
-
-```
 
 ### Testing
 
