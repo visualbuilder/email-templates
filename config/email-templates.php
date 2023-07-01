@@ -4,12 +4,10 @@ return [
     //If you wish to customise the table name change this before migration
     'table_name'       => 'vb_email_templates',
     
-    //Email templates will be copied to this directory
-    //Here you can edit or create your own
-    'view_path'        => 'vendor.vb-email-templates.email',
-    
-    //The default html email template blade file to use
+    //Email templates will be copied to resources/views/vendor/vb-email-templates/email
+    //This is the default html email template blade file to use when creating new content
     'default_view'     => 'generic_email',
+    
     
     //Default Email Styling
     'logo'             => 'media/email-templates/logo.png',
