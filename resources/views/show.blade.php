@@ -1,4 +1,4 @@
-<h2 class="text-xl">Preview Email</h2>
+<h2 class="filament-header-heading text-2xl font-bold tracking-tight">Preview Email</h2>
 
 <table class="table-auto border border-slate-400 p-3 mb-6 block">
     <tbody>

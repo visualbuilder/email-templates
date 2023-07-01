@@ -72,5 +72,7 @@ return [
         'user_verified'          => true,
         'login'                  => true,
         'password_reset_success' => true,
-    ]
+    ],
+    
+    'customer-services'=>'support@yourcompany.com'
 ];
