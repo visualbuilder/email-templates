@@ -29,6 +29,7 @@ class EmailTemplateResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $languages = self::prepareLang();
         return $form
             ->schema([
                 Card::make()->schema([
@@ -49,9 +50,11 @@ class EmailTemplateResource extends Resource
                             ->required()->unique(ignorable: fn ($record) => $record),
                         Select::make('language')
                             ->label(__(config('email-template-form-fields.labels.lang')))
-                            ->options([
-                                'en_GB' => 'British',
-                            ])
+                            ->allowHtml(true)
+                            ->options($languages)
+                            // ->getOptionLabelsUsing(function ($languages) {
+
+                            // })
                             ->required(),
                         
                         TextInput::make('from')
@@ -130,6 +133,21 @@ class EmailTemplateResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function prepareLang() {
+        $languages = config('email-templates.languages');
+        
+        $preparedLang = [];
+        foreach($languages as $langKey => $langVal)
+        {
+            $preparedLang[$langKey] = '<span class="fi fi-gr"></span> '.$langVal['display'];
+
+            // $preparedLang[] = [
+            //     ['value' => $langKey, 'label' => $langVal['display'], 'icon' => 'heroicon-o-plus'],
+            // ];
+        }
+        return $preparedLang;
     }
     
 }

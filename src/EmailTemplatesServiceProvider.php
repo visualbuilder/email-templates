@@ -17,6 +17,10 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     protected array $resources = [
         EmailTemplateResource::class,
     ];
+
+    protected array $styles = [
+        'vb-email-templates-styles' => 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css',
+    ];
     
     public function configurePackage(Package $package): void {
         $package->name("filament-email-templates")
