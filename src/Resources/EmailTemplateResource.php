@@ -18,6 +18,7 @@ use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
+use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\RelationManagers;
 
@@ -29,6 +30,8 @@ class EmailTemplateResource extends Resource
 
     public static function form(Form $form): Form
     {
+        // $languages = config('email-templates.languages');
+        // dd($languages->en_GB);
         $languages = self::prepareLang();
         return $form
             ->schema([
@@ -48,14 +51,23 @@ class EmailTemplateResource extends Resource
                             ->label(__(config('email-template-form-fields.labels.key')))
                             ->hint(__(config('email-template-form-fields.labels.key-hint')))
                             ->required()->unique(ignorable: fn ($record) => $record),
-                        Select::make('language')
-                            ->label(__(config('email-template-form-fields.labels.lang')))
-                            ->allowHtml(true)
-                            ->options($languages)
-                            // ->getOptionLabelsUsing(function ($languages) {
+                        SelectLanguage::make('language'),
+                        
+                        // Select::make('language')
+                        //     ->label(__(config('email-template-form-fields.labels.lang')))
+                        //     ->allowHtml(true)
+                        //     ->options($languages)
+                        //     // ->getOptionLabelUsing(function ($language) {
+                        //     //     return '<span class="fi fi-gr"></span> '.$language['display'];
+                        //     //     // $preparedLang = [];
+                        //     //     // foreach($languages as $langKey => $langVal)
+                        //     //     // {
+                        //     //     //     $preparedLang[$langKey] = '<span class="fi fi-gr"></span> '.$langVal['display'];
 
-                            // })
-                            ->required(),
+                        //     //     // }
+                        //     //     // return $preparedLang;
+                        //     // })
+                        //     ->required(),
                         
                         TextInput::make('from')
                             ->label(__(config('email-template-form-fields.labels.email-from')))
