@@ -2,8 +2,9 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\ViewRecord;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class PreviewEmailTemplate extends ViewRecord
 {

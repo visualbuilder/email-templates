@@ -33,6 +33,8 @@ class EmailTemplateResource extends Resource
         // $languages = config('email-templates.languages');
         // dd($languages->en_GB);
         $languages = self::prepareLang();
+        $templates = self::getTemplateViewList();
+        // dd($templates);
         return $form
             ->schema([
                 Card::make()->schema([
@@ -51,23 +53,12 @@ class EmailTemplateResource extends Resource
                             ->label(__(config('email-template-form-fields.labels.key')))
                             ->hint(__(config('email-template-form-fields.labels.key-hint')))
                             ->required()->unique(ignorable: fn ($record) => $record),
-                        SelectLanguage::make('language'),
+                        // SelectLanguage::make('language'),
                         
-                        // Select::make('language')
-                        //     ->label(__(config('email-template-form-fields.labels.lang')))
-                        //     ->allowHtml(true)
-                        //     ->options($languages)
-                        //     // ->getOptionLabelUsing(function ($language) {
-                        //     //     return '<span class="fi fi-gr"></span> '.$language['display'];
-                        //     //     // $preparedLang = [];
-                        //     //     // foreach($languages as $langKey => $langVal)
-                        //     //     // {
-                        //     //     //     $preparedLang[$langKey] = '<span class="fi fi-gr"></span> '.$langVal['display'];
-
-                        //     //     // }
-                        //     //     // return $preparedLang;
-                        //     // })
-                        //     ->required(),
+                        Select::make('view')
+                            ->label(__(config('email-template-form-fields.labels.template-view')))
+                            ->options($templates)
+                            ->required(),
                         
                         TextInput::make('from')
                             ->label(__(config('email-template-form-fields.labels.email-from')))
@@ -161,5 +152,49 @@ class EmailTemplateResource extends Resource
         }
         return $preparedLang;
     }
+
+    public static function getTemplateViewList() {
+        // create an array to store the filenames
+        $filenamesArray = [];
+        $templates = [];
+    
+        foreach (config('email-templates.template_view_paths') as $dir):
+           $path           = base_path($dir);
+           $filenamesArray = array_merge($filenamesArray, self::getFiles($path, $path));
+        endforeach;
+
+        // formatting array
+        foreach ($filenamesArray as $item) {
+            $templates['vb-email-templates::email-templates.'.$item] = 'vb-'.$item;
+        }
+        return $templates;
+    }
+
+    /**
+     * Recursively get all files in a directory and children
+     */
+	private static function getFiles($dir, $basepath) {
+		$files = $subdirs = $subFiles = [];
+
+		if($handle = opendir($dir)) {
+			while (false !== ($entry = readdir($handle))) {
+				if($entry == "." || $entry == "..") continue;
+				$entryPath = $dir.'/'.$entry;
+				if(is_dir($entryPath)) {
+					$subdirs[] = $entryPath;
+				}
+				else {
+					$subFiles[] = str_replace('/', '.', str_replace('.blade.php', '', str_replace($basepath.'/', '', $entryPath)));
+				}
+			}
+			closedir($handle);
+			sort($subFiles);
+			$files = array_merge($files, $subFiles);
+			foreach ($subdirs as $subdir) {
+				$files = array_merge($files, self::getFiles($subdir, $basepath));
+			}
+		}
+		return $files;
+	}
     
 }

@@ -5,6 +5,7 @@ return [
     'labels' => [
         'template-name' => 'Template Display Name ok tested',
         'template-name-hint' => '(For admin view only)',
+        'template-view' => 'Template View',
         'key' => 'Key',
         'key-hint' => '(Must match each language version)',
         'lang' => 'Language',
