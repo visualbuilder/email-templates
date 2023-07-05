@@ -48,7 +48,13 @@
                         type="button"
                         class="flex items-center gap-x-2.5 filament-forms-input w-full rounded-lg text-gray-900 shadow-sm outline-none transition duration-75 border focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 border-gray-300 px-2 py-2"
                 >
-                    <span x-html="options[state]" class="w-full text-left"></span>
+                    <template x-if="state">
+                        <span x-html="options[state]" class="w-full text-left"></span>
+                    </template>
+
+                    <template x-if="!state">
+                        <span class="w-full text-left">Select an option</span>
+                    </template>
     
                     <!-- Heroicon: chevron-down -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
