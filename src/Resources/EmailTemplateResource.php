@@ -12,9 +12,9 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use FilamentTiptapEditor\TiptapEditor;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
@@ -79,8 +79,9 @@ class EmailTemplateResource extends Resource
                             ->label(__(config('email-template-form-fields.labels.title')))
                             ->hint(__(config('email-template-form-fields.labels.title-hint'))),
 
-                        RichEditor::make('content')
-                            ->label(__(config('email-template-form-fields.labels.content'))),
+                        TiptapEditor::make('content')
+                            ->label(__(config('email-template-form-fields.labels.content')))
+                            ->profile('default'),
                     ]),
                     
                 ])
