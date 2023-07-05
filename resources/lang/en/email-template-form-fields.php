@@ -3,7 +3,7 @@
 return [
     // Form Field Labels
     'labels' => [
-        'template-name' => 'Template Display Name ok tested',
+        'template-name' => 'Template Display Name',
         'template-name-hint' => '(For admin view only)',
         'template-view' => 'Template View',
         'key' => 'Key',

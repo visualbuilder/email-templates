@@ -34,7 +34,7 @@ return [
     
     //Options for alternative languages
     //Note that Laravel default locale is just 'en'
-    //We are being more specific to cater for Engrish vs USA languages
+    //We are being more specific to cater for English vs USA languages
     'default_locale'   => 'en_GB',
     
     //These will be included in the language picker when editing an email template

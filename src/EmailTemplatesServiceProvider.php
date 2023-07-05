@@ -27,6 +27,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasMigrations(['create_email_templates_table'])
             ->hasConfigFile('email-templates')
             ->hasViews('vb-email-templates')
+            // ->hasTranslations('vb-email-templates-field-translations')
             ->runsMigrations();
     }
     
@@ -34,10 +35,6 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
         parent::register();
         $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
-        
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/email-template-form-fields.php', 'email-template-form-fields'
-        );
     }
     
     public function boot() {
@@ -47,6 +44,8 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
         }
         
         $this->registerRoutes();
+
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vb-email-templates');
     }
     
     protected function publishResources() {
