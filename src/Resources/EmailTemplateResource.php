@@ -53,13 +53,12 @@ class EmailTemplateResource extends Resource
                             ->label(__(config('vb-email-templates::email-template-form-fields.labels.key')))
                             ->hint(__(config('vb-email-templates::email-template-form-fields.labels.key-hint')))
                             ->required()->unique(ignorable: fn ($record) => $record),
-                        // SelectLanguage::make('language'),
-                        
+                        SelectLanguage::make('language')
+                            ->options($languages),
                         Select::make('view')
                             ->label(__(config('vb-email-templates::email-template-form-fields.labels.template-view')))
                             ->options($templates)
                             ->required(),
-                        
                         TextInput::make('from')
                             ->label(__(config('vb-email-templates::email-template-form-fields.labels.email-from')))
                             ->required(),
@@ -145,7 +144,7 @@ class EmailTemplateResource extends Resource
         $preparedLang = [];
         foreach($languages as $langKey => $langVal)
         {
-            $preparedLang[$langKey] = '<span class="fi fi-gr"></span> '.$langVal['display'];
+            $preparedLang[$langKey] = '<span class="fi fi-'.$langVal["flag-icon"].'"></span> '.$langVal["display"];
 
             // $preparedLang[] = [
             //     ['value' => $langKey, 'label' => $langVal['display'], 'icon' => 'heroicon-o-plus'],
