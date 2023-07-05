@@ -159,14 +159,12 @@ class EmailTemplateResource extends Resource
         $filenamesArray = [];
         $templates = [];
     
-        foreach (config('email-templates.template_view_paths') as $dir):
-           $path           = base_path($dir);
-           $filenamesArray = array_merge($filenamesArray, self::getFiles($path, $path));
-        endforeach;
+        $templateDirectory = dirname(view(config('email-templates.template_view_path'). '.default')->getPath());
+        $filenamesArray = self::getFiles($templateDirectory, $templateDirectory);
 
         // formatting array
         foreach ($filenamesArray as $item) {
-            $templates['vb-email-templates::email-templates.'.$item] = 'vb-'.$item;
+            $templates[config('email-templates.template_view_path').'.'.$item] = 'vb-'.$item;
         }
         return $templates;
     }

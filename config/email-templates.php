@@ -8,7 +8,7 @@ return [
     //This is the default html email template blade file to use when creating new content
     'default_view'     => 'vb-email-templates::default',
 
-    'template_view_paths'   => ['resources/views/vendor/vb-email-templates/email-templates'],
+    'template_view_path'   => 'vb-email-templates::email-templates',
     
     //Default Email Styling
     'logo'             => 'media/email-templates/logo.png',
