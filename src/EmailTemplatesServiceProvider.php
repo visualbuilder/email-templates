@@ -25,7 +25,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     public function configurePackage(Package $package): void {
         $package->name("filament-email-templates")
             ->hasMigrations(['create_email_templates_table'])
-            ->hasConfigFile('email-templates')
+            ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
             ->hasViews('vb-email-templates')
             // ->hasTranslations('vb-email-templates-field-translations')
             ->runsMigrations();

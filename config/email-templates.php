@@ -6,7 +6,7 @@ return [
     
     //Email templates will be copied to resources/views/vendor/vb-email-templates/email
     //This is the default html email template blade file to use when creating new content
-    'default_view'     => 'vb-email-templates::default',
+    'default_view'     => 'vb-email-templates::email-templates.default',
 
     'template_view_path'   => 'vb-email-templates::email-templates',
     
