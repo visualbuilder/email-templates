@@ -145,10 +145,6 @@ class EmailTemplateResource extends Resource
         foreach($languages as $langKey => $langVal)
         {
             $preparedLang[$langKey] = '<span class="fi fi-'.$langVal["flag-icon"].'"></span> '.$langVal["display"];
-
-            // $preparedLang[] = [
-            //     ['value' => $langKey, 'label' => $langVal['display'], 'icon' => 'heroicon-o-plus'],
-            // ];
         }
         return $preparedLang;
     }

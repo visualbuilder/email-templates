@@ -77,8 +77,6 @@
                             {!! $label !!} 
                         </a>
                     @endforeach
-                    
-{{--                    @dump($options);--}}
                 </div>
         </div>
     </div>
