@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('email_templates', function (Blueprint $table) {
+        Schema::create(config('email-templates.table_name') , function (Blueprint $table) {
             $table->increments('id');
             $table->string('key', 191)->comment('Must be unique when combined with language');
             $table->string('language', 8)->default(config('email-templates.default_locale'),);
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('email_templates');
+        Schema::dropIfExists(config('email-templates.table_name'));
     }
 };

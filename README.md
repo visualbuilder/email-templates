@@ -148,7 +148,7 @@ Another Laravel built in notification, but to enable the custom email just add t
 ### Testing
 
 ```bash
-composer test
+./vendor/bin/pest      
 ```
 
 ### Changelog
