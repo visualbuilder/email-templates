@@ -30,11 +30,8 @@ class EmailTemplateResource extends Resource
 
     public static function form(Form $form): Form
     {
-        // $languages = config('email-templates.languages');
-        // dd($languages->en_GB);
         $languages = self::prepareLang();
         $templates = self::getTemplateViewList();
-        // dd($templates);
         return $form
             ->schema([
                 Card::make()->schema([

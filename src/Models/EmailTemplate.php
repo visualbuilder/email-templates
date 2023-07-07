@@ -77,30 +77,6 @@ class EmailTemplate extends Model
             ->firstOrFail();
     }
 
-    /**
-     * public function missingTranslations()
-     * {
-     * $languagesForThisKey = self::newQuery()
-     * ->select('language')
-     * ->where('key', $this->key)
-     * ->pluck('language')
-     * ->toArray();
-     *
-     * return array_diff(array_keys(config('vb-languages')), $languagesForThisKey);
-     * }
-     *
-     * public function languageFormatted(): Attribute
-     * {
-     * $languages = config('vb-languages');
-     *
-     * return new Attribute(
-     * get: fn($value) => array_key_exists($this->language, $languages) ? '<span class="me-2 flag-icon flag-icon-'.
-     * $languages[ $this->language ][ 'flag-icon' ].'"></span>'.
-     * $languages[ $this->language ][ 'display' ] : '',
-     * );
-     * }
-     **/
-
     public static function getSendToSelectOptions() {
         return collect(config('emailTemplate.recipients'));
     }

@@ -27,7 +27,6 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasMigrations(['create_email_templates_table'])
             ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
             ->hasViews('vb-email-templates')
-            // ->hasTranslations('vb-email-templates-field-translations')
             ->runsMigrations();
     }
     
