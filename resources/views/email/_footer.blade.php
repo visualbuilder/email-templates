@@ -12,8 +12,8 @@
                 <td bgcolor="{{config('email-templates.body_bg_color')}}" align="left" style="padding: 30px 30px 30px 30px; color: {{config('email-templates.body_color')}}; border-radius: 4px 4px 4px 4px;
                 font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                     <p style="margin: 0;">
-                        <a href="{{config('app.url')}}" target="_blank" style="font-weight: 700;">Website</a> |
-                        <a href="{{config('app.url')}}/privacy-policy" target="_blank" style=" font-weight: 700;">Privacy Policy</a>
+                        <a href="{{config('app.url')}}" target="_blank" style="font-weight: 700;">{{__('vb-email-templates::email-template-labels.general-labels.website')}}</a> |
+                        <a href="{{config('app.url')}}/privacy-policy" target="_blank" style=" font-weight: 700;">{{__('vb-email-templates::email-template-labels.general-labels.privacy-policy')}}</a>
                     </p>
                 </td>
             </tr>
@@ -22,7 +22,7 @@
             <tr>
                 <td bgcolor="{{config('email-templates.body_bg_color')}}" align="left" style="padding: 0px 30px 30px 30px; color: {{config('email-templates.body_color')}}; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                     <hr>
-                    <p> &copy; <?= date('Y'); ?> {{config('app.name')}}. All rights reserved.</p>
+                    <p> &copy; <?= date('Y'); ?> {{config('app.name')}}. {{__('vb-email-templates::email-template-labels.general-labels.all-rights-reserved')}}.</p>
                 </td>
             </tr>
         </table>

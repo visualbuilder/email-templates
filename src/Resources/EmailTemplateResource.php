@@ -43,43 +43,43 @@ class EmailTemplateResource extends Resource
                             ->afterStateUpdated(function (Closure $set, $state) {
                                 $set('key', Str::slug($state));
                             })
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.template-name'))
-                            ->hint(__('vb-email-templates::email-template-form-fields.labels.template-name-hint'))
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.template-name'))
+                            ->hint(__('vb-email-templates::email-template-labels.form-fields-labels.template-name-hint'))
                             ->required(),                    
                     ]),
                     
                     Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])->schema([
                         TextInput::make('key')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.key'))
-                            ->hint(__('vb-email-templates::email-template-form-fields.labels.key-hint'))
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.key'))
+                            ->hint(__('vb-email-templates::email-template-labels.form-fields-labels.key-hint'))
                             ->required()->unique(ignorable: fn ($record) => $record),
                         SelectLanguage::make('language')
                             ->options($languages),
                         Select::make('view')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.template-view'))
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.template-view'))
                             ->options($templates)
                             ->required(),
                         TextInput::make('from')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.email-from'))
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.email-from'))
                             ->required(),
                         TextInput::make('send_to')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.email-to')),
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.email-to')),
                     ]),
                     
                     Grid::make(['default' => 1])->schema([
                         TextInput::make('subject')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.subject')),
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.subject')),
 
                         TextInput::make('preheader')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.header'))
-                            ->hint(__('vb-email-templates::email-template-form-fields.labels.header-hint')),
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.header'))
+                            ->hint(__('vb-email-templates::email-template-labels.form-fields-labels.header-hint')),
 
                         TextInput::make('title')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.title'))
-                            ->hint(__('vb-email-templates::email-template-form-fields.labels.title-hint')),
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.title'))
+                            ->hint(__('vb-email-templates::email-template-labels.form-fields-labels.title-hint')),
 
                         TiptapEditor::make('content')
-                            ->label(__('vb-email-templates::email-template-form-fields.labels.content'))
+                            ->label(__('vb-email-templates::email-template-labels.form-fields-labels.content'))
                             ->profile('default'),
                     ]),
                     
