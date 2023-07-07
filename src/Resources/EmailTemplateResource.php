@@ -42,9 +42,9 @@ class EmailTemplateResource extends Resource
                             })
                             ->label(__('vb-email-templates::email-template-labels.form-fields-labels.template-name'))
                             ->hint(__('vb-email-templates::email-template-labels.form-fields-labels.template-name-hint'))
-                            ->required(),                    
+                            ->required(),
                     ]),
-                    
+
                     Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])->schema([
                         TextInput::make('key')
                             ->label(__('vb-email-templates::email-template-labels.form-fields-labels.key'))
@@ -62,7 +62,7 @@ class EmailTemplateResource extends Resource
                         TextInput::make('send_to')
                             ->label(__('vb-email-templates::email-template-labels.form-fields-labels.email-to')),
                     ]),
-                    
+
                     Grid::make(['default' => 1])->schema([
                         TextInput::make('subject')
                             ->label(__('vb-email-templates::email-template-labels.form-fields-labels.subject')),
@@ -79,7 +79,7 @@ class EmailTemplateResource extends Resource
                             ->label(__('vb-email-templates::email-template-labels.form-fields-labels.content'))
                             ->profile('default'),
                     ]),
-                    
+
                 ])
             ]);
     }
@@ -109,14 +109,14 @@ class EmailTemplateResource extends Resource
                 Tables\Actions\RestoreBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -126,7 +126,7 @@ class EmailTemplateResource extends Resource
             'view' => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -137,7 +137,7 @@ class EmailTemplateResource extends Resource
 
     public static function prepareLang() {
         $languages = config('email-templates.languages');
-        
+
         $preparedLang = [];
         foreach($languages as $langKey => $langVal)
         {
@@ -146,19 +146,26 @@ class EmailTemplateResource extends Resource
         return $preparedLang;
     }
 
+    //Get templates from app/resources/views/vendor OR fallback to the package
     public static function getTemplateViewList() {
-        // create an array to store the filenames
-        $filenamesArray = [];
-        $templates = [];
-    
-        $templateDirectory = dirname(view(config('email-templates.template_view_path'). '.default')->getPath());
-        $filenamesArray = self::getFiles($templateDirectory, $templateDirectory);
+        
+        $overrideDirectory = resource_path('views/vendor/vb-email-templates/email');
+        $packageDirectory = dirname(view(config('email-templates.template_view_path') . '.default')->getPath());
 
-        // formatting array
-        foreach ($filenamesArray as $item) {
-            $templates[config('email-templates.template_view_path').'.'.$item] = 'vb-'.$item;
+        $directories = [$overrideDirectory, $packageDirectory];
+
+        $filenamesArray = [];
+
+        foreach ($directories as $directory) {
+            if (file_exists($directory)) {
+                $filenamesArray = array_merge($filenamesArray, self::getFiles($directory, $directory));
+            }
         }
-        return $templates;
+
+        // Remove duplicates
+        $filenamesArray = array_unique($filenamesArray);
+
+        return array_combine($filenamesArray, $filenamesArray);
     }
 
     /**
@@ -170,7 +177,8 @@ class EmailTemplateResource extends Resource
 		if($handle = opendir($dir)) {
 			while (false !== ($entry = readdir($handle))) {
 				if($entry == "." || $entry == "..") continue;
-				$entryPath = $dir.'/'.$entry;
+                if(substr($entry, 0, 1) == '_') continue;
+                $entryPath = $dir.'/'.$entry;
 				if(is_dir($entryPath)) {
 					$subdirs[] = $entryPath;
 				}
@@ -187,5 +195,5 @@ class EmailTemplateResource extends Resource
 		}
 		return $files;
 	}
-    
+
 }

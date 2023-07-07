@@ -119,7 +119,7 @@ class EmailTemplate extends Model
     public function viewName(): Attribute
     {
         return new Attribute(
-            get: fn() => 'vendor.vb-email-templates.email.'.$this->view
+            get: fn() => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 }
