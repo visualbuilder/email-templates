@@ -46,7 +46,7 @@
                         :aria-expanded="open"
                         :aria-controls="$id('dropdown-button')"
                         type="button"
-                        class="flex items-center gap-x-2.5 filament-forms-input w-full rounded-lg text-gray-900 shadow-sm outline-none transition duration-75 border focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 border-gray-300 px-2 py-2"
+                        class="flex items-center gap-x-2.5 filament-forms-input w-full rounded-lg text-gray-900 shadow-sm outline-none transition duration-75 border focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 border-gray-300 px-2 py-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 >
                     <template x-if="state">
                         <span x-html="options[state]" class="w-full text-left"></span>
@@ -69,11 +69,11 @@
                         x-transition.origin.top.left
                         x-on:click.outside="close($refs.button)"
                         :id="$id('dropdown-button')"
-                        style="display: none;"
-                        class="absolute left-0 mt-2 w-full rounded-md bg-white shadow-md"
+                        style="display: none; background-color: #e5e7eb;;"
+                        class="absolute left-0 mt-2 w-full rounded-md shadow-md"
                 >
                     @foreach($getOptions() as $value => $label)
-                        <a href="#" x-on:click="state = '{{$value}}'; open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-md hover:bg-gray-50 disabled:text-gray-500">
+                        <a href="#" x-on:click="state = '{{$value}}'; open = false" class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-md hover:bg-gray-50 disabled:text-gray-500" style="color:black;">
                             {!! $label !!} 
                         </a>
                     @endforeach
