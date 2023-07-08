@@ -53,13 +53,15 @@ class PreviewEmailTemplate extends ViewRecord
 
 
 
-    public function updateTemplateData($id)
+    protected function getForms(): array
     {
-        $template = EmailTemplate::find($id);
-        // Update the properties in the component to reflect the selected template's data
-        $this->subject = $template->subject;
-        $this->preheader = $template->preheader;
-        // Other template fields...
-        $this->emit('refreshComponent'); // This will re-render the component
+        return [
+            'form' => $this->makeForm()
+                           ->context('view')
+                           ->model($this->getRecord())
+                           ->schema($this->getFormSchema())
+                           ->statePath('data')
+                           ->inlineLabel(config('filament.layout.forms.have_inline_labels')),
+        ];
     }
 }

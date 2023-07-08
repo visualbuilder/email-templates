@@ -41,7 +41,10 @@ class EmailTemplateResource extends Resource
         $emailTemplates = EmailTemplate::all()
                                        ->pluck('name', 'id');
 
-        if(request()->routeIs('filament.resources.email-templates.view')) {
+        $test = request()
+            ->route()
+            ->getName();
+        if(request()->routeIs(['filament.resources.email-templates.view'])) {
             //View Email Template Form
             return $form->schema(
                 [
@@ -51,14 +54,14 @@ class EmailTemplateResource extends Resource
                                 Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
                                     ->schema(
                                         [
-                                            TextInput::make('from')
-                                                     ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                                     ->disabled(),
-
                                             Select::make('id')
                                                   ->options($emailTemplates)
                                                   ->searchable()
-                                                  ->label(__('vb-email-templates::email-templates.general-labels.template-name'))
+                                                  ->label(__('vb-email-templates::email-templates.general-labels.template-name'))->reactive(),
+
+                                            TextInput::make('from')
+                                                     ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
+                                                     ->disabled()
                                         ]
                                     ),
                                 Grid::make(['default' => 1])
