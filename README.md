@@ -182,14 +182,131 @@ In the config file ``config/email-templates.php`` logo,colours and messaging can
         ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
         ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
     ],
+```
 
-
-If you wish to further edit the template see the primary template here:-
+If you wish to directly edit the template blade file see the primary template here:-
 `resources/views/vendor/vb-email-templates/email/default.php`
 
-You are free to create a new template in this directory and it will be automatically visible on the email tempalte editor.
+You are free to create new templates in this directory which will be automatically visible on the email template editor, for selection
 
+### Translations
+Each email template has a key and a language so
+**Key**: user-password-reset
+**Language**: en_gb
+
+Allows the relevant template to be selected based on the users locale - You will need to save the users preferred language to implement this.
+
+Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead.
+
+
+Languages that should be shown on the language picker can be set in the config
+```php
+    'default_locale'   => 'en_GB',
+
+    //These will be included in the language picker when editing an email template
+    'languages'        => [
+        'en_GB' => ['display' => 'British', 'flag-icon' => 'gb'],
+        'en_US' => ['display' => 'USA', 'flag-icon' => 'us'],
+        'es'    => ['display' => 'Español', 'flag-icon' => 'es'],
+        'fr'    => ['display' => 'Français', 'flag-icon' => 'fr'],
+        'in'    => ['display' => 'Hindi', 'flag-icon' => 'in'],
+        'pt'    => ['display' => 'Brasileiro', 'flag-icon' => 'br'],
+    ]
 ```
+
+![Email Preview](./guides/Languages.png)
+
+Flag icons are loaded from CDN: https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css
+see https://www.npmjs.com/package/flag-icons
+
+
+### Creating a new Mail Class
+Copy one of the built in mails to add your own Mail Classes.
+Just change the template to the email template key from the admin.
+
+
+```php
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
+
+class MyFunkyNewEmail extends Mailable
+{
+    use Queueable, SerializesModels, BuildGenericEmail;
+
+    public $template = 'email-template-key';  //Change this to the key of the email template content to load
+    public $sendTo;
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($user, TokenHelperInterface $tokenHelper) {
+        $this->sendTo = $user;
+        $this->initializeTokenHelper($tokenHelper);
+    }
+}
+```
+
+The TokenHelperInterface is used to replace tokens.
+
+### Adding Attachments
+**BuildGenericEmail** is a useful trait to save duplication of code in each mail class keeping the code dry.
+In here you can see how to pass an attachment:-
+
+```php
+ public function build() {
+        $template = EmailTemplate::findEmailByKey($this->template, App::currentLocale());
+
+        if($this->attachment ?? false) {
+            $this->attach(
+                $this->attachment->filepath, [
+                'as'   => $this->attachment->filename,
+                'mime' => $this->attachment->filetype
+            ]
+            );
+        }
+
+        $data = [
+            'content'       => $this->tokenHelper->replaceTokens($template->content, $this),
+            'preHeaderText' => $this->tokenHelper->replaceTokens($template->preheader, $this),
+            'title'         => $this->tokenHelper->replaceTokens($template->title, $this)
+        ];
+
+        return $this->from($template->from, config('app.name'))
+            ->view($template->view_path)
+            ->subject($this->tokenHelper->replaceTokens($template->subject, $this))
+            ->to($this->sendTo)
+            ->with(['data'=>$data]);
+    }
+```
+The attachment should be passed to the Mail Class and set as a public property in the constructor.
+
+```php
+class MyFunkyNewEmaiWithAttachment extends Mailable
+{
+    use Queueable, SerializesModels, BuildGenericEmail;
+
+    public $template = 'email-template-key';  //Change this to the key of the email template content to load
+    public $sendTo;
+    public $attachment
+
+    public function __construct($user, $attachment) {
+            $this->user       = $user;
+            $this->attachment = $attachment;
+            $this->sendTo     = $user->email;
+            $this->initializeTokenHelper($tokenHelper);
+        }
+```
+
+
 ### Testing
 
 ```bash
