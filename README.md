@@ -28,86 +28,23 @@ We use the standard Laravel mail sending capability, the package simply allows c
 
 ## Installation
 
-You can install the package via composer:
-
+Get the package via composer:
 ```bash
 composer require visualbuilder/email-templates
 ```
-
-1. Publish the config file with:
+Run the install command
 ```bash
- php artisan vendor:publish --tag=filament-email-templates-config
+ php artisan filament-email-templates:install
 ```
-
-2. In the newly created config file ``config/email-templates.php`` you can customise the email templates
-```php
-   //Default Email Styling
-    'logo'             => 'media/email-templates/logo.png',
-
-    //Logo size in pixels -> 200 pixels high is plenty big enough.
-    'logo_width'       => '476',
-    'logo_height'      => '117',
-
-    //Content Width in Pixels
-    'content_width'    => '600',
-
-    //Background Colours
-    'header_bg_color'  => '#B8B8D1',
-    'body_bg_color'    => '#f4f4f4',
-    'content_bg_color' => '#FFFFFB',
-    'footer_bg_color'  => '#5B5F97',
-    'callout_bg_color' => '#B8B8D1',
-    'button_bg_color'  => '#FFC145',
-
-    //Text Colours
-    'body_color'       => '#333333',
-    'callout_color'    => '#000000',
-    'button_color'     => '#2A2A11',
-    'anchor_color'     => '#4c05a1',
-
-    //Contact details included in default email templates
-    'customer-services-email'=>'support@yourcompany.com',
-    'customer-services-phone'=>'+441273 455702',
-
-    //Footer Links
-    'links' =>[
-        ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
-        ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
-    ],
-
-```
-
-3.  Publish migrations and create the email templates table
-```bash
-php artisan vendor:publish --tag=filament-email-templates-migrations
-php artisan migrate
-```
-
-4. Publish the default email contents.
-A seeder has been created containing email template content for typical laravel authentication actions.
-After publishing the file, you can edit the seeder at ``database/seeders/EmailTemplateSeeder.php`` 
-
-or just seed them and edit in the admin panel using the HTML editor.
-
-```bash
-php artisan vendor:publish --tag=filament-email-templates-seeds
-php artisan db:seed --class=EmailTemplateSeeder
-```
-
-5. Publish the HTML Email Template view files.
-```bash
-php artisan vendor:publish --tag=filament-email-templates-views
-php artisan db:seed --class=EmailTemplateSeeder
-```
-The HTML email template has been tested to work on multiple devices, mail clients and screen sizes.  
-You can of course edit the header, logo, footer etc or replace it with your own email format completely.
-
 
 ## Usage
 
 ### HTML Editor
 Edit email content in the admin and use tokens to inject model or config content.
 ![Email Preview](./guides/EmailEditor.png)
+
+Note: The seeder can also be edited directly if you wish to prepopulate with your own content.
+`Database\Seeders\EmailTemplateSeeder.php`
 
 ### Tokens
 Token format is ##model.attribute##.  When calling the email pass any referenced models to replace the tokens automatically.
@@ -150,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-Now when the email template is rendered it will use the built in token helper and then your custom functions.
+Now when the email template is rendered it will use the built-in token helper and then your custom functions.
 
 ### Implementing out of the box templates
 
@@ -207,6 +144,52 @@ Another Laravel built in notification, but to enable the custom email just add t
     }
 ```
 
+
+### Customising the email template
+
+In the config file ``config/email-templates.php`` logo,colours and messaging can be updated.
+```php
+   //Default Email Styling
+    'logo'             => 'media/email-templates/logo.png',
+
+    //Logo size in pixels -> 200 pixels high is plenty big enough.
+    'logo_width'       => '476',
+    'logo_height'      => '117',
+
+    //Content Width in Pixels
+    'content_width'    => '600',
+
+    //Background Colours
+    'header_bg_color'  => '#B8B8D1',
+    'body_bg_color'    => '#f4f4f4',
+    'content_bg_color' => '#FFFFFB',
+    'footer_bg_color'  => '#5B5F97',
+    'callout_bg_color' => '#B8B8D1',
+    'button_bg_color'  => '#FFC145',
+
+    //Text Colours
+    'body_color'       => '#333333',
+    'callout_color'    => '#000000',
+    'button_color'     => '#2A2A11',
+    'anchor_color'     => '#4c05a1',
+
+    //Contact details included in default email templates
+    'customer-services-email'=>'support@yourcompany.com',
+    'customer-services-phone'=>'+441273 455702',
+
+    //Footer Links
+    'links' =>[
+        ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
+        ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
+    ],
+
+
+If you wish to further edit the template see the primary template here:-
+`resources/views/vendor/vb-email-templates/email/default.php`
+
+You are free to create a new template in this directory and it will be automatically visible on the email tempalte editor.
+
+```
 ### Testing
 
 ```bash
