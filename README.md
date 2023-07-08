@@ -24,6 +24,8 @@
 
 We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new templates.
 
+![Email Preview](./guides/TemplateScreenShot.png)
+
 ## Installation
 
 You can install the package via composer:
@@ -37,21 +39,42 @@ composer require visualbuilder/email-templates
  php artisan vendor:publish --tag=filament-email-templates-config
 ```
 
-2. In the newly created config file ``config/email-templates.php`` you can override default settings:-
+2. In the newly created config file ``config/email-templates.php`` you can customise the email templates
 ```php
-    'default_locale'=>'en_GB',
-    'header_bg_color' => '#4a2725',
-    
-    //Models who can receive email
-    'recipients'    => [
-        (object)[
-            'id'    => 'user',
-            'name'  => 'User',
-            'model' => '\\App\\Models\\User'],
+   //Default Email Styling
+    'logo'             => 'media/email-templates/logo.png',
+
+    //Logo size in pixels -> 200 pixels high is plenty big enough.
+    'logo_width'       => '476',
+    'logo_height'      => '117',
+
+    //Content Width in Pixels
+    'content_width'    => '600',
+
+    //Background Colours
+    'header_bg_color'  => '#B8B8D1',
+    'body_bg_color'    => '#f4f4f4',
+    'content_bg_color' => '#FFFFFB',
+    'footer_bg_color'  => '#5B5F97',
+    'callout_bg_color' => '#B8B8D1',
+    'button_bg_color'  => '#FFC145',
+
+    //Text Colours
+    'body_color'       => '#333333',
+    'callout_color'    => '#000000',
+    'button_color'     => '#2A2A11',
+    'anchor_color'     => '#4c05a1',
+
+    //Contact details included in default email templates
+    'customer-services-email'=>'support@yourcompany.com',
+    'customer-services-phone'=>'+441273 455702',
+
+    //Footer Links
+    'links' =>[
+        ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
+        ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
     ],
-    
-    //Guards who are authorised to edit templates
-    'editor_guards'=>['web'],
+
 ```
 
 3.  Publish migrations and create the email templates table
@@ -82,9 +105,56 @@ You can of course edit the header, logo, footer etc or replace it with your own 
 
 ## Usage
 
+### HTML Editor
+Edit email content in the admin and use tokens to inject model or config content.
+![Email Preview](./guides/EmailEditor.png)
+
+### Tokens
+Token format is ##model.attribute##.  When calling the email pass any referenced models to replace the tokens automatically.
+
+You can also include config values in the format ##config.file.key## eg ##config.app.name##.  In the email tempalates config file you must whitelist keys that should be allowed.
+We shouldn't allow users to include any key which could compromise security.
+
+#### Custom token replacement functions
+If necessary the token helper can be extended with your own functions.  Create a file like this:-
+```php
+namespace App\Helpers;
+
+use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
+
+class CustomTokenHelper extends TokenHelper
+{
+    public function replaceTokens($string, $model)
+    {
+        // Call parent method to use the existing functionality.
+        $string = parent::replaceTokens($string, $model);
+
+        // Add custom your functionality here.
+
+        return $string;
+    }
+}
+```
+and then in your AppServiceProvider override the token helper interface.
+
+```php
+use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+use App\Helpers\CustomTokenHelper;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->app->singleton(TokenHelperInterface::class, CustomTokenHelper::class);
+    }
+}
+```
+
+Now when the email template is rendered it will use the built in token helper and then your custom functions.
+
 ### Implementing out of the box templates
 
-Emails may be sent directly, via a notification or from via an event listener.  
+Emails may be sent directly, via a notification or an event listener.  
 
 The following email templates are included to get you started and show different methods of sending.
 

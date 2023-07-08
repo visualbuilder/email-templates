@@ -7,17 +7,17 @@ use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 
 class TokenHelper implements TokenHelperInterface
 {
-    public function replaceTokens($content, $model)
+    public function replaceTokens($content, $models)
     {
         // Replace singular tokens.
         // These are for password reset and email verification
-        if(isset($model->tokens)){
-            if (isset($model->tokens->tokenUrl)) {
-                $content = str_replace('##tokenURL##', $model->tokens->tokenUrl, $content);
+        if(isset($models->tokens)){
+            if (isset($models->tokens->tokenUrl)) {
+                $content = str_replace('##tokenURL##', $models->tokens->tokenUrl, $content);
             }
 
-            if (isset($model->tokens->verificationUrl)) {
-                $content = str_replace('##verificationUrl##', $model->tokens->verificationUrl, $content);
+            if (isset($models->tokens->verificationUrl)) {
+                $content = str_replace('##verificationUrl##', $models->tokens->verificationUrl, $content);
             }
         }
 
@@ -32,8 +32,8 @@ class TokenHelper implements TokenHelperInterface
                 $modelKey = $matches[1][$i];
                 $attributeKey = $matches[2][$i];
 
-                if (isset($model->$modelKey) && isset($model->$modelKey->$attributeKey)) {
-                    $content = str_replace($matches[0][$i], $model->$modelKey->$attributeKey, $content);
+                if (isset($models->$modelKey) && isset($models->$modelKey->$attributeKey)) {
+                    $content = str_replace($matches[0][$i], $models->$modelKey->$attributeKey, $content);
                 }
             }
         }
