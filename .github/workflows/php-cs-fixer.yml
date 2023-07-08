@@ -25,4 +25,3 @@ jobs:
           with:
             commit_message: Fix styling
             branch: ${{ steps.extract_branch.outputs.branch }}
-            token: ${{ secrets.PAT }}
