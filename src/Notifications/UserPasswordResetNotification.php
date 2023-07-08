@@ -5,7 +5,6 @@ namespace Visualbuilder\EmailTemplates\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use Visualbuilder\EmailTemplates\Mail\UserLoginEmail;
 use Visualbuilder\EmailTemplates\Mail\UserPasswordResetSuccessEmail;
 
 // implements ShouldQueue
@@ -18,7 +17,7 @@ class UserPasswordResetNotification extends Notification
      *
      * @return void
      */
-    public function __construct(  )
+    public function __construct()
     {
 
     }
@@ -55,5 +54,4 @@ class UserPasswordResetNotification extends Notification
     {
         return [ ];
     }
-
 }

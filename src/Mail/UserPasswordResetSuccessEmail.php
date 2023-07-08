@@ -10,19 +10,22 @@ use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class UserPasswordResetSuccessEmail extends Mailable
 {
-    use Queueable, SerializesModels, BuildGenericEmail;
-    
+    use Queueable;
+    use SerializesModels;
+    use BuildGenericEmail;
+
     public $template = 'user-password-reset-success';
     public $user;
     public $sendTo;
-    
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user, TokenHelperInterface $tokenHelper) {
-        $this->user   = $user;
+    public function __construct($user, TokenHelperInterface $tokenHelper)
+    {
+        $this->user = $user;
         $this->sendTo = $user->email;
         $this->initializeTokenHelper($tokenHelper);
     }

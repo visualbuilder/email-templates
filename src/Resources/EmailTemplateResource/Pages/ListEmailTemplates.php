@@ -2,9 +2,9 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class ListEmailTemplates extends ListRecords
 {

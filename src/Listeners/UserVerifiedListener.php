@@ -3,10 +3,6 @@
 namespace Visualbuilder\EmailTemplates\Listeners;
 
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Notifications\UserVerifiedNotification;
 
 class UserVerifiedListener
@@ -30,8 +26,8 @@ class UserVerifiedListener
     public function handle(Verified $event)
     {
         $user = $event->user;
-	    $user->notify(new UserVerifiedNotification());
+        $user->notify(new UserVerifiedNotification());
 
-	
+
     }
 }

@@ -16,26 +16,27 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Components\Iframe;
 use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\RelationManagers;
 
 class EmailTemplateResource extends Resource
 {
-    protected static ?string $model          = EmailTemplate::class;
+    protected static ?string $model = EmailTemplate::class;
     protected static ?string $navigationIcon = 'heroicon-o-mail';
 
-    public static function getModelLabel(): string {
+    public static function getModelLabel(): string
+    {
         return __('vb-email-templates::email-templates.resource_name.singular');
     }
 
-    public static function getPluralModelLabel(): string {
+    public static function getPluralModelLabel(): string
+    {
         return __('vb-email-templates::email-templates.resource_name.plural');
     }
 
-    public static function form(Form $form): Form {
+    public static function form(Form $form): Form
+    {
         $languages = self::prepareLang();
         $templates = self::getTemplateViewList();
 
@@ -50,7 +51,7 @@ class EmailTemplateResource extends Resource
                                         TextInput::make('name')
                                                  ->reactive()
                                                  ->afterStateUpdated(
-                                                     function( Closure $set, $state ) {
+                                                     function (Closure $set, $state) {
                                                          $set('key', Str::slug($state));
                                                      }
                                                  )
@@ -67,7 +68,7 @@ class EmailTemplateResource extends Resource
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
                                                  ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
                                                  ->required()
-                                                 ->unique(ignorable: fn($record) => $record),
+                                                 ->unique(ignorable: fn ($record) => $record),
                                         SelectLanguage::make('language')
                                                       ->options($languages),
                                         Select::make('view')
@@ -103,12 +104,13 @@ class EmailTemplateResource extends Resource
                                 ),
 
                         ]
-                    )
+                    ),
             ]
         );
     }
 
-    public static function prepareLang() {
+    public static function prepareLang()
+    {
         $languages = config('email-templates.languages');
 
         $preparedLang = [];
@@ -116,10 +118,12 @@ class EmailTemplateResource extends Resource
             $preparedLang[ $langKey ] =
                 '<span class="fi fi-'.$langVal[ "flag-icon" ].'"></span> '.$langVal[ "display" ];
         }
+
         return $preparedLang;
     }
 
-    public static function getTemplateViewList() {
+    public static function getTemplateViewList()
+    {
         $overrideDirectory = resource_path('views/vendor/vb-email-templates/email');
         $packageDirectory = dirname(view(config('email-templates.template_view_path').'.default')->getPath());
 
@@ -142,24 +146,34 @@ class EmailTemplateResource extends Resource
     /**
      * Recursively get all files in a directory and children
      */
-    private static function getFiles($dir, $basepath) {
+    private static function getFiles($dir, $basepath)
+    {
         $files = $subdirs = $subFiles = [];
 
         if($handle = opendir($dir)) {
             while (false !== ($entry = readdir($handle))) {
-                if($entry == "." || $entry == "..") continue;
-                if(substr($entry, 0, 1) == '_') continue;
+                if($entry == "." || $entry == "..") {
+                    continue;
+                }
+                if(substr($entry, 0, 1) == '_') {
+                    continue;
+                }
                 $entryPath = $dir.'/'.$entry;
                 if(is_dir($entryPath)) {
                     $subdirs[] = $entryPath;
-                }
-                else {
+                } else {
                     $subFiles[] = str_replace(
-                        '/', '.', str_replace(
-                               '.blade.php', '', str_replace(
-                                               $basepath.'/', '', $entryPath
-                                           )
-                           )
+                        '/',
+                        '.',
+                        str_replace(
+                            '.blade.php',
+                            '',
+                            str_replace(
+                                $basepath.'/',
+                                '',
+                                $entryPath
+                            )
+                        )
                     );
                 }
             }
@@ -170,10 +184,12 @@ class EmailTemplateResource extends Resource
                 $files = array_merge($files, self::getFiles($subdir, $basepath));
             }
         }
+
         return $files;
     }
 
-    public static function table(Table $table): Table {
+    public static function table(Table $table): Table
+    {
         return $table->columns(
             [
                 TextColumn::make('id'),
@@ -196,7 +212,7 @@ class EmailTemplateResource extends Resource
                          [
                              Tables\Actions\ViewAction::make()
                                                       ->label("Preview")
-                                                      ->hidden(fn($record) => $record->trashed()),
+                                                      ->hidden(fn ($record) => $record->trashed()),
                              Tables\Actions\EditAction::make(),
                              Tables\Actions\DeleteAction::make(),
                              Tables\Actions\ForceDeleteAction::make(),
@@ -212,17 +228,18 @@ class EmailTemplateResource extends Resource
                      );
     }
 
-    public static function getPages(): array {
+    public static function getPages(): array
+    {
         return [
-            'index'  => Pages\ListEmailTemplates::route('/'),
+            'index' => Pages\ListEmailTemplates::route('/'),
             'create' => Pages\CreateEmailTemplate::route('/create'),
-            'edit'   => Pages\EditEmailTemplate::route('/{record}/edit'),
-            'view'   => Pages\PreviewEmailTemplate::route('/{record}'),
+            'edit' => Pages\EditEmailTemplate::route('/{record}/edit'),
+            'view' => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }
 
-
-    public static function getEloquentQuery(): Builder {
+    public static function getEloquentQuery(): Builder
+    {
         return parent::getEloquentQuery()
                      ->withoutGlobalScopes(
                          [

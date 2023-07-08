@@ -17,7 +17,7 @@ class UserLockoutNotification extends Notification
      *
      * @return void
      */
-    public function __construct(  )
+    public function __construct()
     {
 
     }
@@ -41,7 +41,7 @@ class UserLockoutNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        if(config('email-templates.send_emails.user_lockout')){
+        if(config('email-templates.send_emails.user_lockout')) {
             return app(UserLockedOutEmail::class, ['user' => $notifiable]);
         }
     }
@@ -56,5 +56,4 @@ class UserLockoutNotification extends Notification
     {
         return [ ];
     }
-
 }

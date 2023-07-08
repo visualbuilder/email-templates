@@ -10,7 +10,8 @@ trait BuildGenericEmail
 {
     private $tokenHelper;
 
-    public function initializeTokenHelper(TokenHelperInterface $tokenHelper) {
+    public function initializeTokenHelper(TokenHelperInterface $tokenHelper)
+    {
         $this->tokenHelper = $tokenHelper;
     }
 
@@ -19,28 +20,30 @@ trait BuildGenericEmail
      *
      * @return $this
      */
-    public function build() {
+    public function build()
+    {
         $template = EmailTemplate::findEmailByKey($this->template, App::currentLocale());
 
         if($this->attachment ?? false) {
             $this->attach(
-                $this->attachment->filepath, [
-                'as'   => $this->attachment->filename,
-                'mime' => $this->attachment->filetype
+                $this->attachment->filepath,
+                [
+                'as' => $this->attachment->filename,
+                'mime' => $this->attachment->filetype,
             ]
             );
         }
 
         $data = [
-            'content'       => $this->tokenHelper->replaceTokens($template->content, $this),
+            'content' => $this->tokenHelper->replaceTokens($template->content, $this),
             'preHeaderText' => $this->tokenHelper->replaceTokens($template->preheader, $this),
-            'title'         => $this->tokenHelper->replaceTokens($template->title, $this)
+            'title' => $this->tokenHelper->replaceTokens($template->title, $this),
         ];
 
         return $this->from($template->from, config('app.name'))
             ->view($template->view_path)
             ->subject($this->tokenHelper->replaceTokens($template->subject, $this))
             ->to($this->sendTo)
-            ->with(['data'=>$data]);
+            ->with(['data' => $data]);
     }
 }

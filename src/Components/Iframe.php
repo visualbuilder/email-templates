@@ -3,7 +3,6 @@
 namespace Visualbuilder\EmailTemplates\Components;
 
 use Filament\Forms\Components\Component;
-use Illuminate\Support\Str;
 
 class Iframe extends Component
 {
@@ -30,7 +29,8 @@ class Iframe extends Component
         });
     }
 
-    public static function make($name, $label = null, $src = null, $height = '800px', $width = '100%') {
+    public static function make($name, $label = null, $src = null, $height = '800px', $width = '100%')
+    {
         return new static($name, $label, $src, $height, $width);
     }
 }

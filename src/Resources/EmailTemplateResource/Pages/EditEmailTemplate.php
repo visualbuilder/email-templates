@@ -2,9 +2,9 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class EditEmailTemplate extends EditRecord
 {

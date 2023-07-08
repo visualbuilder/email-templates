@@ -10,7 +10,9 @@ use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class UserLockedOutEmail extends Mailable
 {
-    use Queueable, SerializesModels, BuildGenericEmail;
+    use Queueable;
+    use SerializesModels;
+    use BuildGenericEmail;
 
     public $template = 'user-locked-out';
     public $sendTo;
@@ -20,7 +22,8 @@ class UserLockedOutEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($user, TokenHelperInterface $tokenHelper) {
+    public function __construct($user, TokenHelperInterface $tokenHelper)
+    {
         $this->sendTo = $user;
         $this->initializeTokenHelper($tokenHelper);
     }

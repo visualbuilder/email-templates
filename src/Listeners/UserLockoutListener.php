@@ -3,11 +3,9 @@
 namespace Visualbuilder\EmailTemplates\Listeners;
 
 use Illuminate\Auth\Events\Login;
-use Visualbuilder\EmailTemplates\Notifications\UserLoginNotification;
 
 class UserLockoutListener
 {
-
     /**
      * Handle the event.
      *
@@ -16,8 +14,8 @@ class UserLockoutListener
      */
     public function handle(Login $event)
     {
-            $user = $event->user;
-            $user->notify(new UserLoNotification());
+        $user = $event->user;
+        $user->notify(new UserLoNotification());
 
     }
 }

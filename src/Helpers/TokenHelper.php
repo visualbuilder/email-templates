@@ -11,7 +11,7 @@ class TokenHelper implements TokenHelperInterface
     {
         // Replace singular tokens.
         // These are for password reset and email verification
-        if(isset($models->tokens)){
+        if(isset($models->tokens)) {
             if (isset($models->tokens->tokenUrl)) {
                 $content = str_replace('##tokenURL##', $models->tokens->tokenUrl, $content);
             }
@@ -54,7 +54,7 @@ class TokenHelper implements TokenHelperInterface
             }
         }
 
-        $button  = self::buildEmailButton($content);
+        $button = self::buildEmailButton($content);
         $content = self::replaceButtonToken($content, $button);
 
         return $content;
@@ -72,23 +72,23 @@ class TokenHelper implements TokenHelperInterface
             }
             if ($check1 && $check2) {
                 return View::make('vb-email-templates::email.parts._button', [
-                    'url'   => $url,
-                    'title' => $title
+                    'url' => $url,
+                    'title' => $title,
                 ])
                            ->render();
             }
         };
+
         return '';
     }
 
     public static function replaceButtonToken($content, $button)
     {
-        $search  = "/(?<=##button).*?(?=##)/";
+        $search = "/(?<=##button).*?(?=##)/";
         $replace = "";
         $content = preg_replace($search, $replace, $content);
         $content = str_replace('##button##', $button, $content);
+
         return $content;
     }
-    
-    
 }

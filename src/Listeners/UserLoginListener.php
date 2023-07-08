@@ -14,7 +14,8 @@ class UserLoginListener
      *
      * @return void
      */
-    public function handle(Login $event) {
+    public function handle(Login $event)
+    {
         $user = $event->user;
         $user->notify(new UserLoginNotification());
     }

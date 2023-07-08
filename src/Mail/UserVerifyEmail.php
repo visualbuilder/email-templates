@@ -10,7 +10,9 @@ use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class UserVerifyEmail extends Mailable
 {
-    use Queueable, SerializesModels, BuildGenericEmail;
+    use Queueable;
+    use SerializesModels;
+    use BuildGenericEmail;
 
     public $user;
     public $verificationUrl;
@@ -22,10 +24,11 @@ class UserVerifyEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($user, $token, TokenHelperInterface $tokenHelper) {
-        $this->user            = $user;
+    public function __construct($user, $token, TokenHelperInterface $tokenHelper)
+    {
+        $this->user = $user;
         $this->verificationUrl = $token;
-        $this->sendTo          = $user->email;
+        $this->sendTo = $user->email;
         $this->initializeTokenHelper($tokenHelper);
     }
 }

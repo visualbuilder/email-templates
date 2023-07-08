@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Visualbuilder\EmailTemplates\Mail\UserLoginEmail;
 
-
 // implements ShouldQueue
 class UserLoginNotification extends Notification
 {
@@ -18,7 +17,7 @@ class UserLoginNotification extends Notification
      *
      * @return void
      */
-    public function __construct(  )
+    public function __construct()
     {
 
     }
@@ -57,5 +56,4 @@ class UserLoginNotification extends Notification
     {
         return [ ];
     }
-
 }

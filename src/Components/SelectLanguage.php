@@ -8,7 +8,7 @@ use Filament\Forms\Components\Field;
 class SelectLanguage extends Field
 {
     use HasOptions;
-    
+
     protected string $view = 'vb-email-templates::forms.components.select-language';
-    
+
 }

@@ -5,32 +5,21 @@ namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
-use Filament\Pages\Actions\EditAction;
-use Filament\Resources\Form;
-use Filament\Resources\Pages\EditRecord;
-use Filament\Resources\Pages\Page;
+use Filament\Forms\Components\TextInput;
 
-use FilamentTiptapEditor\TiptapEditor;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\Form;
 use Filament\Resources\Pages\ViewRecord;
-use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Components\Iframe;
-use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Components\TextInput;
 
 class PreviewEmailTemplate extends ViewRecord
 {
-
     protected static string $resource = EmailTemplateResource::class;
 
     public function getTitle(): string
     {
-        return __('vb-email-templates::email-templates.general-labels.preview-email', ['label'=>$this->record->name]);
+        return __('vb-email-templates::email-templates.general-labels.preview-email', ['label' => $this->record->name]);
     }
 
     protected $tokenHelper;
@@ -49,6 +38,7 @@ class PreviewEmailTemplate extends ViewRecord
     {
         //View Email Template Form
         $emailTemplates = EmailTemplate::all()->pluck('name', 'id');
+
         return $form->schema(
             [
                 Card::make()
@@ -65,7 +55,7 @@ class PreviewEmailTemplate extends ViewRecord
 
                                         TextInput::make('from')
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                                 ->disabled()
+                                                 ->disabled(),
                                     ]
                                 ),
                             Grid::make(['default' => 1])
@@ -77,7 +67,7 @@ class PreviewEmailTemplate extends ViewRecord
                                         TextInput::make('preheader')
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
                                                  ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint'))
-                                                 ->disabled()
+                                                 ->disabled(),
                                     ]
                                 ),
                             Grid::make(['default' => 1])
@@ -85,29 +75,28 @@ class PreviewEmailTemplate extends ViewRecord
                                     [
                                         Iframe::make('iframe'),
                                     ]
-                                )
+                                ),
 
                         ]
-                    )
+                    ),
             ]
         );
     }
 
     public function updatedEmailTemplateId($value)
     {
-        $test =- 1;
+        $test = -1;
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        foreach ($data as $key=>$value){
-           $data[$key] = $this->tokenHelper->replaceTokens($value,$this);
+        foreach ($data as $key => $value) {
+            $data[$key] = $this->tokenHelper->replaceTokens($value, $this);
         }
         $data['emailTemplateId'] = $data['id'];
+
         return $data;
     }
-
-
 
     protected function getForms(): array
     {

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,14 +12,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create(config('email-templates.table_name') , function (Blueprint $table) {
+        Schema::create(config('email-templates.table_name'), function (Blueprint $table) {
             $table->increments('id');
             $table->string('key', 191)->comment('Must be unique when combined with language');
-            $table->string('language', 8)->default(config('email-templates.default_locale'),);
+            $table->string('language', 8)->default(config('email-templates.default_locale'), );
             $table->string('name', 191)->nullable()->comment('Friendly Name');
             $table->string('view', 191)->default(config('email-templates.default_view'))->comment('Blade Template to load into');
             $table->string('from', 191)->nullable()->comment('From address to override system default');
-            $table->string('send_to',191)->nullable()->comment('The Notifiable model class');
+            $table->string('send_to', 191)->nullable()->comment('The Notifiable model class');
             $table->json('cc')->nullable();
             $table->json('bcc')->nullable();
             $table->string('subject', 191)->nullable();

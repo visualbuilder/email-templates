@@ -6,16 +6,16 @@ use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
-use Filament\Support\SupportServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
+use FilamentTiptapEditor\FilamentTiptapEditorServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
-use Visualbuilder\EmailTemplates\Tests\Models\User;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use FilamentTiptapEditor\FilamentTiptapEditorServiceProvider;
+use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
+use Visualbuilder\EmailTemplates\Tests\Models\User;
 
 class TestCase extends Orchestra
 {

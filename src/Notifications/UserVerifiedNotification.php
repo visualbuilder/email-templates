@@ -3,26 +3,19 @@
 namespace Visualbuilder\EmailTemplates\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Telegram\TelegramMessage;
-use Visualbuilder\EmailTemplates\Mail\UserRegisteredEmail;
 use Visualbuilder\EmailTemplates\Mail\UserVerifiedEmail;
 
 class UserVerifiedNotification extends Notification
 {
     use Queueable;
-    
-
-
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(  )
+    public function __construct()
     {
 
     }
@@ -35,7 +28,7 @@ class UserVerifiedNotification extends Notification
      */
     public function via($notifiable)
     {
-        return array_merge($this->userVias($notifiable),['telegram']);
+        return array_merge($this->userVias($notifiable), ['telegram']);
     }
 
     /**
@@ -46,7 +39,7 @@ class UserVerifiedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        if(config('email-templates.send_emails.user_verified')){
+        if(config('email-templates.send_emails.user_verified')) {
             return app(UserVerifiedEmail::class, ['user' => $notifiable]);
         }
     }
@@ -60,8 +53,7 @@ class UserVerifiedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-           
+
             ];
     }
-
 }

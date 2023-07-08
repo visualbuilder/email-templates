@@ -10,22 +10,25 @@ use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class UserRequestPasswordResetEmail extends Mailable
 {
-    use Queueable, SerializesModels, BuildGenericEmail;
-    
+    use Queueable;
+    use SerializesModels;
+    use BuildGenericEmail;
+
     public $user;
     public $token;
     public $template = 'user-request-reset';
     public $sendTo;
-    
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user, $token, TokenHelperInterface $tokenHelper) {
-        $this->user     = $user;
+    public function __construct($user, $token, TokenHelperInterface $tokenHelper)
+    {
+        $this->user = $user;
         $this->tokenUrl = $token;
-        $this->sendTo   = $user->email;
+        $this->sendTo = $user->email;
         $this->initializeTokenHelper($tokenHelper);
     }
 }

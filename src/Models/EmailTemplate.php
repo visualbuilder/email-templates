@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 
 /**
- * @property integer $id
+ * @property int $id
  * @property string $key
  * @property string $from
  * @property string $name
@@ -31,7 +31,8 @@ use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
  */
 class EmailTemplate extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     /**
      * @var array
@@ -46,44 +47,51 @@ class EmailTemplate extends Model
         'preheader',
         'content',
         'language',
-        'send_to'
+        'send_to',
     ];
-    protected $casts    = [
+    protected $casts = [
         'deleted_at' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
     protected $dates = ['deleted_at'];
 
-    public function __construct(array $attributes = []) {
+    public function __construct(array $attributes = [])
+    {
         parent::__construct($attributes);
         $this->setTableFromConfig();
     }
 
-    public function setTableFromConfig() {
+    public function setTableFromConfig()
+    {
         $this->table = config('email-templates.table_name');
     }
 
-    protected static function newFactory() {
+    protected static function newFactory()
+    {
         return EmailTemplateFactory::new();
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name ?? class_basename($this);
     }
 
-    public static function findEmailByKey($key, $language = null) {
+    public static function findEmailByKey($key, $language = null)
+    {
         return self::query()
                    ->language($language ?? config('email-templates.default_locale'))
                    ->where("key", $key)
                    ->firstOrFail();
     }
 
-    public static function getSendToSelectOptions() {
+    public static function getSendToSelectOptions()
+    {
         return collect(config('emailTemplate.recipients'));
     }
 
-    public static function getEmailPreviewData() {
+    public static function getEmailPreviewData()
+    {
         $model = (object) [];
         $userModel = config('email-templates.recipients')[ 0 ];
         //Setup some data for previewing email template
@@ -91,9 +99,10 @@ class EmailTemplate extends Model
         $model->tokens = (object) [
             'tokenUrl' => URL::to('/'),
             'verificationUrl' => URL::to('/'),
-            'expiresAt' => now()
+            'expiresAt' => now(),
         ];
         $model->plainText = Str::random(32);
+
         return $model;
     }
 
@@ -105,15 +114,18 @@ class EmailTemplate extends Model
      *
      * @return Builder
      */
-    public function scopeLanguage(Builder $query, $language) {
+    public function scopeLanguage(Builder $query, $language)
+    {
         $languages = [$language, config('email-templates.default_locale')];
+
         return $query->whereIn('language', $languages)
                      ->orderByRaw('field(language, ?, ?)', $languages);
     }
 
-    public function viewPath(): Attribute {
+    public function viewPath(): Attribute
+    {
         return new Attribute(
-            get: fn() => config('email-templates.template_view_path').'.'.$this->view
+            get: fn () => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 }
