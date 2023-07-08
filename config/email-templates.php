@@ -14,25 +14,35 @@ return [
     'logo'             => 'media/email-templates/logo.png',
 
     //Logo size in pixels -> 200 pixels high is plenty big enough.
-    'logo_width'       => '200',
-    'logo_height'      => '200',
+    'logo_width'       => '476',
+    'logo_height'      => '117',
 
     //Content Width in Pixels
     'content_width'    => '600',
 
     //Background Colours
-    'header_bg_color'  => '#424242',
+    'header_bg_color'  => '#B8B8D1',
     'body_bg_color'    => '#f4f4f4',
-    'content_bg_color' => '#fefefe',
-    'footer_bg_color'  => '#646464',
-    'callout_bg_color' => '#700000',
-    'button_bg_color'  => '#424242',
+    'content_bg_color' => '#FFFFFB',
+    'footer_bg_color'  => '#5B5F97',
+    'callout_bg_color' => '#B8B8D1',
+    'button_bg_color'  => '#FFC145',
 
     //Text Colours
     'body_color'       => '#333333',
-    'callout_color'    => '#ffffff',
-    'button_color'     => '#ffffff',
-    'anchor_color'     => '#ff7978',
+    'callout_color'    => '#000000',
+    'button_color'     => '#2A2A11',
+    'anchor_color'     => '#4c05a1',
+
+    //Contact details included in default email templates
+    'customer-services-email'=>'support@yourcompany.com',
+    'customer-services-phone'=>'+441273 455702',
+
+    //Footer Links
+    'links' =>[
+        ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
+        ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
+    ],
 
     //Options for alternative languages
     //Note that Laravel default locale is just 'en'
@@ -79,6 +89,4 @@ return [
         'password_reset_success' => true,
     ],
 
-    //Contact details included in default email templates
-    'customer-services'=>'support@yourcompany.com'
 ];

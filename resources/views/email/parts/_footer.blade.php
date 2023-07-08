@@ -12,8 +12,10 @@
                 <td bgcolor="{{config('email-templates.body_bg_color')}}" align="left" style="padding: 30px 30px 30px 30px; color: {{config('email-templates.body_color')}}; border-radius: 4px 4px 4px 4px;
                 font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                     <p style="margin: 0;">
-                        <a href="{{config('app.url')}}" target="_blank" style="font-weight: 700;">{{__('vb-email-templates::email-templates.general-labels.website')}}</a> |
-                        <a href="{{config('app.url')}}/privacy-policy" target="_blank" style=" font-weight: 700;">{{__('vb-email-templates::email-templates.general-labels.privacy-policy')}}</a>
+                        @foreach(config('email-templates.links') as $link)
+                        <a href="{{$link['url']}}" target="_blank" style="font-weight: 700;" title="{{$link['title']}}">{{$link['name']}}</a>
+                           @if(! $loop->last) | @endif
+                        @endforeach
                     </p>
                 </td>
             </tr>
