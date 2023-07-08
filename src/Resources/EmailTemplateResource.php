@@ -26,66 +26,19 @@ class EmailTemplateResource extends Resource
 {
     protected static ?string $model          = EmailTemplate::class;
     protected static ?string $navigationIcon = 'heroicon-o-mail';
-    
+
     public static function getModelLabel(): string {
         return __('vb-email-templates::email-templates.resource_name.singular');
     }
-    
+
     public static function getPluralModelLabel(): string {
         return __('vb-email-templates::email-templates.resource_name.plural');
     }
-    
+
     public static function form(Form $form): Form {
         $languages = self::prepareLang();
         $templates = self::getTemplateViewList();
-        $emailTemplates = EmailTemplate::all()->pluck('name', 'id');
-        
-        if(request()->routeIs(['filament.resources.email-templates.view', 'filament.message'])) {
-            //View Email Template Form
-            return $form->schema(
-                [
-                    Card::make()
-                        ->schema(
-                            [
-                                Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
-                                    ->schema(
-                                        [
-                                            Select::make('id')
-                                                  ->options($emailTemplates)
-                                                  ->searchable()
-                                                  ->label(__('vb-email-templates::email-templates.general-labels.template-name'))
-                                                  ->reactive(),
-                                            
-                                            TextInput::make('from')
-                                                     ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                                     ->disabled()
-                                        ]
-                                    ),
-                                Grid::make(['default' => 1])
-                                    ->schema(
-                                        [
-                                            TextInput::make('subject')
-                                                     ->label(__('vb-email-templates::email-templates.form-fields-labels.subject'))
-                                                     ->disabled(),
-                                            TextInput::make('preheader')
-                                                     ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
-                                                     ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint'))
-                                                     ->disabled()
-                                        ]
-                                    ),
-                                Grid::make(['default' => 1])
-                                    ->schema(
-                                        [
-                                            Iframe::make('iframe'),
-                                        ]
-                                    )
-                            
-                            ]
-                        )
-                ]
-            );
-        }
-        
+
         return $form->schema(
             [
                 Card::make()
@@ -97,10 +50,7 @@ class EmailTemplateResource extends Resource
                                         TextInput::make('name')
                                                  ->reactive()
                                                  ->afterStateUpdated(
-                                                     function(
-                                                         Closure $set,
-                                                                 $state
-                                                     ) {
+                                                     function( Closure $set, $state ) {
                                                          $set('key', Str::slug($state));
                                                      }
                                                  )
@@ -109,7 +59,7 @@ class EmailTemplateResource extends Resource
                                                  ->required(),
                                     ]
                                 ),
-                            
+
                             Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
                                 ->schema(
                                     [
@@ -131,36 +81,36 @@ class EmailTemplateResource extends Resource
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to')),
                                     ]
                                 ),
-                            
+
                             Grid::make(['default' => 1])
                                 ->schema(
                                     [
                                         TextInput::make('subject')
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.subject')),
-                                        
+
                                         TextInput::make('preheader')
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
                                                  ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint')),
-                                        
+
                                         TextInput::make('title')
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
                                                  ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
-                                        
+
                                         TiptapEditor::make('content')
                                                     ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                                     ->profile('default'),
                                     ]
                                 ),
-                        
+
                         ]
                     )
             ]
         );
     }
-    
+
     public static function prepareLang() {
         $languages = config('email-templates.languages');
-        
+
         $preparedLang = [];
         foreach ($languages as $langKey => $langVal) {
             $preparedLang[ $langKey ] =
@@ -168,33 +118,33 @@ class EmailTemplateResource extends Resource
         }
         return $preparedLang;
     }
-    
+
     public static function getTemplateViewList() {
         $overrideDirectory = resource_path('views/vendor/vb-email-templates/email');
         $packageDirectory = dirname(view(config('email-templates.template_view_path').'.default')->getPath());
-        
+
         $directories = [$overrideDirectory, $packageDirectory];
-        
+
         $filenamesArray = [];
-        
+
         foreach ($directories as $directory) {
             if(file_exists($directory)) {
                 $filenamesArray = array_merge($filenamesArray, self::getFiles($directory, $directory));
             }
         }
-        
+
         // Remove duplicates
         $filenamesArray = array_unique($filenamesArray);
-        
+
         return array_combine($filenamesArray, $filenamesArray);
     }
-    
+
     /**
      * Recursively get all files in a directory and children
      */
     private static function getFiles($dir, $basepath) {
         $files = $subdirs = $subFiles = [];
-        
+
         if($handle = opendir($dir)) {
             while (false !== ($entry = readdir($handle))) {
                 if($entry == "." || $entry == "..") continue;
@@ -222,7 +172,7 @@ class EmailTemplateResource extends Resource
         }
         return $files;
     }
-    
+
     public static function table(Table $table): Table {
         return $table->columns(
             [
@@ -261,7 +211,7 @@ class EmailTemplateResource extends Resource
                          ]
                      );
     }
-    
+
     public static function getPages(): array {
         return [
             'index'  => Pages\ListEmailTemplates::route('/'),
@@ -270,53 +220,8 @@ class EmailTemplateResource extends Resource
             'view'   => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }
-    
-    //Get templates from app/resources/views/vendor OR fallback to the package
-    
-    public static function viewform(Form $form): Form {
-        $languages = self::prepareLang();
-        $templates = self::getTemplateViewList();
-        return $form->schema(
-            [
-                Card::make()
-                    ->schema(
-                        [
-                            
-                            Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
-                                ->schema(
-                                    [
-                                        TextInput::make('key')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
-                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
-                                                 ->required()
-                                                 ->unique(ignorable: fn($record) => $record),
-                                        TextInput::make('from')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                                 ->required(),
-                                        TextInput::make('send_to')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to')),
-                                    ]
-                                ),
-                            
-                            Grid::make(['default' => 1])
-                                ->schema(
-                                    [
-                                        TextInput::make('subject')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.subject')),
-                                        
-                                        TextInput::make('preheader')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
-                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint')),
-                                    
-                                    ]
-                                ),
-                        
-                        ]
-                    )
-            ]
-        );
-    }
-    
+
+
     public static function getEloquentQuery(): Builder {
         return parent::getEloquentQuery()
                      ->withoutGlobalScopes(
