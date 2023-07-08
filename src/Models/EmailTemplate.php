@@ -116,7 +116,7 @@ class EmailTemplate extends Model
     }
 
 
-    public function viewName(): Attribute
+    public function viewPath(): Attribute
     {
         return new Attribute(
             get: fn() => config('email-templates.template_view_path').'.'.$this->view

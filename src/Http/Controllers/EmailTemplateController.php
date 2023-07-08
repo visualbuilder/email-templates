@@ -25,7 +25,7 @@ class EmailTemplateController extends Controller
         ];
 
         return view(
-            'vendor/vb-email-templates/email/generic_email', ['data' => $data]
+            $emailTemplate->view_path, ['data' => $data]
         );
     }
 }

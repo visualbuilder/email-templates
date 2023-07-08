@@ -13,6 +13,7 @@ class EditEmailTemplate extends EditRecord
     protected function getActions(): array
     {
         return [
+            Actions\ViewAction::make()->label('Preview'),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
