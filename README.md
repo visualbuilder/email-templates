@@ -124,10 +124,10 @@ use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 
 class CustomTokenHelper extends TokenHelper
 {
-    public function replaceTokens($string, $model)
+    public function replaceTokens($string, $models)
     {
         // Call parent method to use the existing functionality.
-        $string = parent::replaceTokens($string, $model);
+        $string = parent::replaceTokens($string, $models);
 
         // Add custom your functionality here.
 
@@ -207,14 +207,6 @@ Another Laravel built in notification, but to enable the custom email just add t
     }
 ```
 
-
-
-
-
-
-
-
-
 ### Testing
 
 ```bash
@@ -236,7 +228,6 @@ If you discover any security related issues, please email support@ekouk.com inst
 ## Credits
 
 -   [Visual Builder](https://github.com/visualbuilder)
--   [All Contributors](../../contributors)
 
 ## License
 
