@@ -26,10 +26,12 @@ return [
     'content_bg_color' => '#fefefe',
     'footer_bg_color'  => '#646464',
     'callout_bg_color' => '#700000',
+    'button_bg_color'  => '#424242',
 
     //Text Colours
     'body_color'       => '#333333',
     'callout_color'    => '#ffffff',
+    'button_color'     => '#ffffff',
     'anchor_color'     => '#ff7978',
 
     //Options for alternative languages

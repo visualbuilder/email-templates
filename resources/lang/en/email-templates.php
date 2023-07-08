@@ -23,7 +23,7 @@ return [
         'template-name-hint' => '(For admin view only)',
         'template-view'      => 'Template View',
         'key'                => 'Key',
-        'key-hint'           => '(Must match each language version)',
+        'key-hint'           => '(Must be unique with language version)',
         'lang'               => 'Language',
         'email-from'         => 'Send Email From',
         'email-to'           => 'Send Email To User Type',

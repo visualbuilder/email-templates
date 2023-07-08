@@ -2,16 +2,13 @@
 
 namespace Visualbuilder\EmailTemplates\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 
 /**
@@ -56,25 +53,30 @@ class EmailTemplate extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+    protected $dates = ['deleted_at'];
 
-    public function __construct(array $attributes = [])
-    {
+    public function __construct(array $attributes = []) {
         parent::__construct($attributes);
         $this->setTableFromConfig();
     }
 
-    public function setTableFromConfig()
-    {
+    public function setTableFromConfig() {
         $this->table = config('email-templates.table_name');
     }
 
-    protected $dates = ['deleted_at'];
+    protected static function newFactory() {
+        return EmailTemplateFactory::new();
+    }
+
+    public function __toString() {
+        return $this->name ?? class_basename($this);
+    }
 
     public static function findEmailByKey($key, $language = null) {
         return self::query()
-            ->language($language ?? config('email-templates.default_locale'))
-            ->where("key", $key)
-            ->firstOrFail();
+                   ->language($language ?? config('email-templates.default_locale'))
+                   ->where("key", $key)
+                   ->firstOrFail();
     }
 
     public static function getSendToSelectOptions() {
@@ -83,22 +85,16 @@ class EmailTemplate extends Model
 
     public static function getEmailPreviewData() {
         $model = (object) [];
+        $userModel = config('email-templates.recipients')[ 0 ];
         //Setup some data for previewing email template
-        $model->user            = User::first();
-        $model->tokens          = (object) ['tokenURL' => URL::to('/')];
-        $model->verificationUrl = URL::to('/');
-        $model->token           = (object) ['expiresAt' => now()];
-        $model->plainText       = Str::random(32);
+        $model->user = $userModel::first();
+        $model->tokens = (object) [
+            'tokenUrl' => URL::to('/'),
+            'verificationUrl' => URL::to('/'),
+            'expiresAt' => now()
+        ];
+        $model->plainText = Str::random(32);
         return $model;
-    }
-
-    protected static function newFactory() {
-        return EmailTemplateFactory::new();
-    }
-
-
-    public function __toString() {
-        return $this->name ?? class_basename($this);
     }
 
     /**
@@ -112,12 +108,10 @@ class EmailTemplate extends Model
     public function scopeLanguage(Builder $query, $language) {
         $languages = [$language, config('email-templates.default_locale')];
         return $query->whereIn('language', $languages)
-            ->orderByRaw('field(language, ?, ?)', $languages);
+                     ->orderByRaw('field(language, ?, ?)', $languages);
     }
 
-
-    public function viewPath(): Attribute
-    {
+    public function viewPath(): Attribute {
         return new Attribute(
             get: fn() => config('email-templates.template_view_path').'.'.$this->view
         );
