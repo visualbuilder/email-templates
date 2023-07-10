@@ -53,42 +53,6 @@ Token format is ##model.attribute##.  When calling the email pass any referenced
 You can also include config values in the format ##config.file.key## eg ##config.app.name##.  In the email tempalates config file you must whitelist keys that should be allowed.
 We shouldn't allow users to include any key which could compromise security.
 
-#### Custom token replacement functions
-If necessary the token helper can be extended with your own functions.  Create a file like this:-
-```php
-namespace App\Helpers;
-
-use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
-
-class CustomTokenHelper extends TokenHelper
-{
-    public function replaceTokens($string, $models)
-    {
-        // Call parent method to use the existing functionality.
-        $string = parent::replaceTokens($string, $models);
-
-        // Add custom your functionality here.
-
-        return $string;
-    }
-}
-```
-and then in your AppServiceProvider override the token helper interface.
-
-```php
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
-use App\Helpers\CustomTokenHelper;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        $this->app->singleton(TokenHelperInterface::class, CustomTokenHelper::class);
-    }
-}
-```
-
-Now when the email template is rendered it will use the built-in token helper and then your custom functions.
 
 ### Implementing out of the box templates
 
@@ -188,7 +152,7 @@ In the config file ``config/email-templates.php`` logo,colours and messaging can
 If you wish to directly edit the template blade file see the primary template here:-
 `resources/views/vendor/vb-email-templates/email/default.php`
 
-You are free to create new templates in this directory which will be automatically visible on the email template editor, for selection
+You are free to create new templates in this directory which will be automatically visible in the email template editor for selection.
 
 ### Translations
 Each email template has a key and a language so
@@ -196,9 +160,11 @@ Each email template has a key and a language so
 **Language**: en_gb
 
 Allows the relevant template to be selected based on the users locale - You will need to save the users preferred language to implement this.
+We opted to use a separate record for each locale (rather than using a json column with an object) as most of the attributes values are content that should be translated.  So in this case it makes 
+more sense to have a separate row.
+
 
 Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead.
-
 
 Languages that should be shown on the language picker can be set in the config
 ```php
@@ -222,10 +188,15 @@ see https://www.npmjs.com/package/flag-icons
 
 
 ### Creating a new Mail Class
-Copy one of the built in mails to add your own Mail Classes.
-Just change the template to the email template key from the admin.
 
+As normal create a new mail with :-
 
+```php
+php artisan make:mail MyFunkyNewEmail
+```
+
+Add the **BuildGenericEmail** Trait which saves duplication of code in each mail class keeping the code dry.
+Inject the **TokenHelperInterface** which handles replacement of tokens.
 ```php
 <?php
 
@@ -256,11 +227,81 @@ class MyFunkyNewEmail extends Mailable
 }
 ```
 
-The TokenHelperInterface is used to replace tokens.
+### Including other models in the email for token replacement
+Just pass through the models you need and assign them in the constructor.
+
+```php
+class MyFunkyNewEmai extends Mailable
+{
+    use Queueable, SerializesModels, BuildGenericEmail;
+
+    public $template = 'email-template-key';  //Change this to the key of the email template content to load
+    public $sendTo;
+    public $booking;
+
+    public function __construct($user, Booking $booking) {
+            $this->user       = $user;
+            $this->booking    = $booking;
+            $this->sendTo     = $user->email;
+            $this->initializeTokenHelper($tokenHelper);
+        }
+```
+
+In this example you can then use **##booking.date##** or whatever attributes are available in the booking model.
+
+If you need to derive some attribute you can add Accessors to your model.  
+
+Both of these function will allow you to use:-
+
+**##user.full_name##** in the email template:-
+
+
+```php
+public function getFullNameAttribute()
+{
+  return $this->firstname.' '.$this->lastname;
+}
+```
+OR
+```php
+protected function fullName(): Attribute
+{
+    return Attribute::make(
+        get: fn () => $this->firstname.' '.$this->lastname,
+    );
+}
+```
+
 
 ### Adding Attachments
-**BuildGenericEmail** is a useful trait to save duplication of code in each mail class keeping the code dry.
 In here you can see how to pass an attachment:-
+
+The attachment should be passed to the Mail Class and set as a public property.
+
+In this case we've passed an Order model and an Invoice PDF attachment.
+
+```php
+class SalesOrderEmail extends Mailable
+{
+    use Queueable, SerializesModels, BuildGenericEmail;
+
+    public $template = 'email-template-key';  //Change this to the key of the email template content to load
+    public $sendTo;
+    public $attachment;
+    public $order;
+
+    public function __construct($user, Order $order, $invoice) {
+            $this->user       = $user;
+            $this->order      = $order;
+            $this->attachment = $invoice;
+            $this->sendTo     = $user->email;
+            $this->initializeTokenHelper($tokenHelper);
+        }
+```
+
+The attachment is handled in the build function of the BuildGenericEmail trait.
+Customise the filename with attachment->filename
+You should also include the filetype.
 
 ```php
  public function build() {
@@ -287,24 +328,6 @@ In here you can see how to pass an attachment:-
             ->to($this->sendTo)
             ->with(['data'=>$data]);
     }
-```
-The attachment should be passed to the Mail Class and set as a public property in the constructor.
-
-```php
-class MyFunkyNewEmaiWithAttachment extends Mailable
-{
-    use Queueable, SerializesModels, BuildGenericEmail;
-
-    public $template = 'email-template-key';  //Change this to the key of the email template content to load
-    public $sendTo;
-    public $attachment
-
-    public function __construct($user, $attachment) {
-            $this->user       = $user;
-            $this->attachment = $attachment;
-            $this->sendTo     = $user->email;
-            $this->initializeTokenHelper($tokenHelper);
-        }
 ```
 
 
