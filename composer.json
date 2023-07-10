@@ -26,7 +26,10 @@
         "pestphp/pest": "^1.23",
         "pestphp/pest-plugin-laravel": "^1.4",
         "pestphp/pest-plugin-livewire": "^1.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +51,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
         }
     },
     "extra": {
