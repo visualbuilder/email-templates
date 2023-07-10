@@ -28,7 +28,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
             ->hasAssets()
             ->hasViews('vb-email-templates')
-            ->runsMigrations();
+            ->runsMigrations()
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command->startWith(function (InstallCommand $command) {
                     $command->info('Installing Email Templates');
