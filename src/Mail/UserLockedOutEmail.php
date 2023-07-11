@@ -15,6 +15,7 @@ class UserLockedOutEmail extends Mailable
     use BuildGenericEmail;
 
     public $template = 'user-locked-out';
+    public $user;
     public $sendTo;
 
     /**
@@ -24,7 +25,8 @@ class UserLockedOutEmail extends Mailable
      */
     public function __construct($user, TokenHelperInterface $tokenHelper)
     {
-        $this->sendTo = $user;
+        $this->user = $user;
+        $this->sendTo = $user->email;
         $this->initializeTokenHelper($tokenHelper);
     }
 }
