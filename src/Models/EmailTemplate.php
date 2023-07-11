@@ -120,7 +120,7 @@ class EmailTemplate extends Model
 
         return $query->whereIn('language', $languages)
                     ->orderBy('language');
-                    //  ->orderByRaw('field(language, ?, ?)', $languages); // order by field is not present in sqlite
+        //  ->orderByRaw('field(language, ?, ?)', $languages); // order by field is not present in sqlite
     }
 
     public function viewPath(): Attribute

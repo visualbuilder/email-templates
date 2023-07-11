@@ -29,17 +29,17 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasAssets()
             ->hasViews('vb-email-templates')
             ->runsMigrations();
-            // ->hasInstallCommand(function (InstallCommand $command) {
-            //     $command->startWith(function (InstallCommand $command) {
-            //         $command->info('Installing Email Templates');
-            //     })->publishConfigFile()
-            //         ->publishAssets()
-            //         ->publishMigrations()
-            //         ->askToRunMigrations()
-            //         ->endWith(function (InstallCommand $command) {
-            //             $command->info('All Done');
-            //         });
-            // });
+        // ->hasInstallCommand(function (InstallCommand $command) {
+        //     $command->startWith(function (InstallCommand $command) {
+        //         $command->info('Installing Email Templates');
+        //     })->publishConfigFile()
+        //         ->publishAssets()
+        //         ->publishMigrations()
+        //         ->askToRunMigrations()
+        //         ->endWith(function (InstallCommand $command) {
+        //             $command->info('All Done');
+        //         });
+        // });
     }
 
     public function register()

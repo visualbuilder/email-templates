@@ -1,17 +1,16 @@
 <?php
 
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Tests\Models\User;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
+use Visualbuilder\EmailTemplates\Mail\UserLockedOutEmail;
 use Visualbuilder\EmailTemplates\Mail\UserLoginEmail;
+use Visualbuilder\EmailTemplates\Mail\UserPasswordResetSuccessEmail;
+use Visualbuilder\EmailTemplates\Mail\UserRegisteredEmail;
+use Visualbuilder\EmailTemplates\Mail\UserRequestPasswordResetEmail;
+use Visualbuilder\EmailTemplates\Mail\UserVerifiedEmail;
 use Visualbuilder\EmailTemplates\Mail\UserVerifyEmail;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use Visualbuilder\EmailTemplates\Mail\UserVerifiedEmail;
-use Visualbuilder\EmailTemplates\Mail\UserLockedOutEmail;
-use Visualbuilder\EmailTemplates\Mail\UserRegisteredEmail;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
-use Visualbuilder\EmailTemplates\Mail\UserPasswordResetSuccessEmail;
-use Visualbuilder\EmailTemplates\Mail\UserRequestPasswordResetEmail;
+use Visualbuilder\EmailTemplates\Tests\Models\User;
 
 it('can replace tokens in user welcome email', function () {
     EmailTemplate::factory()->create(
@@ -64,7 +63,7 @@ it('can replace tokens in user password reset request email', function () {
     $mailable = new UserRequestPasswordResetEmail($user, $tokenUrl, $tokenHelper);
     $mailable->assertSeeInHtml("<p>Hello $user->name,</p>");
     $mailable->assertSeeInHtml($tokenUrl);
-    
+
 });
 
 it('can replace tokens in user password reset success email', function () {
@@ -88,7 +87,7 @@ it('can replace tokens in user password reset success email', function () {
     $mailable = new UserPasswordResetSuccessEmail($user, $tokenHelper);
     $mailable->assertSeeInHtml("<p>Dear $user->name,</p>");
     $mailable->assertSeeInHtml("<p>Your password has been reset.</p>");
-    
+
 });
 
 it('can replace tokens in user account locked out email', function () {
@@ -113,7 +112,7 @@ it('can replace tokens in user account locked out email', function () {
     $mailable = new UserLockedOutEmail($user, $tokenHelper);
     $mailable->assertSeeInHtml("<p>Dear $user->name,</p>");
     $mailable->assertSeeInHtml("<p>Sorry your account has been locked out due to too many bad password attempts.</p>");
-    
+
 });
 
 it('can replace tokens in user verify email', function () {
@@ -164,7 +163,7 @@ it('can replace tokens in user verified email', function () {
     $tokenHelper = new TokenHelper();
     $mailable = new UserVerifiedEmail($user, $tokenHelper);
     $mailable->assertSeeInHtml("<p>Hi $user->name,</p>");
-    
+
 });
 
 it('can replace tokens in user logged in email', function () {
