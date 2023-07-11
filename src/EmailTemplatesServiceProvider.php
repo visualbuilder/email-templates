@@ -28,18 +28,18 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
             ->hasAssets()
             ->hasViews('vb-email-templates')
-            ->runsMigrations();
-        // ->hasInstallCommand(function (InstallCommand $command) {
-        //     $command->startWith(function (InstallCommand $command) {
-        //         $command->info('Installing Email Templates');
-        //     })->publishConfigFile()
-        //         ->publishAssets()
-        //         ->publishMigrations()
-        //         ->askToRunMigrations()
-        //         ->endWith(function (InstallCommand $command) {
-        //             $command->info('All Done');
-        //         });
-        // });
+            ->runsMigrations()
+            ->hasInstallCommand(function (InstallCommand $command) {
+                $command->startWith(function (InstallCommand $command) {
+                    $command->info('Installing Email Templates');
+                })->publishConfigFile()
+                    ->publishAssets()
+                    ->publishMigrations()
+                    ->askToRunMigrations()
+                    ->endWith(function (InstallCommand $command) {
+                        $command->info('All Done');
+                    });
+            });
     }
 
     public function register()
