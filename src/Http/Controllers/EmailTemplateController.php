@@ -4,8 +4,8 @@ namespace Visualbuilder\EmailTemplates\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Redirect;
-use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
 class EmailTemplateController extends Controller
 {
@@ -42,8 +42,7 @@ class EmailTemplateController extends Controller
 
         if(file_exists($filePath)) {
             return Redirect::back()->with('notification', 'Class already exists!');
-        }
-        else {
+        } else {
             $stub = file_get_contents(__DIR__ . "/../../Stubs/MailableTemplate.stub");
 
             $classContent = str_replace(
@@ -52,6 +51,7 @@ class EmailTemplateController extends Controller
                 $stub
             );
             file_put_contents($filePath, $classContent);
+
             return Redirect::back()->with('notification', 'Class generated successfully!');
         }
     }
