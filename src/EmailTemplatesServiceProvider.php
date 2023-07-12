@@ -85,5 +85,6 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     public function registerRoutes()
     {
         Route::get('/admin/email-templates/{record}/preview', [EmailTemplateController::class, 'preview'])->name('email-template.preview');
+        Route::get('/admin/email-templates/{record}/generate-mailable', [EmailTemplateController::class, 'generateMailable'])->name('email-template.generateMailable');
     }
 }

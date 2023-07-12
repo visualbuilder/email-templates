@@ -3,21 +3,23 @@
 namespace Visualbuilder\EmailTemplates\Resources;
 
 use Closure;
+use Filament\Tables;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use FilamentTiptapEditor\TiptapEditor;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
+use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
@@ -210,6 +212,10 @@ class EmailTemplateResource extends Resource
                      )
                      ->actions(
                          [
+                             Action::make('create-mail-class')
+                                ->label("Create Mail Class")
+                                ->icon('heroicon-o-document-text') 
+                                ->url(fn (EmailTemplate $record): string => route('email-template.generateMailable', $record)),
                              Tables\Actions\ViewAction::make()
                                                       ->label("Preview")
                                                       ->hidden(fn ($record) => $record->trashed()),
