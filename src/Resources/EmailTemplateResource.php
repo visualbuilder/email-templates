@@ -214,7 +214,7 @@ class EmailTemplateResource extends Resource
                              Action::make('create-mail-class')
                                 ->label("Create Mail Class")
                                 ->icon('heroicon-o-document-text')
-                                ->url(fn (EmailTemplate $record): string => route('email-template.generateMailable', $record)),
+                                ->action('createMailClass'),
                              Tables\Actions\ViewAction::make()
                                                       ->label("Preview")
                                                       ->hidden(fn ($record) => $record->trashed()),

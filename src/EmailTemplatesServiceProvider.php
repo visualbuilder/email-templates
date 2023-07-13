@@ -6,8 +6,10 @@ use Filament\PluginServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
+use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
+use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
@@ -36,6 +38,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     {
         parent::register();
         $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
+        $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
     }
 
@@ -75,6 +78,5 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
     public function registerRoutes()
     {
         Route::get('/admin/email-templates/{record}/preview', [EmailTemplateController::class, 'preview'])->name('email-template.preview');
-        Route::get('/admin/email-templates/{record}/generate-mailable', [EmailTemplateController::class, 'generateMailable'])->name('email-template.generateMailable');
     }
 }
