@@ -12,12 +12,6 @@ class ListEmailTemplates extends ListRecords
     protected static string $resource = EmailTemplateResource::class;
     protected $createMailableHelper;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
-    }
-
     protected function getActions(): array
     {
         return [
@@ -27,6 +21,7 @@ class ListEmailTemplates extends ListRecords
 
     public function createMailClass(): void
     {
+        $this->createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
         $notify = $this->createMailableHelper->createMailable($this);
         Notification::make()
             ->title($notify->title)
