@@ -2,17 +2,17 @@
 
 namespace Visualbuilder\EmailTemplates\Helpers;
 
-use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
+use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
 class CreateMailableHelper implements CreateMailableInterface
 {
     public function createMailable($record)
     {
         $response = (object)[
-            "title"     => null,
-            "icon"      => null,
-            "icon_color" =>  null
+            "title" => null,
+            "icon" => null,
+            "icon_color" => null,
         ];
         $emailTemplate = EmailTemplate::findOrFail($record->mountedTableActionRecord);
 
@@ -41,5 +41,5 @@ class CreateMailableHelper implements CreateMailableInterface
         }
 
         return $response;
-    }    
+    }
 }
