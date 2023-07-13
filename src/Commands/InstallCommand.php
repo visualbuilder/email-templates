@@ -34,7 +34,7 @@ class InstallCommand extends Command
                 '--tag' => "filament-email-templates-config",
             ]);
         }
-        
+
         if ($this->shouldPublishAssets) {
             $this->comment('Publishing assets...');
 
@@ -60,5 +60,5 @@ class InstallCommand extends Command
 
         $this->info("All Done");
 
-    }   
+    }
 }
