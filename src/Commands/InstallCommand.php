@@ -2,8 +2,8 @@
 
 namespace Visualbuilder\EmailTemplates\Commands;
 
-use Illuminate\Console\Command;
 use Database\Seeders\EmailTemplateSeeder;
+use Illuminate\Console\Command;
 
 class InstallCommand extends Command
 {
@@ -77,7 +77,7 @@ class InstallCommand extends Command
                 $this->call(EmailTemplateSeeder::class);
             }
         }
-        
+
         $this->info("All Done");
     }
 }
