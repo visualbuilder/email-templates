@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
@@ -210,6 +211,10 @@ class EmailTemplateResource extends Resource
                      )
                      ->actions(
                          [
+                             Action::make('create-mail-class')
+                                ->label("Create Mail Class")
+                                ->icon('heroicon-o-document-text')
+                                ->action('createMailClass'),
                              Tables\Actions\ViewAction::make()
                                                       ->label("Preview")
                                                       ->hidden(fn ($record) => $record->trashed()),

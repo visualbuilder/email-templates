@@ -8,13 +8,13 @@ use Illuminate\Queue\SerializesModels;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
-class UserLockedOutEmail extends Mailable
+class {{className}} extends Mailable
 {
     use Queueable;
     use SerializesModels;
     use BuildGenericEmail;
 
-    public $template = 'user-locked-out';
+    public $template = '{{template-key}}';
     public $user;
     public $sendTo;
 

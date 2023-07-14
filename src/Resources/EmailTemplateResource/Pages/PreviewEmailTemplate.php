@@ -24,7 +24,6 @@ class PreviewEmailTemplate extends ViewRecord
 
     protected $tokenHelper;
 
-    public $emailTemplateId;
     public $iframe;
     public $src;
 
@@ -47,11 +46,14 @@ class PreviewEmailTemplate extends ViewRecord
                             Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
                                 ->schema(
                                     [
-                                        Select::make('emailTemplateId')
+                                        Select::make('id')
                                               ->options($emailTemplates)
                                               ->searchable()
                                               ->label(__('vb-email-templates::email-templates.general-labels.template-name'))
-                                              ->reactive(),
+                                              ->reactive()
+                                              ->afterStateUpdated(function ($state) {
+                                                  $this->redirectRoute('filament.resources.email-templates.view', $state);
+                                              }),
 
                                         TextInput::make('from')
                                                  ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
@@ -83,17 +85,11 @@ class PreviewEmailTemplate extends ViewRecord
         );
     }
 
-    public function updatedEmailTemplateId($value)
-    {
-        $test = -1;
-    }
-
     protected function mutateFormDataBeforeFill(array $data): array
     {
         foreach ($data as $key => $value) {
             $data[$key] = $this->tokenHelper->replaceTokens($value, $this);
         }
-        $data['emailTemplateId'] = $data['id'];
 
         return $data;
     }

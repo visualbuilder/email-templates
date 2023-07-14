@@ -15,6 +15,7 @@ class UserVerifiedEmail extends Mailable
     use BuildGenericEmail;
 
     public $template = 'user-verified';
+    public $user;
     public $sendTo;
 
     /**

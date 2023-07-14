@@ -4,9 +4,11 @@ namespace Visualbuilder\EmailTemplates;
 
 use Filament\PluginServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
+use Visualbuilder\EmailTemplates\Commands\InstallCommand;
+use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
@@ -29,23 +31,14 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasAssets()
             ->hasViews('vb-email-templates')
             ->runsMigrations()
-            ->hasInstallCommand(function (InstallCommand $command) {
-                $command->startWith(function (InstallCommand $command) {
-                    $command->info('Installing Email Templates');
-                })->publishConfigFile()
-                    ->publishAssets()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
-                    ->endWith(function (InstallCommand $command) {
-                        $command->info('All Done');
-                    });
-            });
+            ->hasCommand(InstallCommand::class);
     }
 
     public function register()
     {
         parent::register();
         $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
+        $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
     }
 
