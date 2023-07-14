@@ -3,6 +3,7 @@
 namespace Visualbuilder\EmailTemplates\Commands;
 
 use Illuminate\Console\Command;
+use Database\Seeders\EmailTemplateSeeder;
 
 class InstallCommand extends Command
 {
@@ -13,6 +14,10 @@ class InstallCommand extends Command
     protected bool $shouldPublishMigrations = true;
 
     protected bool $askToRunMigrations = true;
+
+    protected bool $shouldPublishSeeders = true;
+
+    protected bool $askToRunSeeders = true;
 
     public function __construct()
     {
@@ -58,7 +63,21 @@ class InstallCommand extends Command
             }
         }
 
-        $this->info("All Done");
+        if ($this->shouldPublishSeeders) {
+            $this->comment('Publishing seeders...');
 
+            $this->callSilently("vendor:publish", [
+                '--tag' => "filament-email-templates-seeds",
+            ]);
+        }
+
+        if ($this->askToRunSeeders) {
+            if ($this->confirm('Would you like to run the seeders now?')) {
+                $this->comment('Running seeders...');
+                $this->call(EmailTemplateSeeder::class);
+            }
+        }
+        
+        $this->info("All Done");
     }
 }
