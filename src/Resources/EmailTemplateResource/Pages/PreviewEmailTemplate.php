@@ -84,7 +84,7 @@ class PreviewEmailTemplate extends ViewRecord
             ]
         );
     }
-    
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         foreach ($data as $key => $value) {
