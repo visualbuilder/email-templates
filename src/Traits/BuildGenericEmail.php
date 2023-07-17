@@ -24,14 +24,17 @@ trait BuildGenericEmail
     {
         $template = EmailTemplate::findEmailByKey($this->template, App::currentLocale());
 
-        if($this->attachment ?? false) {
-            $this->attach(
-                $this->attachment->filepath,
-                [
-                'as' => $this->attachment->filename,
-                'mime' => $this->attachment->filetype,
-            ]
-            );
+        if($this->attachment ?? false && count($this->attachment) > 0) {
+            foreach($this->attachment as $attach)
+            {
+                $this->attach(
+                    $attach->attachment->filepath,
+                    [
+                        'as' => $attach->attachment->filename,
+                        'mime' => $attach->attachment->filetype,
+                    ]
+                );
+            }
         }
 
         $data = [
