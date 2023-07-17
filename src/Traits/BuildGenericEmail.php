@@ -25,8 +25,7 @@ trait BuildGenericEmail
         $template = EmailTemplate::findEmailByKey($this->template, App::currentLocale());
 
         if($this->attachment ?? false && count($this->attachment) > 0) {
-            foreach($this->attachment as $attach)
-            {
+            foreach($this->attachment as $attach) {
                 $this->attach(
                     $attach->attachment->filepath,
                     [
