@@ -6,13 +6,13 @@ use Filament\PluginServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
+use Visualbuilder\EmailTemplates\Commands\MakeEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
-use Visualbuilder\EmailTemplates\Commands\MakeEmailTemplateResource;
 
 class EmailTemplatesServiceProvider extends PluginServiceProvider
 {
