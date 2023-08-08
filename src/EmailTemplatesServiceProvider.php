@@ -12,6 +12,7 @@ use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use Visualbuilder\EmailTemplates\Commands\MakeEmailTemplateResource;
 
 class EmailTemplatesServiceProvider extends PluginServiceProvider
 {
@@ -31,7 +32,10 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->hasAssets()
             ->hasViews('vb-email-templates')
             ->runsMigrations()
-            ->hasCommand(InstallCommand::class);
+            ->hasCommands([
+                InstallCommand::class,
+                MakeEmailTemplateResource::class,
+            ]);
     }
 
     public function register()
