@@ -40,9 +40,10 @@ class PublishEmailTemplateResource extends Command
     public function prepareDirectory($folder)
     {
         $path = app_path("Filament/Resources/$folder");
-        if(!File::isDirectory($path)){
+        if(! File::isDirectory($path)) {
             File::makeDirectory($path);
         }
+
         return true;
     }
 
@@ -50,7 +51,7 @@ class PublishEmailTemplateResource extends Command
     {
         $stub = File::get(__DIR__ ."/../Stubs/$name.stub");
         $resourcePath = app_path("Filament/Resources/".$path.$name.".php");
-        if (!file_exists($resourcePath)) {
+        if (! file_exists($resourcePath)) {
             File::put($resourcePath, $stub);
             $this->info("$name.php created successfully.");
         } else {
