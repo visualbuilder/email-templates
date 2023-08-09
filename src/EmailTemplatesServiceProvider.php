@@ -6,7 +6,7 @@ use Filament\PluginServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
-use Visualbuilder\EmailTemplates\Commands\MakeEmailTemplateResource;
+use Visualbuilder\EmailTemplates\Commands\PublishEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
@@ -34,7 +34,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
             ->runsMigrations()
             ->hasCommands([
                 InstallCommand::class,
-                MakeEmailTemplateResource::class,
+                PublishEmailTemplateResource::class,
             ]);
     }
 
