@@ -3,13 +3,13 @@
 namespace Visualbuilder\EmailTemplates\Resources;
 
 use Closure;
-use Filament\Forms\Components\Card;
+use Filament\Infolists\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -24,7 +24,7 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 class EmailTemplateResource extends Resource
 {
     protected static ?string $model = EmailTemplate::class;
-    protected static ?string $navigationIcon = 'heroicon-o-mail';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
     public static function getModelLabel(): string
     {
@@ -43,7 +43,7 @@ class EmailTemplateResource extends Resource
 
         return $form->schema(
             [
-                Card::make()
+                Section::make()
                     ->schema(
                         [
                             Grid::make(['default' => 1])

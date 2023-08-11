@@ -2,7 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates;
 
-use Filament\PluginServiceProvider;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
@@ -14,7 +14,7 @@ use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
-class EmailTemplatesServiceProvider extends PluginServiceProvider
+class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
     protected array $resources = [
         EmailTemplateResource::class,

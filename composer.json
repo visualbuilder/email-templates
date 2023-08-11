@@ -16,20 +16,21 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "awcodes/filament-tiptap-editor": "^2.1",
-        "filament/filament": "^2.0"
+        "php": "^8.1",
+        "awcodes/filament-tiptap-editor": "^3.0@beta",
+        "filament/filament": "^3.0-stable",
+        "illuminate/contracts": "^10.0|^11.0"
     },
     "require-dev": {
-        "blade-ui-kit/blade-heroicons": "^1.4",
-        "orchestra/testbench": "^6.0",
-        "pestphp/pest": "^1.23",
-        "pestphp/pest-plugin-laravel": "^1.4",
-        "pestphp/pest-plugin-livewire": "^1.0",
-        "phpunit/phpunit": "^9.0",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.1"
+        "blade-ui-kit/blade-heroicons": "^2.1",
+        "orchestra/testbench": "^8.0",
+        "pestphp/pest": "^2.9.1",
+        "pestphp/pest-plugin-laravel": "^2.2",
+        "pestphp/pest-plugin-livewire": "^2.1",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
+        "phpstan/phpstan-phpunit": "^1.3",
+        "phpunit/phpunit": "^10.3"
     },
     "autoload": {
         "psr-4": {
@@ -64,5 +65,7 @@
                 "EmailTemplates": "Visualbuilder\\EmailTemplates\\EmailTemplatesFacade"
             }
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
