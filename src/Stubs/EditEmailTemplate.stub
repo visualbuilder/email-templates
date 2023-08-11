@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\EmailTemplateResource\Pages;
+namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\EmailTemplateResource;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class EditEmailTemplate extends EditRecord
 {

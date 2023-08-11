@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace Visualbuilder\EmailTemplates\Resources;
 
 use Closure;
 use Filament\Forms\Components\Card;
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use App\Filament\Resources\EmailTemplateResource\Pages;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
 {
