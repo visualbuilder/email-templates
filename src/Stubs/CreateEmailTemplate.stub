@@ -1,9 +1,9 @@
 <?php
 
-namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+namespace App\Filament\Resources\EmailTemplateResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use App\Filament\Resources\EmailTemplateResource;
 
 class CreateEmailTemplate extends CreateRecord
 {

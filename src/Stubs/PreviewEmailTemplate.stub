@@ -1,6 +1,6 @@
 <?php
 
-namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+namespace App\Filament\Resources\EmailTemplateResource\Pages;
 
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
@@ -11,7 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Pages\ViewRecord;
 use Visualbuilder\EmailTemplates\Components\Iframe;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use App\Filament\Resources\EmailTemplateResource;
 
 class PreviewEmailTemplate extends ViewRecord
 {
