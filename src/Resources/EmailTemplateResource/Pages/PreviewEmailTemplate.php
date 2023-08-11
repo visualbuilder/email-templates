@@ -2,12 +2,12 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
-use Filament\Infolists\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-
 use Filament\Forms\Form;
+
+use Filament\Infolists\Components\Section;
 use Filament\Resources\Pages\ViewRecord;
 use Visualbuilder\EmailTemplates\Components\Iframe;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;

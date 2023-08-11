@@ -2,9 +2,9 @@
 
 namespace Visualbuilder\EmailTemplates;
 
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
 use Visualbuilder\EmailTemplates\Commands\PublishEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
