@@ -1,11 +1,11 @@
 <?php
- 
+
 namespace Visualbuilder\EmailTemplates;
 
-use Filament\Panel;
 use Filament\Contracts\Plugin;
+use Filament\Panel;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
- 
+
 class EmailTemplatesPlugin implements Plugin
 {
     public static function make(): static
@@ -22,7 +22,7 @@ class EmailTemplatesPlugin implements Plugin
     {
         return 'email-templates';
     }
-    
+
     public function register(Panel $panel): void
     {
         $panel
@@ -30,7 +30,7 @@ class EmailTemplatesPlugin implements Plugin
                 EmailTemplateResource::class,
             ]);
     }
- 
+
     public function boot(Panel $panel): void
     {
         //
