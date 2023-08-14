@@ -1,15 +1,22 @@
+@php
+    $extraAlpineAttributes = $getExtraAlpineAttributes();
+    $id = $getId();
+    // $isConcealed = $isConcealed();
+    // $isDisabled = $isDisabled();
+    // $isPrefixInline = $isPrefixInline();
+    // $isSuffixInline = $isSuffixInline();
+    // $prefixActions = $getPrefixActions();
+    // $prefixIcon = $getPrefixIcon();
+    // $prefixLabel = $getPrefixLabel();
+    // $suffixActions = $getSuffixActions();
+    // $suffixIcon = $getSuffixIcon();
+    // $suffixLabel = $getSuffixLabel();
+    $statePath = $getStatePath();
+@endphp
+
 <x-dynamic-component
     :component="$getFieldWrapperView()"
-    :id="$getId()"
-    :label="$getLabel()"
-    :label-sr-only="$isLabelHidden()"
-    :helper-text="$getHelperText()"
-    :hint="$getHint()"
-    :hint-action="$getHintAction()"
-    :hint-color="$getHintColor()"
-    :hint-icon="$getHintIcon()"
-    :required="$isRequired()"
-    :state-path="$getStatePath()"
+    :field="$field"
 >
     <div class="filament-forms-select-component group flex items-center space-x-1 rtl:space-x-reverse">
         <div 

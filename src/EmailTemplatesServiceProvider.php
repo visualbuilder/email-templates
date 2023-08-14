@@ -13,16 +13,18 @@ use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
-    protected array $resources = [
-        EmailTemplateResource::class,
-    ];
+    // protected array $resources = [
+    //     EmailTemplateResource::class,
+    // ];
 
-    protected array $styles = [
-        'vb-email-templates-styles' => 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css',
-    ];
+    // protected array $styles = [
+    //     'vb-email-templates-styles' => 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css',
+    // ];
 
     public function configurePackage(Package $package): void
     {
@@ -71,6 +73,10 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     {
         parent::packageBooted();
 
+        FilamentAsset::register(
+            $this->getAssets()
+        );
+
         if($this->app->runningInConsole()) {
             $this->publishResources();
         }
@@ -94,6 +100,16 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         $this->publishes([
                              __DIR__.'/../resources/views' => resource_path('views/vendor/vb-email-templates'),
                          ], 'filament-email-templates-assets');
+    }
+
+    /**
+     * @return array<Asset>
+     */
+    protected function getAssets(): array
+    {
+        return [
+            Css::make('vb-email-templates-styles','https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css'),
+        ];
     }
 
     /**

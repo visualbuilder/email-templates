@@ -20,7 +20,7 @@ class EmailTemplatesPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'email-templates';
+        return 'filament-email-templates';
     }
 
     public function register(Panel $panel): void
