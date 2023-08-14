@@ -2,7 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 

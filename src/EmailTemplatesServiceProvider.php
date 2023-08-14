@@ -38,17 +38,39 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
             ]);
     }
 
-    public function register()
+    // public function register()
+    // {
+    //     parent::register();
+    //     $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
+    //     $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
+    //     $this->app->register(EmailTemplatesEventServiceProvider::class);
+    // }
+
+    public function packageRegistered(): void
     {
-        parent::register();
+        parent::packageRegistered();
+
         $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
     }
 
-    public function boot()
+    // public function boot()
+    // {
+    //     parent::boot();
+    //     if($this->app->runningInConsole()) {
+    //         $this->publishResources();
+    //     }
+
+    //     $this->registerRoutes();
+
+    //     $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vb-email-templates');
+    // }
+
+    public function packageBooted(): void
     {
-        parent::boot();
+        parent::packageBooted();
+
         if($this->app->runningInConsole()) {
             $this->publishResources();
         }

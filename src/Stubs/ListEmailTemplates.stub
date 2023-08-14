@@ -3,7 +3,7 @@
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 

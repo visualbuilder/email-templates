@@ -38,6 +38,22 @@ Run the install command
  php artisan filament-email-templates:install
 ```
 
+### Adding the plugin to a panel
+Add this plugin to panel using plugins() method in app/Providers/Filament/AdminPanelProvider.php:
+```bash
+use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
+ 
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->plugins([
+            EmailTemplatesPlugin::make(),
+            // ...
+        ]);
+}
+```
+
 ## Usage
 
 ### HTML Editor

@@ -2,12 +2,12 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
-use Filament\Forms\Components\Card;
+use Filament\Infolists\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Pages\ViewRecord;
 use Visualbuilder\EmailTemplates\Components\Iframe;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
@@ -33,14 +33,14 @@ class PreviewEmailTemplate extends ViewRecord
         $this->tokenHelper = app(\Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface::class);
     }
 
-    protected function form(Form $form): Form
+    public function form(Form $form): Form
     {
         //View Email Template Form
         $emailTemplates = EmailTemplate::all()->pluck('name', 'id');
 
         return $form->schema(
             [
-                Card::make()
+                Section::make()
                     ->schema(
                         [
                             Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
@@ -98,7 +98,7 @@ class PreviewEmailTemplate extends ViewRecord
     {
         return [
             'form' => $this->makeForm()
-                           ->context('view')
+                           ->operation('view')
                            ->model($this->getRecord())
                            ->schema($this->getFormSchema())
                            ->statePath('data')
