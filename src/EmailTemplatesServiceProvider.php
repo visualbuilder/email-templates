@@ -2,6 +2,8 @@
 
 namespace Visualbuilder\EmailTemplates;
 
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -13,8 +15,6 @@ use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
-use Filament\Support\Assets\Css;
-use Filament\Support\Facades\FilamentAsset;
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
@@ -108,7 +108,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            Css::make('vb-email-templates-styles','https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css'),
+            Css::make('vb-email-templates-styles', 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css'),
         ];
     }
 
