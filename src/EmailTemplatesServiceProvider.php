@@ -108,7 +108,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            Css::make('vb-email-templates-styles', 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css'),
+            Css::make('vb-email-templates-styles','https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css'),
         ];
     }
 
