@@ -21,7 +21,7 @@
     <div class="filament-forms-select-component group flex items-center space-x-1 rtl:space-x-reverse">
         <div 
             x-data="{
-                state: $wire.entangle('{{ $getStatePath() }}').defer,
+                state: $wire.{{ $applyStateBindingModifiers("entangle('{$getStatePath()}').defer") }},
                 options: {{json_encode($getOptions())}},
                 open: false,
                 toggle() {

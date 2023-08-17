@@ -2,7 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
-use Closure;
+use Filament\Forms\Set;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -52,7 +52,7 @@ class EmailTemplateResource extends Resource
                                         TextInput::make('name')
                                                  ->reactive()
                                                  ->afterStateUpdated(
-                                                     function (Closure $set, $state) {
+                                                     function (Set $set, $state) {
                                                          $set('key', Str::slug($state));
                                                      }
                                                  )
@@ -71,7 +71,8 @@ class EmailTemplateResource extends Resource
                                                  ->required()
                                                  ->unique(ignorable: fn ($record) => $record),
                                         SelectLanguage::make('language')
-                                                      ->options($languages),
+                                                      ->options($languages)
+                                                      ->live(),
                                         Select::make('view')
                                               ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
                                               ->options($templates)
