@@ -2,24 +2,24 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
-use Filament\Tables;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
-use Filament\Tables\Actions\Action;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
-use FilamentTiptapEditor\TiptapEditor;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Visualbuilder\EmailTemplates\Models\EmailTemplate;
+use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Components\SelectLanguage;
+use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
