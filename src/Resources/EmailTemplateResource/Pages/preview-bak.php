@@ -3,19 +3,18 @@
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
-
-use Filament\Forms\Contracts\HasForms;
-// use Filament\Resources\Pages\ViewRecord;
-use Filament\Resources\Pages\Concerns;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Visualbuilder\EmailTemplates\Components\Iframe;
+
+// use Filament\Resources\Pages\ViewRecord;
+use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
 use Filament\Pages\Concerns\InteractsWithFormActions;
+use Filament\Resources\Pages\Concerns;
+use Filament\Resources\Pages\Page;
+use Visualbuilder\EmailTemplates\Components\Iframe;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
@@ -25,7 +24,7 @@ class PreviewEmailTemplate extends Page
     use Concerns\InteractsWithRecord;
     use InteractsWithFormActions;
     use InteractsWithForms;
-    
+
     protected static string $resource = EmailTemplateResource::class;
 
     protected static string $view = 'filament-panels::resources.pages.view-record';
@@ -75,7 +74,7 @@ class PreviewEmailTemplate extends Page
                                                       ->afterStateUpdated(function ($state) {
                                                           $this->redirectRoute('filament.resources.email-templates.view', $state);
                                                       }),
-        
+
                                                 TextInput::make('from')
                                                          ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
                                                          ->disabled(),
@@ -99,7 +98,7 @@ class PreviewEmailTemplate extends Page
                                                 Iframe::make('iframe'),
                                             ]
                                         ),
-        
+
                                 ]
                             ),
                     ]
@@ -212,5 +211,4 @@ class PreviewEmailTemplate extends Page
     {
         return false;
     }
-
 }
