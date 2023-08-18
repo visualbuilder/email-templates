@@ -14,8 +14,7 @@ class CreateMailableHelper implements CreateMailableInterface
             "icon" => null,
             "icon_color" => null,
         ];
-        $emailTemplate = EmailTemplate::findOrFail($record->mountedTableActionRecord);
-
+        $emailTemplate = EmailTemplate::findOrFail($record->id);
         // preparing class name
         $className = str_replace('-', ' ', $emailTemplate->key);
         $className = str_replace(' ', '', ucwords($className));

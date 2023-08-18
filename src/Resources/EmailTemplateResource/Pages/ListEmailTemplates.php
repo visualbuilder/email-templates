@@ -18,15 +18,4 @@ class ListEmailTemplates extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-
-    public function createMailClass(): void
-    {
-        $this->createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
-        $notify = $this->createMailableHelper->createMailable($this);
-        Notification::make()
-            ->title($notify->title)
-            ->icon($notify->icon)
-            ->iconColor($notify->icon_color)
-            ->send();
-    }
 }

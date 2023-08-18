@@ -2,23 +2,24 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Forms\Set;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use FilamentTiptapEditor\TiptapEditor;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
+use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
@@ -215,7 +216,17 @@ class EmailTemplateResource extends Resource
                              Action::make('create-mail-class')
                                 ->label("Create Mail Class")
                                 ->icon('heroicon-o-document-text')
-                                ->action('createMailClass'),
+                                // ->action('createMailClass'),
+                                ->action(function ($record) {
+                                    $createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
+                                    $notify = $createMailableHelper->createMailable($record);
+                                    // dd($record);
+                                    Notification::make()
+                                        ->title($notify->title)
+                                        ->icon($notify->icon)
+                                        ->iconColor($notify->icon_color)
+                                        ->send();
+                                }),
                              Tables\Actions\ViewAction::make()
                                                       ->label("Preview")
                                                       ->hidden(fn ($record) => $record->trashed()),
