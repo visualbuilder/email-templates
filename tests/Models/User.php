@@ -2,11 +2,11 @@
 
 namespace Visualbuilder\EmailTemplates\Tests\Models;
 
-use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
-use Orchestra\Testbench\Factories\UserFactory;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Orchestra\Testbench\Factories\UserFactory;
 
 /**
  * @property string $email
