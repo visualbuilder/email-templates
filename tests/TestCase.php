@@ -46,6 +46,7 @@ class TestCase extends Orchestra
             BladeIconsServiceProvider::class,
             NotificationsServiceProvider::class,
             FilamentTiptapEditorServiceProvider::class,
+            AdminPanelProvider::class,
         ];
     }
 

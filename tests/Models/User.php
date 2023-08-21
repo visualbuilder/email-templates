@@ -2,10 +2,11 @@
 
 namespace Visualbuilder\EmailTemplates\Tests\Models;
 
+use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
+use Orchestra\Testbench\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Orchestra\Testbench\Factories\UserFactory;
 
 /**
  * @property string $email
@@ -24,7 +25,7 @@ class User extends Authenticatable implements FilamentUser
 
     protected $table = 'users';
 
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }
