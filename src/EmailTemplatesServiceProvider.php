@@ -16,13 +16,23 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class EmailTemplatesServiceProvider extends PluginServiceProvider
 {
-    protected array $resources = [
-        EmailTemplateResource::class,
-    ];
+    protected array $resources = [];
 
     protected array $styles = [
         'vb-email-templates-styles' => 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css',
     ];
+
+    public function __construct($app)
+    {
+        parent::__construct($app);
+
+        //Check if customer publish the resource convert it to self register resource
+        if(!config('email-templates.publish_resource')) {
+            $this->resources = [
+                EmailTemplateResource::class,
+            ];
+        }
+    }
 
     public function configurePackage(Package $package): void
     {

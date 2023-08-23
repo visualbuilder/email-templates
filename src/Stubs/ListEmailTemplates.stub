@@ -1,11 +1,11 @@
 <?php
 
-namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+namespace App\Filament\Resources\EmailTemplateResource\Pages;
 
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use App\Filament\Resources\EmailTemplateResource;
 
 class ListEmailTemplates extends ListRecords
 {

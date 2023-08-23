@@ -38,6 +38,14 @@ Run the install command
  php artisan filament-email-templates:install
 ```
 
+## Publish EmailTemplateResource
+
+You can publish EmailTemplateResource to your project. Run the command given below then go to `config/email-templates.php` and set `publish_resource` to `true`
+
+```bash
+ php artisan email-template:publish
+```
+
 ## Usage
 
 ### HTML Editor
