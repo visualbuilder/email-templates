@@ -27,7 +27,7 @@ class EmailTemplatesServiceProvider extends PluginServiceProvider
         parent::__construct($app);
 
         //Check if customer publish the resource convert it to self register resource
-        if(!config('email-templates.publish_resource')) {
+        if(! config('email-templates.publish_resource')) {
             $this->resources = [
                 EmailTemplateResource::class,
             ];
