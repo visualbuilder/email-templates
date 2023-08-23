@@ -4,6 +4,7 @@ namespace Visualbuilder\EmailTemplates\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
@@ -16,7 +17,6 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
 use Visualbuilder\EmailTemplates\Tests\Models\User;
-use Filament\Actions\ActionsServiceProvider;
 
 class TestCase extends Orchestra
 {
