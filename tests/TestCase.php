@@ -16,6 +16,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
 use Visualbuilder\EmailTemplates\Tests\Models\User;
+use Filament\Actions\ActionsServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -47,6 +48,7 @@ class TestCase extends Orchestra
             NotificationsServiceProvider::class,
             FilamentTiptapEditorServiceProvider::class,
             AdminPanelProvider::class,
+            ActionsServiceProvider::class,
         ];
     }
 
