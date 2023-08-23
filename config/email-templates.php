@@ -4,6 +4,10 @@ return [
     //If you wish to customise the table name change this before migration
     'table_name'       => 'vb_email_templates',
 
+    //If you want to use your own resource for email templates, 
+    //you can set this to true and use `php artisan email-template:publish` to publish the resource
+    "publish_resource" => false,
+
     //Email templates will be copied to resources/views/vendor/vb-email-templates/email
     //default.blade.php is base view that can be customised below
     'default_view'     => 'default',

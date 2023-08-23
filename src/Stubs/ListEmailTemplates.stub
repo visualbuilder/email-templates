@@ -1,11 +1,10 @@
 <?php
 
-namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+namespace App\Filament\Resources\EmailTemplateResource\Pages;
 
-use Filament\Notifications\Notification;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use App\Filament\Resources\EmailTemplateResource;
 
 class ListEmailTemplates extends ListRecords
 {
@@ -17,16 +16,5 @@ class ListEmailTemplates extends ListRecords
         return [
             Actions\CreateAction::make(),
         ];
-    }
-
-    public function createMailClass(): void
-    {
-        $this->createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
-        $notify = $this->createMailableHelper->createMailable($this);
-        Notification::make()
-            ->title($notify->title)
-            ->icon($notify->icon)
-            ->iconColor($notify->icon_color)
-            ->send();
     }
 }

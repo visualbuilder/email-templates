@@ -25,10 +25,11 @@ class EmailTemplatesPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel
-            ->resources([
+        if(!config('email-templates.publish_resource')) {
+            $panel->resources([
                 EmailTemplateResource::class,
             ]);
+        }
     }
 
     public function boot(Panel $panel): void

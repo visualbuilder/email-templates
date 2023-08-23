@@ -1,26 +1,26 @@
 <?php
 
-namespace Visualbuilder\EmailTemplates\Resources;
+namespace App\Filament\Resources;
 
-use Closure;
-use Filament\Infolists\Components\Section;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+use App\Filament\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
 {
@@ -53,7 +53,7 @@ class EmailTemplateResource extends Resource
                                         TextInput::make('name')
                                                  ->reactive()
                                                  ->afterStateUpdated(
-                                                     function (Closure $set, $state) {
+                                                     function (Set $set, $state) {
                                                          $set('key', Str::slug($state));
                                                      }
                                                  )
@@ -72,7 +72,8 @@ class EmailTemplateResource extends Resource
                                                  ->required()
                                                  ->unique(ignorable: fn ($record) => $record),
                                         SelectLanguage::make('language')
-                                                      ->options($languages),
+                                                      ->options($languages)
+                                                      ->live(),
                                         Select::make('view')
                                               ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
                                               ->options($templates)
@@ -118,7 +119,7 @@ class EmailTemplateResource extends Resource
         $preparedLang = [];
         foreach ($languages as $langKey => $langVal) {
             $preparedLang[ $langKey ] =
-                '<span class="fi fi-'.$langVal[ "flag-icon" ].'"></span> '.$langVal[ "display" ];
+                '<span class="flag-icon flag-icon-'.$langVal[ "flag-icon" ].'"></span> '.$langVal[ "display" ];
         }
 
         return $preparedLang;
@@ -215,7 +216,17 @@ class EmailTemplateResource extends Resource
                              Action::make('create-mail-class')
                                 ->label("Create Mail Class")
                                 ->icon('heroicon-o-document-text')
-                                ->action('createMailClass'),
+                                // ->action('createMailClass'),
+                                ->action(function ($record) {
+                                    $createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
+                                    $notify = $createMailableHelper->createMailable($record);
+                                    // dd($record);
+                                    Notification::make()
+                                        ->title($notify->title)
+                                        ->icon($notify->icon)
+                                        ->iconColor($notify->icon_color)
+                                        ->send();
+                                }),
                              Tables\Actions\ViewAction::make()
                                                       ->label("Preview")
                                                       ->hidden(fn ($record) => $record->trashed()),
