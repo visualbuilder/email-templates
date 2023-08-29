@@ -41,7 +41,7 @@ class PublishEmailTemplateResource extends Command
     {
         $path = app_path("Filament/Resources/$folder");
         if(! File::isDirectory($path)) {
-            File::makeDirectory($path);
+            File::makeDirectory($path, 0755, true);
         }
 
         return true;
