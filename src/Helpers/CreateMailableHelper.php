@@ -4,6 +4,7 @@ namespace Visualbuilder\EmailTemplates\Helpers;
 
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
+use Illuminate\Support\Facades\File;
 
 class CreateMailableHelper implements CreateMailableInterface
 {
@@ -19,8 +20,11 @@ class CreateMailableHelper implements CreateMailableInterface
         // preparing class name
         $className = str_replace('-', ' ', $emailTemplate->key);
         $className = str_replace(' ', '', ucwords($className));
+        
+        // prepare directory
+        $this->prepareDirectory("Mail/Visualbuilder/EmailTemplates");
 
-        $filePath = __DIR__ . "/../Mail/$className.php";
+        $filePath = app_path("Mail/Visualbuilder/EmailTemplates/$className.php");
 
         if(file_exists($filePath)) {
             $response->title = "Class already exists";
@@ -41,5 +45,14 @@ class CreateMailableHelper implements CreateMailableInterface
         }
 
         return $response;
+    }
+
+    public function prepareDirectory($folder)
+    {
+        $path = app_path($folder);
+        if(! File::isDirectory($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
+        return true;
     }
 }
