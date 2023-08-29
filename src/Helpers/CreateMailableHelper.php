@@ -2,9 +2,9 @@
 
 namespace Visualbuilder\EmailTemplates\Helpers;
 
+use Illuminate\Support\Facades\File;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use Illuminate\Support\Facades\File;
 
 class CreateMailableHelper implements CreateMailableInterface
 {
@@ -52,6 +52,7 @@ class CreateMailableHelper implements CreateMailableInterface
         if(! File::isDirectory($path)) {
             File::makeDirectory($path, 0755, true);
         }
+
         return true;
     }
 }
