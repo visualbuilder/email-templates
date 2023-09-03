@@ -28,7 +28,7 @@ class UserVerifiedNotification extends Notification
      */
     public function via($notifiable)
     {
-        return array_merge($this->userVias($notifiable), ['telegram']);
+        return ['mail'];
     }
 
     /**
