@@ -24,8 +24,11 @@ class MakeEmailTemplateResource extends Command
         if (! file_exists($viewPath)) {
             File::put($viewPath, $stub);
             $this->info("Email template resource '{$name}'.blade.php created successfully.");
+            return Command::SUCCESS;
         } else {
             $this->error("Email template resource '{$name}'.blade.php already exists.");
+            return Command::FAILURE;
         }
+
     }
 }

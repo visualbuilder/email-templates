@@ -18,7 +18,6 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use App\Filament\Resources\EmailTemplateResource\Pages;
 
@@ -71,9 +70,10 @@ class EmailTemplateResource extends Resource
                                                  ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
                                                  ->required()
                                                  ->unique(ignorable: fn ($record) => $record),
-                                        SelectLanguage::make('language')
+                                        Select::make('language')
                                                       ->options($languages)
-                                                      ->live(),
+                                                      ->searchable()
+                                                      ->allowHtml(),
                                         Select::make('view')
                                               ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
                                               ->options($templates)

@@ -18,7 +18,6 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Components\SelectLanguage;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
@@ -41,6 +40,7 @@ class EmailTemplateResource extends Resource
     {
         $languages = self::prepareLang();
         $templates = self::getTemplateViewList();
+        $recipients = self::getRecipients();
 
         return $form->schema(
             [
@@ -51,15 +51,10 @@ class EmailTemplateResource extends Resource
                                 ->schema(
                                     [
                                         TextInput::make('name')
-                                                 ->reactive()
-                                                 ->afterStateUpdated(
-                                                     function (Set $set, $state) {
-                                                         $set('key', Str::slug($state));
-                                                     }
-                                                 )
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.template-name'))
-                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.template-name-hint'))
-                                                 ->required(),
+                                            ->live()
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.template-name'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.template-name-hint'))
+                                            ->required(),
                                     ]
                                 ),
 
@@ -67,22 +62,32 @@ class EmailTemplateResource extends Resource
                                 ->schema(
                                     [
                                         TextInput::make('key')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
-                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
-                                                 ->required()
-                                                 ->unique(ignorable: fn ($record) => $record),
-                                        SelectLanguage::make('language')
-                                                      ->options($languages)
-                                                      ->live(),
+                                            ->afterStateUpdated(
+                                                fn(Set $set, ?string $state) => $set('key', Str::slug($state)))
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
+                                            ->required()
+                                            ->unique(ignorable: fn($record) => $record),
+                                        Select::make('language')
+                                            ->options($languages)
+                                            ->default(config('email-templates.default_locale'))
+                                            ->searchable()
+                                            ->allowHtml(),
                                         Select::make('view')
-                                              ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
-                                              ->options($templates)
-                                              ->required(),
-                                        TextInput::make('from')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                                 ->required(),
-                                        TextInput::make('send_to')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to')),
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
+                                            ->options($templates)
+                                            ->default(current($templates))
+                                            ->searchable()
+                                            ->required(),
+                                        TextInput::make('from')->default(config('mail.from.address'))
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
+                                            ->required(),
+                                        Select::make('send_to')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to'))
+                                            ->options($recipients)
+                                            ->default(current($recipients))
+                                            ->searchable()
+                                            ->required(),
                                     ]
                                 ),
 
@@ -90,19 +95,20 @@ class EmailTemplateResource extends Resource
                                 ->schema(
                                     [
                                         TextInput::make('subject')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.subject')),
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.subject')),
 
                                         TextInput::make('preheader')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
-                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint')),
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint')),
 
                                         TextInput::make('title')
-                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
-                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
 
                                         TiptapEditor::make('content')
-                                                    ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
-                                                    ->profile('default'),
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
+                                            ->profile('default')
+                                        ->default("<p>Dear ##user.firstname##, </p>")
                                     ]
                                 ),
 
@@ -114,15 +120,11 @@ class EmailTemplateResource extends Resource
 
     public static function prepareLang()
     {
-        $languages = config('email-templates.languages');
-
-        $preparedLang = [];
-        foreach ($languages as $langKey => $langVal) {
-            $preparedLang[ $langKey ] =
-                '<span class="flag-icon flag-icon-'.$langVal[ "flag-icon" ].'"></span> '.$langVal[ "display" ];
-        }
-
-        return $preparedLang;
+        return collect(config('email-templates.languages'))->mapWithKeys(function ($langVal, $langKey) {
+            return [
+                $langKey => '<span class="flag-icon flag-icon-'.$langVal["flag-icon"].'"></span> '.$langVal["display"]
+            ];
+        })->toArray();
     }
 
     public static function getTemplateViewList()
@@ -132,16 +134,16 @@ class EmailTemplateResource extends Resource
 
         $directories = [$overrideDirectory, $packageDirectory];
 
-        $filenamesArray = [];
-
-        foreach ($directories as $directory) {
-            if(file_exists($directory)) {
-                $filenamesArray = array_merge($filenamesArray, self::getFiles($directory, $directory));
-            }
-        }
-
-        // Remove duplicates
-        $filenamesArray = array_unique($filenamesArray);
+        $filenamesArray = collect($directories)
+            ->filter(function ($directory) {
+                return file_exists($directory);
+            })
+            ->flatMap(function ($directory) {
+                return self::getFiles($directory, $directory);
+            })
+            ->unique()
+            ->values()
+            ->toArray();
 
         return array_combine($filenamesArray, $filenamesArray);
     }
@@ -153,16 +155,16 @@ class EmailTemplateResource extends Resource
     {
         $files = $subdirs = $subFiles = [];
 
-        if($handle = opendir($dir)) {
+        if ($handle = opendir($dir)) {
             while (false !== ($entry = readdir($handle))) {
-                if($entry == "." || $entry == "..") {
+                if ($entry == "." || $entry == "..") {
                     continue;
                 }
-                if(substr($entry, 0, 1) == '_') {
+                if (substr($entry, 0, 1) == '_') {
                     continue;
                 }
                 $entryPath = $dir.'/'.$entry;
-                if(is_dir($entryPath)) {
+                if (is_dir($entryPath)) {
                     $subdirs[] = $entryPath;
                 } else {
                     $subFiles[] = str_replace(
@@ -191,77 +193,86 @@ class EmailTemplateResource extends Resource
         return $files;
     }
 
+    public static function getRecipients()
+    {
+        return collect(config('email-templates.recipients'))->mapWithKeys(function ($recipient) {
+            $splitNamespace = explode('\\', $recipient);
+            $className = end($splitNamespace); // Get the class name without namespace
+            return [$className => $recipient]; // Use class name as key and full class name as value
+        })->toArray();
+    }
+
     public static function table(Table $table): Table
     {
         return $table->columns(
             [
                 TextColumn::make('id'),
                 TextColumn::make('name')
-                          ->limit(50)
-                          ->sortable()
-                          ->searchable(),
+                    ->limit(50)
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('language')
-                          ->limit(50),
+                    ->limit(50),
                 TextColumn::make('subject')
-                          ->limit(50),
+                    ->limit(50),
             ]
         )
-                     ->filters(
-                         [
-                             Tables\Filters\TrashedFilter::make(),
-                         ]
-                     )
-                     ->actions(
-                         [
-                             Action::make('create-mail-class')
-                                ->label("Create Mail Class")
-                                ->icon('heroicon-o-document-text')
-                                // ->action('createMailClass'),
-                                ->action(function ($record) {
-                                    $createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
-                                    $notify = $createMailableHelper->createMailable($record);
-                                    // dd($record);
-                                    Notification::make()
-                                        ->title($notify->title)
-                                        ->icon($notify->icon)
-                                        ->iconColor($notify->icon_color)
-                                        ->send();
-                                }),
-                             Tables\Actions\ViewAction::make()
-                                                      ->label("Preview")
-                                                      ->hidden(fn ($record) => $record->trashed()),
-                             Tables\Actions\EditAction::make(),
-                             Tables\Actions\DeleteAction::make(),
-                             Tables\Actions\ForceDeleteAction::make(),
-                             Tables\Actions\RestoreAction::make(),
-                         ]
-                     )
-                     ->bulkActions(
-                         [
-                             Tables\Actions\DeleteBulkAction::make(),
-                             Tables\Actions\ForceDeleteBulkAction::make(),
-                             Tables\Actions\RestoreBulkAction::make(),
-                         ]
-                     );
+            ->filters(
+                [
+                    Tables\Filters\TrashedFilter::make(),
+                ]
+            )
+            ->actions(
+                [
+                    Action::make('create-mail-class')
+                        ->label("Create Mail Class")
+                        ->icon('heroicon-o-document-text')
+                        // ->action('createMailClass'),
+                        ->action(function ($record) {
+                            $createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
+                            $notify = $createMailableHelper->createMailable($record);
+                            // dd($record);
+                            Notification::make()
+                                ->title($notify->title)
+                                ->icon($notify->icon)
+                                ->iconColor($notify->icon_color)
+                                ->send();
+                        }),
+                    Tables\Actions\ViewAction::make()
+                        ->label("Preview")
+                        ->hidden(fn($record) => $record->trashed()),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                ]
+            )
+            ->bulkActions(
+                [
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                ]
+            );
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmailTemplates::route('/'),
+            'index'  => Pages\ListEmailTemplates::route('/'),
             'create' => Pages\CreateEmailTemplate::route('/create'),
-            'edit' => Pages\EditEmailTemplate::route('/{record}/edit'),
-            'view' => Pages\PreviewEmailTemplate::route('/{record}'),
+            'edit'   => Pages\EditEmailTemplate::route('/{record}/edit'),
+            'view'   => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-                     ->withoutGlobalScopes(
-                         [
-                             SoftDeletingScope::class,
-                         ]
-                     );
+            ->withoutGlobalScopes(
+                [
+                    SoftDeletingScope::class,
+                ]
+            );
     }
 }

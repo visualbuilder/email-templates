@@ -79,5 +79,7 @@ class InstallCommand extends Command
         }
 
         $this->info("All Done");
+        
+        return Command::SUCCESS;
     }
 }

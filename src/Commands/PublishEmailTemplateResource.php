@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\File;
 class PublishEmailTemplateResource extends Command
 {
     protected $signature = 'email-template:publish';
-    protected $description = 'Publish EmailTemplateResource to your peoject';
+    protected $description = 'Publish EmailTemplateResource to your project';
 
     public function __construct()
     {
@@ -35,6 +35,8 @@ class PublishEmailTemplateResource extends Command
 
         // Publishing PreviewEmailTemplate.php
         $this->publishResource('PreviewEmailTemplate', 'EmailTemplateResource/Pages/');
+
+        return Command::SUCCESS;
     }
 
     public function prepareDirectory($folder)

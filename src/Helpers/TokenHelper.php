@@ -20,17 +20,6 @@ class TokenHelper implements TokenHelperInterface
             $content = str_replace('##verificationUrl##', $models->verificationUrl, $content);
         }
 
-        // if(isset($models->tokens)) {
-        //     if (isset($models->tokens->tokenUrl)) {
-        //         $content = str_replace('##tokenURL##', $models->tokens->tokenUrl, $content);
-        //     }
-
-        //     if (isset($models->tokens->verificationUrl)) {
-        //         $content = str_replace('##verificationUrl##', $models->tokens->verificationUrl, $content);
-        //     }
-        // }
-
-
         // Replace model-attribute tokens.
         // Will look for pattern ##model.attribute## and replace the value if found.
         // Eg ##user.name##
