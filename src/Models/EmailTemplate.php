@@ -129,4 +129,9 @@ class EmailTemplate extends Model
             get: fn () => config('email-templates.template_view_path').'.'.$this->view
         );
     }
+
+    public function previewUrl()
+    {
+        return route('email-template.preview', $this);
+    }
 }

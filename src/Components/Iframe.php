@@ -8,12 +8,12 @@ class Iframe extends Component
 {
     protected string $view = 'vb-email-templates::forms.components.iframe';
 
-    public $name;
-    public $src;
-    public $height;
-    public $width;
+    public string $name;
+    public string $src;
+    public string $height;
+    public string $width;
 
-    public function __construct($name, $label = null, $src = null, $height = '800px', $width = '100%')
+    public function __construct($name, $src = null, $height = '800px', $width = '100%')
     {
         $this->src = $src;
         $this->height = $height;
@@ -24,13 +24,19 @@ class Iframe extends Component
 
     protected function setUp(): void
     {
-        $this->afterStateHydrated(function ($record) {
-            $this->src = route('email-template.preview', $record);
-        });
+        parent::setUp();
+
     }
 
-    public static function make($name, $label = null, $src = null, $height = '800px', $width = '100%')
+    //    protected function setUp(): void
+    //    {
+    //        $this->afterStateHydrated(function ($record) {
+    //            $this->src = route('email-template.preview', $record);
+    //        });
+    //    }
+
+    public static function make($name, $src = null, $height = '800px', $width = '100%')
     {
-        return new static($name, $label, $src, $height, $width);
+        return new static($name, $src, $height, $width);
     }
 }
