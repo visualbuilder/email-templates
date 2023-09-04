@@ -10,22 +10,16 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
 use Visualbuilder\EmailTemplates\Commands\PublishEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
+use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
+use Visualbuilder\EmailTemplates\Helpers\FormHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
-    // protected array $resources = [
-    //     EmailTemplateResource::class,
-    // ];
-
-    // protected array $styles = [
-    //     'vb-email-templates-styles' => 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css',
-    // ];
-
     public function configurePackage(Package $package): void
     {
         $package->name("filament-email-templates")
@@ -40,13 +34,6 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
             ]);
     }
 
-    // public function register()
-    // {
-    //     parent::register();
-    //     $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
-    //     $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
-    //     $this->app->register(EmailTemplatesEventServiceProvider::class);
-    // }
 
     public function packageRegistered(): void
     {
@@ -54,20 +41,9 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
+        $this->app->singleton(FormHelperInterface::class, FormHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
     }
-
-    // public function boot()
-    // {
-    //     parent::boot();
-    //     if($this->app->runningInConsole()) {
-    //         $this->publishResources();
-    //     }
-
-    //     $this->registerRoutes();
-
-    //     $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vb-email-templates');
-    // }
 
     public function packageBooted(): void
     {

@@ -4,6 +4,7 @@ namespace Visualbuilder\EmailTemplates\Listeners;
 
 use Illuminate\Auth\Events\Registered;
 use Visualbuilder\EmailTemplates\Notifications\UserLoginNotification;
+use Visualbuilder\EmailTemplates\Notifications\UserRegisteredNotification;
 
 class UserRegisteredListener
 {
@@ -17,7 +18,7 @@ class UserRegisteredListener
     {
         if(config('email-templates.send_emails.new_user_registered')) {
             $user = $event->user;
-            $user->notify(new UserLoginNotification());
+            $user->notify(new UserRegisteredNotification());
         }
 
 

@@ -18,6 +18,8 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
+use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
@@ -36,11 +38,14 @@ class EmailTemplateResource extends Resource
         return __('vb-email-templates::email-templates.resource_name.plural');
     }
 
+
     public static function form(Form $form): Form
     {
-        $languages = self::prepareLang();
-        $templates = self::getTemplateViewList();
-        $recipients = self::getRecipients();
+        $mailHelper = app(CreateMailableInterface::class);
+        $formHelper = app(FormHelperInterface::class);
+        $templates = $formHelper->getTemplateViewOptions();
+        $recipients = $formHelper->getRecipientOptions();
+
 
         return $form->schema(
             [
@@ -69,7 +74,7 @@ class EmailTemplateResource extends Resource
                                             ->required()
                                             ->unique(ignorable: fn($record) => $record),
                                         Select::make('language')
-                                            ->options($languages)
+                                            ->options($formHelper->getLanguageOptions())
                                             ->default(config('email-templates.default_locale'))
                                             ->searchable()
                                             ->allowHtml(),
@@ -108,7 +113,7 @@ class EmailTemplateResource extends Resource
                                         TiptapEditor::make('content')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
-                                        ->default("<p>Dear ##user.firstname##, </p>")
+                                            ->default("<p>Dear ##user.firstname##, </p>")
                                     ]
                                 ),
 
@@ -118,89 +123,6 @@ class EmailTemplateResource extends Resource
         );
     }
 
-    public static function prepareLang()
-    {
-        return collect(config('email-templates.languages'))->mapWithKeys(function ($langVal, $langKey) {
-            return [
-                $langKey => '<span class="flag-icon flag-icon-'.$langVal["flag-icon"].'"></span> '.$langVal["display"]
-            ];
-        })->toArray();
-    }
-
-    public static function getTemplateViewList()
-    {
-        $overrideDirectory = resource_path('views/vendor/vb-email-templates/email');
-        $packageDirectory = dirname(view(config('email-templates.template_view_path').'.default')->getPath());
-
-        $directories = [$overrideDirectory, $packageDirectory];
-
-        $filenamesArray = collect($directories)
-            ->filter(function ($directory) {
-                return file_exists($directory);
-            })
-            ->flatMap(function ($directory) {
-                return self::getFiles($directory, $directory);
-            })
-            ->unique()
-            ->values()
-            ->toArray();
-
-        return array_combine($filenamesArray, $filenamesArray);
-    }
-
-    /**
-     * Recursively get all files in a directory and children
-     */
-    private static function getFiles($dir, $basepath)
-    {
-        $files = $subdirs = $subFiles = [];
-
-        if ($handle = opendir($dir)) {
-            while (false !== ($entry = readdir($handle))) {
-                if ($entry == "." || $entry == "..") {
-                    continue;
-                }
-                if (substr($entry, 0, 1) == '_') {
-                    continue;
-                }
-                $entryPath = $dir.'/'.$entry;
-                if (is_dir($entryPath)) {
-                    $subdirs[] = $entryPath;
-                } else {
-                    $subFiles[] = str_replace(
-                        '/',
-                        '.',
-                        str_replace(
-                            '.blade.php',
-                            '',
-                            str_replace(
-                                $basepath.'/',
-                                '',
-                                $entryPath
-                            )
-                        )
-                    );
-                }
-            }
-            closedir($handle);
-            sort($subFiles);
-            $files = array_merge($files, $subFiles);
-            foreach ($subdirs as $subdir) {
-                $files = array_merge($files, self::getFiles($subdir, $basepath));
-            }
-        }
-
-        return $files;
-    }
-
-    public static function getRecipients()
-    {
-        return collect(config('email-templates.recipients'))->mapWithKeys(function ($recipient) {
-            $splitNamespace = explode('\\', $recipient);
-            $className = end($splitNamespace); // Get the class name without namespace
-            return [$className => $recipient]; // Use class name as key and full class name as value
-        })->toArray();
-    }
 
     public static function table(Table $table): Table
     {
@@ -229,8 +151,7 @@ class EmailTemplateResource extends Resource
                         ->icon('heroicon-o-document-text')
                         // ->action('createMailClass'),
                         ->action(function ($record) {
-                            $createMailableHelper = app(\Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface::class);
-                            $notify = $createMailableHelper->createMailable($record);
+                            $notify = $this->mailHelper->createMailable($record);
                             // dd($record);
                             Notification::make()
                                 ->title($notify->title)
