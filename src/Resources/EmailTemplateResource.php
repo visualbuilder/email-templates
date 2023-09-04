@@ -68,11 +68,12 @@ class EmailTemplateResource extends Resource
                                     [
                                         TextInput::make('key')
                                             ->afterStateUpdated(
-                                                fn(Set $set, ?string $state) => $set('key', Str::slug($state)))
+                                                fn (Set $set, ?string $state) => $set('key', Str::slug($state))
+                                            )
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
                                             ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
                                             ->required()
-                                            ->unique(ignorable: fn($record) => $record),
+                                            ->unique(ignorable: fn ($record) => $record),
                                         Select::make('language')
                                             ->options($formHelper->getLanguageOptions())
                                             ->default(config('email-templates.default_locale'))
@@ -113,7 +114,7 @@ class EmailTemplateResource extends Resource
                                         TiptapEditor::make('content')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
-                                            ->default("<p>Dear ##user.firstname##, </p>")
+                                        ->default("<p>Dear ##user.firstname##, </p>"),
                                     ]
                                 ),
 
@@ -161,7 +162,7 @@ class EmailTemplateResource extends Resource
                         }),
                     Tables\Actions\ViewAction::make()
                         ->label("Preview")
-                        ->hidden(fn($record) => $record->trashed()),
+                        ->hidden(fn ($record) => $record->trashed()),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\ForceDeleteAction::make(),
@@ -180,10 +181,10 @@ class EmailTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListEmailTemplates::route('/'),
+            'index' => Pages\ListEmailTemplates::route('/'),
             'create' => Pages\CreateEmailTemplate::route('/create'),
-            'edit'   => Pages\EditEmailTemplate::route('/{record}/edit'),
-            'view'   => Pages\PreviewEmailTemplate::route('/{record}'),
+            'edit' => Pages\EditEmailTemplate::route('/{record}/edit'),
+            'view' => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }
 
