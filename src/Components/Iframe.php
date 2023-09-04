@@ -22,19 +22,18 @@ class Iframe extends Component
         $this->setUp();
     }
 
-
     protected function setUp(): void
     {
         parent::setUp();
 
     }
 
-//    protected function setUp(): void
-//    {
-//        $this->afterStateHydrated(function ($record) {
-//            $this->src = route('email-template.preview', $record);
-//        });
-//    }
+    //    protected function setUp(): void
+    //    {
+    //        $this->afterStateHydrated(function ($record) {
+    //            $this->src = route('email-template.preview', $record);
+    //        });
+    //    }
 
     public static function make($name, $src = null, $height = '800px', $width = '100%')
     {

@@ -5,7 +5,6 @@ namespace Visualbuilder\EmailTemplates\Listeners;
 use Illuminate\Auth\Events\PasswordReset;
 
 use Visualbuilder\EmailTemplates\Notifications\UserPasswordResetNotification;
-use Visualbuilder\EmailTemplates\Notifications\UserVerifiedNotification;
 
 class PasswordResetListener
 {

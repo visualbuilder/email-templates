@@ -38,7 +38,6 @@ class EmailTemplateResource extends Resource
         return __('vb-email-templates::email-templates.resource_name.plural');
     }
 
-
     public static function form(Form $form): Form
     {
         $mailHelper = app(CreateMailableInterface::class);
@@ -123,7 +122,6 @@ class EmailTemplateResource extends Resource
             ]
         );
     }
-
 
     public static function table(Table $table): Table
     {

@@ -2,9 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Helpers;
 
-use Illuminate\Support\Facades\File;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
-use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
 class FormHelper implements FormHelperInterface
 {
@@ -12,7 +10,7 @@ class FormHelper implements FormHelperInterface
     {
         return collect(config('email-templates.languages'))->mapWithKeys(function ($langVal, $langKey) {
             return [
-                $langKey => '<span class="flag-icon flag-icon-'.$langVal["flag-icon"].'"></span> '.$langVal["display"]
+                $langKey => '<span class="flag-icon flag-icon-'.$langVal["flag-icon"].'"></span> '.$langVal["display"],
             ];
         })->toArray();
     }
@@ -88,6 +86,7 @@ class FormHelper implements FormHelperInterface
         return collect(config('email-templates.recipients'))->mapWithKeys(function ($recipient) {
             $splitNamespace = explode('\\', $recipient);
             $className = end($splitNamespace); // Get the class name without namespace
+
             return [$className => $recipient]; // Use class name as key and full class name as value
         })->toArray();
     }

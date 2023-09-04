@@ -3,7 +3,6 @@
 namespace Visualbuilder\EmailTemplates\Listeners;
 
 use Illuminate\Auth\Events\Registered;
-use Visualbuilder\EmailTemplates\Notifications\UserLoginNotification;
 use Visualbuilder\EmailTemplates\Notifications\UserRegisteredNotification;
 
 class UserRegisteredListener

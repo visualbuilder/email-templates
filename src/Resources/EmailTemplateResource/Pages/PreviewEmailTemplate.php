@@ -36,7 +36,6 @@ class PreviewEmailTemplate extends ViewRecord
         $this->tokenHelper = app(\Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface::class);
     }
 
-
     public function form(Form $form): Form
     {
 
@@ -85,7 +84,7 @@ class PreviewEmailTemplate extends ViewRecord
                                  Grid::make(['default' => 1])
                                      ->schema(
                                          [
-                                           Iframe::make('preview', route('email-template.preview', $this->getRecord()))
+                                           Iframe::make('preview', route('email-template.preview', $this->getRecord())),
                                          ]
                                      ),
 

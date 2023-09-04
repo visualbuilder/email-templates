@@ -132,6 +132,6 @@ class EmailTemplate extends Model
 
     public function previewUrl()
     {
-        return route('email-template.preview',$this);
+        return route('email-template.preview', $this);
     }
 }

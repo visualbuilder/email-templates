@@ -16,7 +16,6 @@ use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\FormHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
@@ -33,7 +32,6 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
                 PublishEmailTemplateResource::class,
             ]);
     }
-
 
     public function packageRegistered(): void
     {
