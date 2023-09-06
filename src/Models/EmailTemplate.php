@@ -165,14 +165,6 @@ class EmailTemplate extends Model
     }
 
     /**
-     * @return string
-     */
-    public function previewUrl(): string
-    {
-        return route('email-template.preview', $this);
-    }
-
-    /**
      * @return bool
      */
     public function getMailableExistsAttribute(): bool
