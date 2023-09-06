@@ -24,7 +24,7 @@ it('can replace tokens in user welcome email', function () {
             'preheader' => 'Lets get you started',
             'content' => "<p>Dear ##user.name##,</p>
                             <p>Thanks for registering with ##config.app.name##.</p>
-                            <p>If you need any assistance please contact our customer services team ##config.email-templates.customer-services## who will be happy to help.</p>
+                            <p>If you need any assistance please contact our customer services team ##config.email-templates.customer-services.email## who will be happy to help.</p>
                             <p>Kind Regards<br>
                             ##config.app.name##</p>",
         ]
@@ -102,7 +102,7 @@ it('can replace tokens in user account locked out email', function () {
             'preheader' => 'Oops!',
             'content' => "<p>Dear ##user.name##,</p>
                             <p>Sorry your account has been locked out due to too many bad password attempts.</p>
-                            <p>Please contact our customer services team on ##config.email-templates.customer-services## who will be able to help</p>
+                            <p>Please contact our customer services team on ##config.email-templates.customer-services.email## who will be able to help</p>
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );

@@ -46,8 +46,8 @@ return [
     'anchor_color'            => '#4c05a1',
 
     //Contact details included in default email templates
-    'customer-services-email' => 'support@yourcompany.com',
-    'customer-services-phone' => '+441273 455702',
+    'customer-services'  => ['email' => 'support@yourcompany.com',
+                             'phone' => '+441273 455702'],
 
     //Footer Links
     'links'                   => [

@@ -81,9 +81,9 @@ class EmailTemplate extends Model
     public static function findEmailByKey($key, $language = null)
     {
         return self::query()
-                   ->language($language ?? config('email-templates.default_locale'))
-                   ->where("key", $key)
-                   ->firstOrFail();
+            ->language($language ?? config('email-templates.default_locale'))
+            ->where("key", $key)
+            ->firstOrFail();
     }
 
     public static function getSendToSelectOptions()
@@ -94,14 +94,12 @@ class EmailTemplate extends Model
     public static function getEmailPreviewData()
     {
         $model = (object) [];
-        $userModel = config('email-templates.recipients')[ 0 ];
+        $userModel = config('email-templates.recipients')[0];
         //Setup some data for previewing email template
         $model->user = $userModel::first();
-        $model->tokens = (object) [
-            'tokenUrl' => URL::to('/'),
-            'verificationUrl' => URL::to('/'),
-            'expiresAt' => now(),
-        ];
+        $model->tokenUrl = URL::to('/');
+        $model->verificationUrl = URL::to('/');
+        $model->expiresAt = now();
         $model->plainText = Str::random(32);
         return $model;
     }
@@ -119,7 +117,7 @@ class EmailTemplate extends Model
         $languages = [$language, config('email-templates.default_locale')];
 
         return $query->whereIn('language', $languages)
-                    ->orderBy('language');
+            ->orderBy('language');
         //  ->orderByRaw('field(language, ?, ?)', $languages); // order by field is not present in sqlite
     }
 
@@ -129,7 +127,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn () => config('email-templates.template_view_path').'.'.$this->view
+            get: fn() => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 

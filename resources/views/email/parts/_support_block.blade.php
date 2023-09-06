@@ -13,8 +13,8 @@
                     style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color:{{config('email-templates.callout_color')}}; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                     <h2 style="font-size: 20px; font-weight: 400; color: {{config('email-templates.callout_color')}}; margin: 0;">{{__('vb-email-templates::email-templates.general-labels.need-help')}}</h2>
                     <p style="margin: 0; color: {{config('email-templates.callout_color')}}; ">{{__('vb-email-templates::email-templates.general-labels.call-support')}}
-                        <a href="tel:{{config('email-templates.customer-services-phone')}}" target="_blank">
-                            {{config('email-templates.customer-services-phone')}}
+                        <a href="tel:{{config('email-templates.customer-services.phone')}}" target="_blank">
+                            {{config('email-templates.customer-services.phone')}}
                         </a>
                     </p>
                 </td>
