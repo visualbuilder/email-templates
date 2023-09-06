@@ -18,6 +18,8 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+use PharIo\Manifest\Email;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
@@ -159,6 +161,7 @@ class EmailTemplateResource extends Resource
                 [
                     Action::make('create-mail-class')
                         ->label("Build Class")
+                        //Only show the button if the file does not exist
                         ->visible(function (EmailTemplate $record) {return !$record->mailable_exists;})
                         ->icon('heroicon-o-document-text')
                         // ->action('createMailClass'),
@@ -168,14 +171,23 @@ class EmailTemplateResource extends Resource
                                 ->title($notify->title)
                                 ->icon($notify->icon)
                                 ->iconColor($notify->icon_color)
-                                ->duration(100000)
+                                ->duration(10000)
                                 //Fix for bug where body hides the icon
                                 ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                 ->send();
                         }),
-                    Tables\Actions\ViewAction::make()
-                        ->label("Preview")
-                        ->hidden(fn ($record) => $record->trashed()),
+                    Action::make('Preview')
+                        ->icon('heroicon-o-magnifying-glass')
+                        ->modalContent(fn (EmailTemplate $record): View => view(
+                            'vb-email-templates::forms.components.iframe',
+                            ['record' => $record],
+                        ))
+                        ->color('gray')
+                        ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: '.$record->name )
+                        ->modalSubmitAction(false)
+                        ->modalCancelAction(false)
+                        ->slideOver(),
+
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\ForceDeleteAction::make(),

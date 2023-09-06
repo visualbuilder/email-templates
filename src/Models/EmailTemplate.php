@@ -103,7 +103,6 @@ class EmailTemplate extends Model
             'expiresAt' => now(),
         ];
         $model->plainText = Str::random(32);
-
         return $model;
     }
 
@@ -151,5 +150,22 @@ class EmailTemplate extends Model
         $filePath = app_path(config('email-templates.mailable_directory')."/{$className}.php");
 
         return File::exists($filePath);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getMailableClass()
+    {
+        $className = Str::studly($this->key);
+        $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
+        $fullClassName = "\\App\\{$directory}\\{$className}";
+
+        if (!class_exists($fullClassName)) {
+            throw new \Exception("Mailable class {$fullClassName} does not exist.");
+        }
+
+        return $fullClassName;
     }
 }
