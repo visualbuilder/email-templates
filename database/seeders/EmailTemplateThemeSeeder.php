@@ -11,7 +11,7 @@ class EmailTemplateThemeSeeder extends Seeder
         $themes = [
             [
                 'name'       => 'Modern Bold',
-                'colour'=>json_encode([
+                'colours'=>[
                     'header_bg_color'    => '#1E88E5',
                     'body_bg_color'      => '#f4f4f4',
                     'content_bg_color'   => '#FFFFFB',
@@ -24,31 +24,31 @@ class EmailTemplateThemeSeeder extends Seeder
                     'callout_color'      => '#212121',
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#1E88E5',
-                ]),
+                ],
                 'is_active'=>1,
             ],
             [
                 'name'       => 'Pastel',
-                'colour'=>json_encode([
-                        'header_bg_color'    => '#B8B8D1',
-                        'body_bg_color'      => '#f4f4f4',
-                        'content_bg_color'   => '#FFFFFB',
-                        'footer_bg_color'    => '#5B5F97',
+                'colours'=>[
+                    'header_bg_color'    => '#B8B8D1',
+                    'body_bg_color'      => '#f4f4f4',
+                    'content_bg_color'   => '#FFFFFB',
+                    'footer_bg_color'    => '#5B5F97',
 
-                        'callout_bg_color'   => '#B8B8D1',
-                        'button_bg_color'    => '#FFC145',
+                    'callout_bg_color'   => '#B8B8D1',
+                    'button_bg_color'    => '#FFC145',
 
-                        //Text Colours
-                        'body_color'         => '#333333',
-                        'callout_color'      => '#000000',
-                        'button_color'       => '#2A2A11',
-                        'anchor_color'       => '#4c05a1',
-                ]),
+                    //Text Colours
+                    'body_color'         => '#333333',
+                    'callout_color'      => '#000000',
+                    'button_color'       => '#2A2A11',
+                    'anchor_color'       => '#4c05a1',
+                ],
                 'is_active'=>0,
             ],
             [
                 'name'       => 'Elegant Contrast',
-                'colour'=>json_encode([
+                'colours'=>[
                     'header_bg_color'    => '#8E24AA',
                     'body_bg_color'      => '#f4f4f4',
                     'content_bg_color'   => '#FFFFFB',
@@ -61,17 +61,16 @@ class EmailTemplateThemeSeeder extends Seeder
                     'callout_color'      => '#FFFFFF', // White for contrast with pink
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#8E24AA', // Matching with header
-                ]),
+                ],
                 'is_active'=>0,
             ],
- [
+            [
                 'name'       => 'Earthy & Calm',
-                'colour'=>json_encode([
+                'colours'=>[
                     'header_bg_color'    => '#43A047',
                     'body_bg_color'      => '#f4f4f4',
                     'content_bg_color'   => '#FFFFFB',
                     'footer_bg_color'    => '#2E7D32', // Darker shade of green for footer
-
                     'callout_bg_color'   => '#FF7043',
                     'button_bg_color'    => '#FFEB3B',
 
@@ -79,7 +78,7 @@ class EmailTemplateThemeSeeder extends Seeder
                     'callout_color'      => '#212121',
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#43A047', // Matching with header
-                ]),
+                ],
                 'is_active'=>0,
             ],
 

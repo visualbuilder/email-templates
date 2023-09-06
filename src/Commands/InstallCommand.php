@@ -22,7 +22,7 @@ class InstallCommand extends Command
 
     public function __construct()
     {
-        $this->signature = 'filament-email-templates:install';
+        $this->signature = 'filament-email-templates:install {--seed : Seed the database automatically without confirmation}';
 
         $this->description = 'Install email template editor for Filament';
 
@@ -58,7 +58,7 @@ class InstallCommand extends Command
         }
 
         if ($this->askToRunMigrations) {
-            if ($this->confirm('Would you like to run the migrations now?')) {
+            if ($this->option('seed') || $this->confirm('Would you like to run the migrations now?')) {
                 $this->comment('Running migrations...');
                 $this->call('migrate');
             }
@@ -73,7 +73,7 @@ class InstallCommand extends Command
         }
 
         if ($this->askToRunSeeders) {
-            if ($this->confirm('Would you like to run the seeders now?')) {
+            if ($this->option('seed') || $this->confirm('Would you like to run the seeders now?')) {
                 $this->comment('Running seeders...');
                 $this->call(EmailTemplateSeeder::class);
                 $this->call(EmailTemplateThemeSeeder::class);
