@@ -4,7 +4,6 @@ namespace Visualbuilder\EmailTemplates;
 
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
-use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
@@ -15,7 +14,6 @@ use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\FormHelper;
 use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
-use Visualbuilder\EmailTemplates\Http\Controllers\EmailTemplateController;
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
@@ -54,7 +52,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         if($this->app->runningInConsole()) {
             $this->publishResources();
         }
-        
+
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vb-email-templates');
     }
 
@@ -83,5 +81,4 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
             Css::make('vb-email-templates-styles', 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css'),
         ];
     }
-
 }
