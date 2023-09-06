@@ -5,6 +5,7 @@ namespace Visualbuilder\EmailTemplates;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource;
 
 class EmailTemplatesPlugin implements Plugin
 {
@@ -28,6 +29,7 @@ class EmailTemplatesPlugin implements Plugin
         if(! config('email-templates.publish_resource')) {
             $panel->resources([
                 EmailTemplateResource::class,
+                EmailTemplateThemeResource::class,
             ]);
         }
     }
