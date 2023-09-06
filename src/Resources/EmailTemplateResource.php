@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use PharIo\Manifest\Email;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
@@ -162,7 +161,7 @@ class EmailTemplateResource extends Resource
                     Action::make('create-mail-class')
                         ->label("Build Class")
                         //Only show the button if the file does not exist
-                        ->visible(function (EmailTemplate $record) {return !$record->mailable_exists;})
+                        ->visible(function (EmailTemplate $record) {return ! $record->mailable_exists;})
                         ->icon('heroicon-o-document-text')
                         // ->action('createMailClass'),
                         ->action(function (EmailTemplate $record) {
@@ -183,7 +182,7 @@ class EmailTemplateResource extends Resource
                             ['record' => $record],
                         ))
                         ->color('gray')
-                        ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: '.$record->name )
+                        ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: '.$record->name)
                         ->modalSubmitAction(false)
                         ->modalCancelAction(false)
                         ->slideOver(),

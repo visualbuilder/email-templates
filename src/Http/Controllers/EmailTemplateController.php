@@ -20,15 +20,14 @@ class EmailTemplateController extends Controller
         return view($emailTemplate->view_path, ['data' => $data]);
     }
 
-
     protected function prepareEmailData($emailTemplate, $tokenHelper, $model)
     {
         return [
-            'user'          => $model->user,
-            'content'       => $tokenHelper->replaceTokens($emailTemplate->content, $model),
-            'subject'       => $tokenHelper->replaceTokens($emailTemplate->subject, $model),
+            'user' => $model->user,
+            'content' => $tokenHelper->replaceTokens($emailTemplate->content, $model),
+            'subject' => $tokenHelper->replaceTokens($emailTemplate->subject, $model),
             'preHeaderText' => $tokenHelper->replaceTokens($emailTemplate->preheader, $model),
-            'title'         => $tokenHelper->replaceTokens($emailTemplate->title, $model),
+            'title' => $tokenHelper->replaceTokens($emailTemplate->title, $model),
         ];
     }
 }

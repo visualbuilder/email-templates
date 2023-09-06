@@ -46,10 +46,10 @@ class CreateMailableHelper implements CreateMailableInterface
     private function response($title, $icon, $icon_color, $body)
     {
         return (object) [
-            "title"      => $title,
-            "icon"       => $icon,
+            "title" => $title,
+            "icon" => $icon,
             "icon_color" => $icon_color,
-            "body"       => $body,
+            "body" => $body,
         ];
     }
 }
