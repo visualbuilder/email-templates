@@ -3,6 +3,7 @@
 return [
     //If you wish to customise the table name change this before migration
     'table_name'       => 'vb_email_templates',
+    'theme_table_name'       => 'vb_email_templates_themes',
 
     //If you want to use your own resource for email templates,
     //you can set this to true and use `php artisan email-template:publish` to publish the resource

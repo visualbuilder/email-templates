@@ -22,7 +22,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name("filament-email-templates")
-            ->hasMigrations(['create_email_templates_table'])
+            ->hasMigrations(['create_email_templates_table','create_email_templates_themes_table'])
             ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
             ->hasAssets()
             ->hasViews('vb-email-templates')
