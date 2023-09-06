@@ -3,15 +3,14 @@
 namespace Visualbuilder\EmailTemplates\Resources;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\RelationManagers;
 
 class EmailTemplateThemeResource extends Resource
 {
@@ -60,7 +59,7 @@ class EmailTemplateThemeResource extends Resource
 
                                 Forms\Components\ColorPicker::make('colours.footer_bg_color')
                                     ->label('Footer Background'),
-                                    
+
                                 Forms\Components\ColorPicker::make('colours.callout_bg_color')
                                     ->label('Callout Background'),
 
@@ -78,8 +77,8 @@ class EmailTemplateThemeResource extends Resource
 
                                 Forms\Components\ColorPicker::make('colours.anchor_color')
                                     ->label('Anchor Color'),
-                            ])->columns(3)
-                    ])->columnSpanFull()
+                            ])->columns(3),
+                    ])->columnSpanFull(),
             ]);
     }
 
@@ -105,7 +104,7 @@ class EmailTemplateThemeResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -114,7 +113,7 @@ class EmailTemplateThemeResource extends Resource
             'edit' => Pages\EditEmailTemplateTheme::route('/{record}/edit'),
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

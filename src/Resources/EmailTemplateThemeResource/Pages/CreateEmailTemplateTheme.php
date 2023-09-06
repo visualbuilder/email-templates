@@ -2,9 +2,8 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages;
 
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource;
 
 class CreateEmailTemplateTheme extends CreateRecord
 {
