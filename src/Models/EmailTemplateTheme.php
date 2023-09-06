@@ -2,7 +2,6 @@
 
 namespace Visualbuilder\EmailTemplates\Models;
 
-use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
