@@ -159,7 +159,7 @@ class EmailTemplateResource extends Resource
                 [
                     Action::make('create-mail-class')
                         ->label("Build Class")
-                        ->visible(function (EmailTemplate $record) {return !$record->mailable_exists;})
+                        ->visible(function (EmailTemplate $record) {return ! $record->mailable_exists;})
                         ->icon('heroicon-o-document-text')
                         // ->action('createMailClass'),
                         ->action(function (EmailTemplate $record) {
