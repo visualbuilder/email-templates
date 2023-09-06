@@ -103,6 +103,7 @@ class EmailTemplate extends Model
             'expiresAt' => now(),
         ];
         $model->plainText = Str::random(32);
+
         return $model;
     }
 
@@ -162,7 +163,7 @@ class EmailTemplate extends Model
         $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
-        if (!class_exists($fullClassName)) {
+        if (! class_exists($fullClassName)) {
             throw new \Exception("Mailable class {$fullClassName} does not exist.");
         }
 
