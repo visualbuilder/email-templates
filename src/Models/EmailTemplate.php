@@ -107,11 +107,11 @@ class EmailTemplate extends Model
         return $model;
     }
 
-
     public function getEmailPreviewData()
     {
         $tokenHelper = app(TokenHelperInterface::class);
         $model = self::createEmailPreviewData();
+
         return [
             'user' => $model->user,
             'content' => $tokenHelper->replaceTokens($this->content, $model),
@@ -135,8 +135,10 @@ class EmailTemplate extends Model
 
         $data = $this->getEmailPreviewData();
         $content = view($this->view_path, ['data' => $data])->render();
+
         return base64_encode($content);
     }
+
     /**
      * Efficient method to return requested template locale or default language template in one query
      *

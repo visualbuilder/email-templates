@@ -27,7 +27,7 @@ class Iframe extends Component
         parent::setUp();
 
     }
-    
+
     public static function make($name, $src = null, $height = '800px', $width = '100%')
     {
         return new static($name, $src, $height, $width);
