@@ -1,4 +1,5 @@
 <?php
+
 namespace Visualbuilder\EmailTemplates\Helpers;
 
 use Exception;
@@ -8,7 +9,7 @@ use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 
 class CreateMailableHelper implements CreateMailableInterface
 {
-    const STUB_PATH = __DIR__."/../Stubs/MailableTemplate.stub";
+    public const STUB_PATH = __DIR__."/../Stubs/MailableTemplate.stub";
 
     public function createMailable($record)
     {
@@ -31,10 +32,10 @@ class CreateMailableHelper implements CreateMailableInterface
 
         } catch (Exception $e) {
             Log::error($e->getMessage());
+
             return $this->response("Error: ".$e->getMessage(), "heroicon-o-exclamation-circle", "danger");
         }
     }
-
 
     private function prepareDirectory($folder)
     {
@@ -48,7 +49,7 @@ class CreateMailableHelper implements CreateMailableInterface
             "title"      => $title,
             "icon"       => $icon,
             "icon_color" => $icon_color,
-            "body"       => $body
+            "body"       => $body,
         ];
     }
 }
