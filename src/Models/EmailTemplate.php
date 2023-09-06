@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
@@ -123,6 +124,9 @@ class EmailTemplate extends Model
         //  ->orderByRaw('field(language, ?, ?)', $languages); // order by field is not present in sqlite
     }
 
+    /**
+     * @return Attribute
+     */
     public function viewPath(): Attribute
     {
         return new Attribute(
@@ -130,8 +134,22 @@ class EmailTemplate extends Model
         );
     }
 
-    public function previewUrl()
+    /**
+     * @return string
+     */
+    public function previewUrl(): string
     {
         return route('email-template.preview', $this);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getMailableExistsAttribute(): bool
+    {
+        $className = Str::studly($this->key);
+        $filePath = app_path(config('email-templates.mailable_directory')."/{$className}.php");
+
+        return File::exists($filePath);
     }
 }

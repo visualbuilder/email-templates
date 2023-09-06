@@ -1,58 +1,54 @@
 <?php
-
 namespace Visualbuilder\EmailTemplates\Helpers;
 
+use Exception;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
-use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
 class CreateMailableHelper implements CreateMailableInterface
 {
+    const STUB_PATH = __DIR__."/../Stubs/MailableTemplate.stub";
+
     public function createMailable($record)
     {
-        $response = (object)[
-            "title" => null,
-            "icon" => null,
-            "icon_color" => null,
-        ];
-        $emailTemplate = EmailTemplate::findOrFail($record->id);
-        // preparing class name
-        $className = str_replace('-', ' ', $emailTemplate->key);
-        $className = str_replace(' ', '', ucwords($className));
+        try {
+            $className = Str::studly($record->key);
 
-        // prepare directory
-        $this->prepareDirectory("Mail/Visualbuilder/EmailTemplates");
+            $this->prepareDirectory(config('email-templates.mailable_directory'));
 
-        $filePath = app_path("Mail/Visualbuilder/EmailTemplates/$className.php");
+            $filePath = app_path(config('email-templates.mailable_directory')."/$className.php");
 
-        if(file_exists($filePath)) {
-            $response->title = "Class already exists";
-            $response->icon = "heroicon-o-exclamation-circle";
-            $response->icon_color = "danger";
-        } else {
-            $stub = file_get_contents(__DIR__ . "/../Stubs/MailableTemplate.stub");
-            $classContent = str_replace(
-                ['{{className}}', '{{template-key}}'],
-                [$className, $emailTemplate->key],
-                $stub
-            );
-            file_put_contents($filePath, $classContent);
+            if (file_exists($filePath)) {
+                return $this->response("Class already exists", "heroicon-o-exclamation-circle", "danger", $filePath);
+            }
 
-            $response->title = "Class generated successfully";
-            $response->icon = "heroicon-o-check-circle";
-            $response->icon_color = "success";
+            $classContent = str_replace(['{{className}}', '{{template-key}}'], [$className, $record->key], File::get(self::STUB_PATH));
+
+            File::put($filePath, $classContent);
+
+            return $this->response("Class generated successfully", "heroicon-o-check-circle", "success", $filePath);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->response("Error: ".$e->getMessage(), "heroicon-o-exclamation-circle", "danger");
         }
-
-        return $response;
     }
 
-    public function prepareDirectory($folder)
+
+    private function prepareDirectory($folder)
     {
         $path = app_path($folder);
-        if(! File::isDirectory($path)) {
-            File::makeDirectory($path, 0755, true);
-        }
+        File::ensureDirectoryExists($path, 0755);
+    }
 
-        return true;
+    private function response($title, $icon, $icon_color, $body)
+    {
+        return (object) [
+            "title"      => $title,
+            "icon"       => $icon,
+            "icon_color" => $icon_color,
+            "body"       => $body
+        ];
     }
 }

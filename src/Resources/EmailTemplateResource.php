@@ -26,7 +26,18 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 class EmailTemplateResource extends Resource
 {
     protected static ?string $model = EmailTemplate::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return config('email-templates.navigation.group');
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return config('email-templates.navigation.sort');
+    }
 
     public static function getModelLabel(): string
     {
@@ -40,7 +51,7 @@ class EmailTemplateResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $mailHelper = app(CreateMailableInterface::class);
+
         $formHelper = app(FormHelperInterface::class);
         $templates = $formHelper->getTemplateViewOptions();
         $recipients = $formHelper->getRecipientOptions();
@@ -125,6 +136,7 @@ class EmailTemplateResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table->columns(
             [
                 TextColumn::make('id'),
@@ -146,16 +158,19 @@ class EmailTemplateResource extends Resource
             ->actions(
                 [
                     Action::make('create-mail-class')
-                        ->label("Create Mail Class")
+                        ->label("Build Class")
+                        ->visible(function (EmailTemplate $record) {return !$record->mailable_exists;})
                         ->icon('heroicon-o-document-text')
                         // ->action('createMailClass'),
-                        ->action(function ($record) {
-                            $notify = $this->mailHelper->createMailable($record);
-                            // dd($record);
+                        ->action(function (EmailTemplate $record) {
+                            $notify = app(CreateMailableInterface::class)->createMailable($record);
                             Notification::make()
                                 ->title($notify->title)
                                 ->icon($notify->icon)
                                 ->iconColor($notify->icon_color)
+                                ->duration(100000)
+                                //Fix for bug where body hides the icon
+                                ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                 ->send();
                         }),
                     Tables\Actions\ViewAction::make()
