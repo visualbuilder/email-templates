@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -175,13 +176,12 @@ class EmailTemplateResource extends Resource
                                 ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                 ->send();
                         }),
-                    Action::make('Preview')
+                    Tables\Actions\ViewAction::make('Preview')
                         ->icon('heroicon-o-magnifying-glass')
                         ->modalContent(fn (EmailTemplate $record): View => view(
                             'vb-email-templates::forms.components.iframe',
                             ['record' => $record],
                         ))
-                        ->color('gray')
                         ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: '.$record->name)
                         ->modalSubmitAction(false)
                         ->modalCancelAction(false)
@@ -208,7 +208,6 @@ class EmailTemplateResource extends Resource
             'index' => Pages\ListEmailTemplates::route('/'),
             'create' => Pages\CreateEmailTemplate::route('/create'),
             'edit' => Pages\EditEmailTemplate::route('/{record}/edit'),
-            'view' => Pages\PreviewEmailTemplate::route('/{record}'),
         ];
     }
 

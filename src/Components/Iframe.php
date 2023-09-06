@@ -27,14 +27,7 @@ class Iframe extends Component
         parent::setUp();
 
     }
-
-    //    protected function setUp(): void
-    //    {
-    //        $this->afterStateHydrated(function ($record) {
-    //            $this->src = route('email-template.preview', $record);
-    //        });
-    //    }
-
+    
     public static function make($name, $src = null, $height = '800px', $width = '100%')
     {
         return new static($name, $src, $height, $width);

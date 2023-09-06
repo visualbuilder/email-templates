@@ -54,9 +54,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         if($this->app->runningInConsole()) {
             $this->publishResources();
         }
-
-        $this->registerRoutes();
-
+        
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vb-email-templates');
     }
 
@@ -86,13 +84,4 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         ];
     }
 
-    /**
-     * Register custom routes.
-     * We may want to move these to a separate file.
-     * @return void
-     */
-    public function registerRoutes()
-    {
-        Route::get('/admin/email-templates/{record}/preview', [EmailTemplateController::class, 'preview'])->name('email-template.preview');
-    }
 }

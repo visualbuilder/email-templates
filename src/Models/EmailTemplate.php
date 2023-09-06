@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 
 /**
@@ -91,12 +92,13 @@ class EmailTemplate extends Model
         return collect(config('emailTemplate.recipients'));
     }
 
-    public static function getEmailPreviewData()
+    public static function createEmailPreviewData()
     {
         $model = (object) [];
         $userModel = config('email-templates.recipients')[0];
         //Setup some data for previewing email template
         $model->user = $userModel::first();
+
         $model->tokenUrl = URL::to('/');
         $model->verificationUrl = URL::to('/');
         $model->expiresAt = now();
@@ -105,6 +107,36 @@ class EmailTemplate extends Model
         return $model;
     }
 
+
+    public function getEmailPreviewData()
+    {
+        $tokenHelper = app(TokenHelperInterface::class);
+        $model = self::createEmailPreviewData();
+        return [
+            'user' => $model->user,
+            'content' => $tokenHelper->replaceTokens($this->content, $model),
+            'subject' => $tokenHelper->replaceTokens($this->subject, $model),
+            'preHeaderText' => $tokenHelper->replaceTokens($this->preheader, $model),
+            'title' => $tokenHelper->replaceTokens($this->title, $model),
+        ];
+    }
+
+    /**
+     * Gets base64 encoded content - to add to an iframe
+     * @return string
+     */
+    public function getBase64EmailPreviewData()
+    {
+        /**
+         * Iframes normally use src attribute to load content from a url
+         * This means an extra http request
+         *  Below method includes the content directly as base64 encoded
+         */
+
+        $data = $this->getEmailPreviewData();
+        $content = view($this->view_path, ['data' => $data])->render();
+        return base64_encode($content);
+    }
     /**
      * Efficient method to return requested template locale or default language template in one query
      *
