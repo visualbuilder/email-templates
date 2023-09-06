@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Factories;
+namespace Visualbuilder\EmailTemplates\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\EmailTemplateTheme;
+use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 
 class EmailTemplateThemeFactory extends Factory
 {
@@ -23,6 +23,7 @@ class EmailTemplateThemeFactory extends Factory
         return [
             'name' => $this->faker->name,
             'colours' => '{}',
+            'is_active' =>0,
         ];
     }
 }

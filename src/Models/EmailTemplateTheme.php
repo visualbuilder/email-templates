@@ -2,9 +2,11 @@
 
 namespace Visualbuilder\EmailTemplates\Models;
 
+use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateThemeFactory;
 
 class EmailTemplateTheme extends Model
 {
@@ -44,5 +46,10 @@ class EmailTemplateTheme extends Model
     public function setTableFromConfig()
     {
         $this->table = config('email-templates.theme_table_name');
+    }
+
+    protected static function newFactory()
+    {
+        return EmailTemplateThemeFactory::new();
     }
 }

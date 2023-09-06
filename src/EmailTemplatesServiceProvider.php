@@ -61,6 +61,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         $this->publishes([
                              __DIR__
                              .'/../database/seeders/EmailTemplateSeeder.php' => database_path('seeders/EmailTemplateSeeder.php'),
+                             __DIR__.'/../database/seeders/EmailTemplateThemeSeeder.php' => database_path('seeders/EmailTemplateThemeSeeder.php'),
                          ], 'filament-email-templates-seeds');
 
         $this->publishes([
