@@ -71,31 +71,33 @@ class EmailTemplateThemeResource extends Resource
                                     ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.body_bg_color')
-                                    ->label('Body Background'),
+                                    ->label('Body Background')
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.content_bg_color')
-                                    ->label('Content Background'),
+                                    ->label('Content Background')
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.footer_bg_color')
                                     ->label('Footer Background'),
 
                                 Forms\Components\ColorPicker::make('colours.callout_bg_color')
-                                    ->label('Callout Background'),
+                                    ->label('Callout Background')->live(),
 
                                 Forms\Components\ColorPicker::make('colours.button_bg_color')
-                                    ->label('Button Background'),
+                                    ->label('Button Background')->live(),
 
                                 Forms\Components\ColorPicker::make('colours.body_color')
-                                    ->label('Body Color'),
+                                    ->label('Body Color')->live(),
 
                                 Forms\Components\ColorPicker::make('colours.callout_color')
                                     ->label('Callout Color'),
 
                                 Forms\Components\ColorPicker::make('colours.button_color')
-                                    ->label('Button Color'),
+                                    ->label('Button Color')->live(),
 
                                 Forms\Components\ColorPicker::make('colours.anchor_color')
-                                    ->label('Anchor Color'),
+                                    ->label('Anchor Color')->live(),
                             ]),
 
                     ])
