@@ -4,7 +4,6 @@ namespace Visualbuilder\EmailTemplates\Traits;
 
 use Illuminate\Support\Facades\View;
 
-
 trait TokenHelper
 {
     public function replaceTokens($content, $models)
@@ -73,7 +72,7 @@ trait TokenHelper
                 return View::make('vb-email-templates::email.parts._button', [
                     'url' => $url,
                     'title' => $title,
-                    'data'=>['theme'=>$this->theme->colours]
+                    'data' => ['theme' => $this->theme->colours],
                 ])
                            ->render();
             }

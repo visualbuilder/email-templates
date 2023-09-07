@@ -128,14 +128,14 @@ class EmailTemplate extends Model
     {
 
         $model = self::createEmailPreviewData();
-        
+
         return [
-            'user'          => $model->user,
-            'content'       => $this->replaceTokens($this->content, $model),
-            'subject'       => $this->replaceTokens($this->subject, $model),
+            'user' => $model->user,
+            'content' => $this->replaceTokens($this->content, $model),
+            'subject' => $this->replaceTokens($this->subject, $model),
             'preHeaderText' => $this->replaceTokens($this->preheader, $model),
-            'title'         => $this->replaceTokens($this->title, $model),
-            'theme'         => $this->theme->colours
+            'title' => $this->replaceTokens($this->title, $model),
+            'theme' => $this->theme->colours,
         ];
     }
 
@@ -177,7 +177,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn() => config('email-templates.template_view_path').'.'.$this->view
+            get: fn () => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 
@@ -202,7 +202,7 @@ class EmailTemplate extends Model
         $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
-        if (!class_exists($fullClassName)) {
+        if (! class_exists($fullClassName)) {
             throw new \Exception("Mailable class {$fullClassName} does not exist.");
         }
 

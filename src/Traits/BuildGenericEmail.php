@@ -7,7 +7,6 @@ use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
 trait BuildGenericEmail
 {
-
     /**
      * Build the message.
      *
@@ -31,7 +30,7 @@ trait BuildGenericEmail
             'content' => $template->replaceTokens($template->content, $this),
             'preHeaderText' => $template->replaceTokens($template->preheader, $this),
             'title' => $template->replaceTokens($template->title, $this),
-            'theme'=>$template->theme->colours
+            'theme' => $template->theme->colours,
         ];
 
         return $this->from($template->from, config('app.name'))

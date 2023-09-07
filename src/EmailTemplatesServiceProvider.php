@@ -14,7 +14,6 @@ use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\FormHelper;
 
-
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
@@ -34,7 +33,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         parent::packageRegistered();
-        
+
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->singleton(FormHelperInterface::class, FormHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);

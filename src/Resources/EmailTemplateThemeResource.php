@@ -32,6 +32,7 @@ class EmailTemplateThemeResource extends Resource
     public static function getPreviewData()
     {
         $emailTemplate = EmailTemplate::findEmailByKey('user-verify-email');
+
         return $emailTemplate->getEmailPreviewData();
     }
 
@@ -43,7 +44,7 @@ class EmailTemplateThemeResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Template Preview')
                             ->schema([
-                                Forms\Components\ViewField::make('preview')->view('vb-email-templates::email.default_preview',['data'=>self::getPreviewData()]),
+                                Forms\Components\ViewField::make('preview')->view('vb-email-templates::email.default_preview', ['data' => self::getPreviewData()]),
                             ])
                             ->columnSpan(['lg' => 2]),
                     ])
@@ -94,7 +95,7 @@ class EmailTemplateThemeResource extends Resource
 
                                 Forms\Components\ColorPicker::make('colours.anchor_color')
                                     ->label('Anchor Color'),
-                            ])
+                            ]),
 
                     ])
                     ->columnSpan(['lg' => 1]),
