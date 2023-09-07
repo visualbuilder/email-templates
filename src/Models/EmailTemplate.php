@@ -53,12 +53,26 @@ class EmailTemplate extends Model
         'language',
         'send_to',
     ];
+
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'deleted_at' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+    /**
+     * @var string[]
+     */
     protected $dates = ['deleted_at'];
+
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['theme'];
 
     public function __construct(array $attributes = [])
     {
@@ -66,15 +80,17 @@ class EmailTemplate extends Model
         $this->setTableFromConfig();
     }
 
+
     public function setTableFromConfig()
     {
         $this->table = config('email-templates.table_name');
     }
 
+
     public static function findEmailByKey($key, $language = null)
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
-
+        //For multi site domains this key will need to include the site_id
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
             return self::query()
                 ->language($language ?? config('email-templates.default_locale'))
@@ -83,16 +99,25 @@ class EmailTemplate extends Model
         });
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public static function getSendToSelectOptions()
     {
         return collect(config('emailTemplate.recipients'));
     }
 
+    /**
+     * @return EmailTemplateFactory
+     */
     protected static function newFactory()
     {
         return EmailTemplateFactory::new();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->name ?? class_basename($this);
@@ -129,24 +154,30 @@ class EmailTemplate extends Model
         return base64_encode($content);
     }
 
+    /**
+     * @return array
+     */
     public function getEmailPreviewData()
     {
-
         $model = self::createEmailPreviewData();
 
         return [
-            'user' => $model->user,
-            'content' => $this->replaceTokens($this->content, $model),
-            'subject' => $this->replaceTokens($this->subject, $model),
+            'user'          => $model->user,
+            'content'       => $this->replaceTokens($this->content, $model),
+            'subject'       => $this->replaceTokens($this->subject, $model),
             'preHeaderText' => $this->replaceTokens($this->preheader, $model),
-            'title' => $this->replaceTokens($this->title, $model),
-            'theme' => $this->theme->colours,
+            'title'         => $this->replaceTokens($this->title, $model),
+            'theme'         => $this->theme->colours,
         ];
     }
 
+    /**
+     * @return object
+     */
     public static function createEmailPreviewData()
     {
         $model = (object) [];
+
         $userModel = config('email-templates.recipients')[0];
         //Setup some data for previewing email template
         $model->user = $userModel::first();
@@ -154,6 +185,7 @@ class EmailTemplate extends Model
         $model->tokenUrl = URL::to('/');
         $model->verificationUrl = URL::to('/');
         $model->expiresAt = now();
+        /* Not used in preview but need to add something */
         $model->plainText = Str::random(32);
 
         return $model;
@@ -182,7 +214,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn () => config('email-templates.template_view_path').'.'.$this->view
+            get: fn() => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 
@@ -207,7 +239,7 @@ class EmailTemplate extends Model
         $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
-        if (! class_exists($fullClassName)) {
+        if (!class_exists($fullClassName)) {
             throw new \Exception("Mailable class {$fullClassName} does not exist.");
         }
 
