@@ -10,10 +10,10 @@ use Visualbuilder\EmailTemplates\Commands\InstallCommand;
 use Visualbuilder\EmailTemplates\Commands\PublishEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\FormHelper;
-use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
+
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
@@ -34,8 +34,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         parent::packageRegistered();
-
-        $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
+        
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->singleton(FormHelperInterface::class, FormHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);

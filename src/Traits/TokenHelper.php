@@ -1,11 +1,11 @@
 <?php
 
-namespace Visualbuilder\EmailTemplates\Helpers;
+namespace Visualbuilder\EmailTemplates\Traits;
 
 use Illuminate\Support\Facades\View;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 
-class TokenHelper implements TokenHelperInterface
+
+trait TokenHelper
 {
     public function replaceTokens($content, $models)
     {
@@ -52,13 +52,13 @@ class TokenHelper implements TokenHelperInterface
             }
         }
 
-        $button = self::buildEmailButton($content);
+        $button = $this->buildEmailButton($content);
         $content = self::replaceButtonToken($content, $button);
 
         return $content;
     }
 
-    public static function buildEmailButton($content)
+    public function buildEmailButton($content)
     {
         $title = $url = '';
         if (preg_match('/(?<=##button).*?(?=#)/', $content, $matches)) {
@@ -69,9 +69,11 @@ class TokenHelper implements TokenHelperInterface
                 $title = $title[ 0 ];
             }
             if ($check1 && $check2) {
+
                 return View::make('vb-email-templates::email.parts._button', [
                     'url' => $url,
                     'title' => $title,
+                    'data'=>['theme'=>$this->theme->colours]
                 ])
                            ->render();
             }

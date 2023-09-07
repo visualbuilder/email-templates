@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 use Visualbuilder\EmailTemplates\Mail\UserLockedOutEmail;
 use Visualbuilder\EmailTemplates\Mail\UserLoginEmail;
 use Visualbuilder\EmailTemplates\Mail\UserPasswordResetSuccessEmail;
@@ -30,8 +29,7 @@ it('can replace tokens in user welcome email', function () {
         ]
     );
     $user = User::factory()->create();
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserRegisteredEmail($user, $tokenHelper);
+    $mailable = new UserRegisteredEmail($user);
     $mailable->assertSeeInHtml("Dear $user->name,");
 });
 
@@ -59,8 +57,7 @@ it('can replace tokens in user password reset request email', function () {
     $user = User::factory()->create();
     $token = Password::broker()->createToken($user);
     $tokenUrl = "https://yourwebsite.com/user/password/reset/$token";
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserRequestPasswordResetEmail($user, $tokenUrl, $tokenHelper);
+    $mailable = new UserRequestPasswordResetEmail($user, $tokenUrl);
     $mailable->assertSeeInHtml("Hello $user->name,");
     $mailable->assertSeeInHtml($tokenUrl);
 
@@ -83,8 +80,7 @@ it('can replace tokens in user password reset success email', function () {
     );
 
     $user = User::factory()->create();
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserPasswordResetSuccessEmail($user, $tokenHelper);
+    $mailable = new UserPasswordResetSuccessEmail($user);
     $mailable->assertSeeInHtml("Dear $user->name,");
     $mailable->assertSeeInHtml("Your password has been reset.");
 
@@ -108,8 +104,7 @@ it('can replace tokens in user account locked out email', function () {
     );
 
     $user = User::factory()->create();
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserLockedOutEmail($user, $tokenHelper);
+    $mailable = new UserLockedOutEmail($user);
     $mailable->assertSeeInHtml("Dear $user->name,");
     $mailable->assertSeeInHtml("Sorry your account has been locked out due to too many bad password attempts.");
 
@@ -137,8 +132,7 @@ it('can replace tokens in user verify email', function () {
     $user = User::factory()->create();
     $token = Str::random(64);
     $verificationUrl = "https://yourwebsite.com/verify-email/$user->id/$token";
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserVerifyEmail($user, $verificationUrl, $tokenHelper);
+    $mailable = new UserVerifyEmail($user, $verificationUrl);
     $mailable->assertSeeInHtml("Dear $user->name,");
     $mailable->assertSeeInHtml($verificationUrl);
 });
@@ -160,8 +154,7 @@ it('can replace tokens in user verified email', function () {
     );
 
     $user = User::factory()->create();
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserVerifiedEmail($user, $tokenHelper);
+    $mailable = new UserVerifiedEmail($user);
     $mailable->assertSeeInHtml("Hi $user->name,");
 
 });
@@ -184,7 +177,6 @@ it('can replace tokens in user logged in email', function () {
         ]
     );
     $user = User::factory()->create();
-    $tokenHelper = new TokenHelper();
-    $mailable = new UserLoginEmail($user, $tokenHelper);
+    $mailable = new UserLoginEmail($user);
     $mailable->assertSeeInHtml("Hi $user->name,");
 });

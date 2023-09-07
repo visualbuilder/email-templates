@@ -7,7 +7,7 @@
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
         <!-- LOGO -->
         <tr>
-            <td bgcolor="{{config('email-templates.header_bg_color')}}" align="center" style="background-color: {{config('email-templates.header_bg_color')}}">
+            <td bgcolor="{{$data['theme']["header_bg_color"]}}" align="center" style="background-color: {{$data['theme']["header_bg_color"]}}">
                 <!--[if (gte mso 9)|(IE)]>
                 <table align="center" border="0" cellspacing="0" cellpadding="0" width="{{config('email-templates.content_width')}}">
                     <tr>

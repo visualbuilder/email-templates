@@ -47,7 +47,7 @@
         table { border-collapse: collapse !important; }
         body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
 
-        a {color: {{config('email-templates.anchor_color')}}}
+        a {color: {{$data['theme']["anchor_color"]}}}
 
         /* iOS BLUE LINKS */
         a[x-apple-data-detectors] {
@@ -71,5 +71,5 @@
         div[style*="margin: 16px 0;"] { margin: 0 !important; }
     </style>
 </head>
-<body style="background-color: {{config('email-templates.header_bg_color')}}; margin: 0 !important; padding: 0 !important;">
+<body style="background-color: {{$data['theme']["header_bg_color"]}}; margin: 0 !important; padding: 0 !important;">
 

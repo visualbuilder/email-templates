@@ -5,7 +5,6 @@ namespace Visualbuilder\EmailTemplates\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class UserRequestPasswordResetEmail extends Mailable
@@ -24,11 +23,10 @@ class UserRequestPasswordResetEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($user, $token, TokenHelperInterface $tokenHelper)
+    public function __construct($user, $token)
     {
         $this->user = $user;
         $this->tokenUrl = $token;
         $this->sendTo = $user->email;
-        $this->initializeTokenHelper($tokenHelper);
     }
 }

@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
+use Visualbuilder\EmailTemplates\Traits\TokenHelper;
 
 /**
  * @property int $id
@@ -35,6 +35,7 @@ class EmailTemplate extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use TokenHelper;
 
     /**
      * @var array
@@ -125,15 +126,16 @@ class EmailTemplate extends Model
 
     public function getEmailPreviewData()
     {
-        $tokenHelper = app(TokenHelperInterface::class);
+
         $model = self::createEmailPreviewData();
 
+        $test  = $this->theme->colours;
         return [
             'user'          => $model->user,
-            'content'       => $tokenHelper->replaceTokens($this->content, $model),
-            'subject'       => $tokenHelper->replaceTokens($this->subject, $model),
-            'preHeaderText' => $tokenHelper->replaceTokens($this->preheader, $model),
-            'title'         => $tokenHelper->replaceTokens($this->title, $model),
+            'content'       => $this->replaceTokens($this->content, $model),
+            'subject'       => $this->replaceTokens($this->subject, $model),
+            'preHeaderText' => $this->replaceTokens($this->preheader, $model),
+            'title'         => $this->replaceTokens($this->title, $model),
             'theme'         => $this->theme->colours
         ];
     }
