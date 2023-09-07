@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages;
 
@@ -28,10 +29,30 @@ class EmailTemplateThemeResource extends Resource
         return config('email-templates.navigation.sort');
     }
 
+    public static function getPreviewData()
+    {
+        $emailTemplate = EmailTemplate::findEmailByKey('user-verify-email');
+        $test = $emailTemplate->theme;
+        
+        return $emailTemplate->getEmailPreviewData();
+    }
+
     public static function form(Form $form): Form
     {
+
+
         return $form
             ->schema([
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Template Preview')
+                            ->schema([
+                                Forms\Components\ViewField::make('preview')->view('vb-email-templates::email.default_preview',['data'=>self::getPreviewData()]),
+                            ])
+                            ->columnSpan(['lg' => 2]),
+                    ])
+                    ->columnSpan(['lg' => 2]),
+
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make()
@@ -44,12 +65,12 @@ class EmailTemplateThemeResource extends Resource
                                     ->inline(false)
                                     ->onColor('success')
                                     ->offColor('danger'),
-                            ])->columns(4),
+                            ]),
 
                         Forms\Components\Section::make('Set Colors')
                             ->schema([
                                 Forms\Components\ColorPicker::make('colours.header_bg_color')
-                                ->label('Header Background'),
+                                    ->label('Header Background'),
 
                                 Forms\Components\ColorPicker::make('colours.body_bg_color')
                                     ->label('Body Background'),
@@ -77,9 +98,11 @@ class EmailTemplateThemeResource extends Resource
 
                                 Forms\Components\ColorPicker::make('colours.anchor_color')
                                     ->label('Anchor Color'),
-                            ])->columns(3),
-                    ])->columnSpanFull(),
-            ]);
+                            ])
+
+                    ])
+                    ->columnSpan(['lg' => 1]),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table

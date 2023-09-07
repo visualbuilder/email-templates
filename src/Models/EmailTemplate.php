@@ -69,16 +69,6 @@ class EmailTemplate extends Model
         $this->table = config('email-templates.table_name');
     }
 
-    protected static function newFactory()
-    {
-        return EmailTemplateFactory::new();
-    }
-
-    public function __toString()
-    {
-        return $this->name ?? class_basename($this);
-    }
-
     public static function findEmailByKey($key, $language = null)
     {
         return self::query()
@@ -90,6 +80,62 @@ class EmailTemplate extends Model
     public static function getSendToSelectOptions()
     {
         return collect(config('emailTemplate.recipients'));
+    }
+
+    protected static function newFactory()
+    {
+        return EmailTemplateFactory::new();
+    }
+
+    public function __toString()
+    {
+        return $this->name ?? class_basename($this);
+    }
+
+    /**
+     * Get the assigned theme or the default
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function theme()
+    {
+        return $this->belongsTo(EmailTemplateTheme::class, 'vb_email_templates_themes_id')->withDefault(function ($model) {
+            return EmailTemplateTheme::where('is_active', true)->first();
+        });
+    }
+
+    /**
+     * Gets base64 encoded content - to add to an iframe
+     *
+     * @return string
+     */
+    public function getBase64EmailPreviewData()
+    {
+        /**
+         * Iframes normally use src attribute to load content from a url
+         * This means an extra http request
+         *  Below method includes the content directly as base64 encoded
+         */
+
+        $data = $this->getEmailPreviewData();
+        $content = view($this->view_path, ['data' => $data])->render();
+
+        return base64_encode($content);
+    }
+
+    public function getEmailPreviewData()
+    {
+        $tokenHelper = app(TokenHelperInterface::class);
+        $model = self::createEmailPreviewData();
+
+        return [
+            'user'          => $model->user,
+            'content'       => $tokenHelper->replaceTokens($this->content, $model),
+            'subject'       => $tokenHelper->replaceTokens($this->subject, $model),
+            'preHeaderText' => $tokenHelper->replaceTokens($this->preheader, $model),
+            'title'         => $tokenHelper->replaceTokens($this->title, $model),
+            'theme'         => $this->theme->colours
+        ];
     }
 
     public static function createEmailPreviewData()
@@ -105,38 +151,6 @@ class EmailTemplate extends Model
         $model->plainText = Str::random(32);
 
         return $model;
-    }
-
-    public function getEmailPreviewData()
-    {
-        $tokenHelper = app(TokenHelperInterface::class);
-        $model = self::createEmailPreviewData();
-
-        return [
-            'user' => $model->user,
-            'content' => $tokenHelper->replaceTokens($this->content, $model),
-            'subject' => $tokenHelper->replaceTokens($this->subject, $model),
-            'preHeaderText' => $tokenHelper->replaceTokens($this->preheader, $model),
-            'title' => $tokenHelper->replaceTokens($this->title, $model),
-        ];
-    }
-
-    /**
-     * Gets base64 encoded content - to add to an iframe
-     * @return string
-     */
-    public function getBase64EmailPreviewData()
-    {
-        /**
-         * Iframes normally use src attribute to load content from a url
-         * This means an extra http request
-         *  Below method includes the content directly as base64 encoded
-         */
-
-        $data = $this->getEmailPreviewData();
-        $content = view($this->view_path, ['data' => $data])->render();
-
-        return base64_encode($content);
     }
 
     /**
@@ -162,7 +176,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn () => config('email-templates.template_view_path').'.'.$this->view
+            get: fn() => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 
@@ -187,7 +201,7 @@ class EmailTemplate extends Model
         $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
-        if (! class_exists($fullClassName)) {
+        if (!class_exists($fullClassName)) {
             throw new \Exception("Mailable class {$fullClassName} does not exist.");
         }
 
