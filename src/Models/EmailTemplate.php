@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -72,10 +73,14 @@ class EmailTemplate extends Model
 
     public static function findEmailByKey($key, $language = null)
     {
-        return self::query()
-            ->language($language ?? config('email-templates.default_locale'))
-            ->where("key", $key)
-            ->firstOrFail();
+        $cacheKey = "email_by_key_{$key}_{$language}";
+
+        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
+            return self::query()
+                ->language($language ?? config('email-templates.default_locale'))
+                ->where("key", $key)
+                ->firstOrFail();
+        });
     }
 
     public static function getSendToSelectOptions()
