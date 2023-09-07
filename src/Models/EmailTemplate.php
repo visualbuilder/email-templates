@@ -128,8 +128,7 @@ class EmailTemplate extends Model
     {
 
         $model = self::createEmailPreviewData();
-
-        $test  = $this->theme->colours;
+        
         return [
             'user'          => $model->user,
             'content'       => $this->replaceTokens($this->content, $model),
