@@ -80,16 +80,15 @@ class EmailTemplate extends Model
         $this->setTableFromConfig();
     }
 
-
     public function setTableFromConfig()
     {
         $this->table = config('email-templates.table_name');
     }
 
-
     public static function findEmailByKey($key, $language = null)
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
+
         //For multi site domains this key will need to include the site_id
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
             return self::query()
@@ -162,12 +161,12 @@ class EmailTemplate extends Model
         $model = self::createEmailPreviewData();
 
         return [
-            'user'          => $model->user,
-            'content'       => $this->replaceTokens($this->content, $model),
-            'subject'       => $this->replaceTokens($this->subject, $model),
+            'user' => $model->user,
+            'content' => $this->replaceTokens($this->content, $model),
+            'subject' => $this->replaceTokens($this->subject, $model),
             'preHeaderText' => $this->replaceTokens($this->preheader, $model),
-            'title'         => $this->replaceTokens($this->title, $model),
-            'theme'         => $this->theme->colours,
+            'title' => $this->replaceTokens($this->title, $model),
+            'theme' => $this->theme->colours,
         ];
     }
 
@@ -214,7 +213,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn() => config('email-templates.template_view_path').'.'.$this->view
+            get: fn () => config('email-templates.template_view_path').'.'.$this->view
         );
     }
 
@@ -239,7 +238,7 @@ class EmailTemplate extends Model
         $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
-        if (!class_exists($fullClassName)) {
+        if (! class_exists($fullClassName)) {
             throw new \Exception("Mailable class {$fullClassName} does not exist.");
         }
 
