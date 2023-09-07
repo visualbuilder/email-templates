@@ -66,7 +66,8 @@ class EmailTemplateThemeResource extends Resource
                         Forms\Components\Section::make('Set Colors')
                             ->schema([
                                 Forms\Components\ColorPicker::make('colours.header_bg_color')
-                                    ->label('Header Background'),
+                                    ->label('Header Background')
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.body_bg_color')
                                     ->label('Body Background'),
