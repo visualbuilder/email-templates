@@ -101,7 +101,7 @@ class EmailTemplate extends Model
     public function theme()
     {
         return $this->belongsTo(EmailTemplateTheme::class, 'vb_email_templates_themes_id')->withDefault(function ($model) {
-            return EmailTemplateTheme::where('is_active', true)->first();
+            return EmailTemplateTheme::where('is_default', true)->first();
         });
     }
 

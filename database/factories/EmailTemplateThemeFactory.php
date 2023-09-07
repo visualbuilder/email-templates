@@ -23,7 +23,7 @@ class EmailTemplateThemeFactory extends Factory
         return [
             'name' => $this->faker->name,
             'colours' => '{}',
-            'is_active' =>0,
+            'is_default' => 0,
         ];
     }
 }

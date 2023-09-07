@@ -57,7 +57,7 @@ class EmailTemplateThemeResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->columnSpan(3),
 
-                                Forms\Components\Toggle::make('is_active')
+                                Forms\Components\Toggle::make('is_default')
                                     ->label('Is Active')
                                     ->inline(false)
                                     ->onColor('success')
@@ -108,7 +108,7 @@ class EmailTemplateThemeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
+                Tables\Columns\IconColumn::make('is_default')->boolean(),
             ])
             ->filters([
                 //

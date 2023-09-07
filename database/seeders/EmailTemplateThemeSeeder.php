@@ -25,7 +25,7 @@ class EmailTemplateThemeSeeder extends Seeder
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#1E88E5',
                 ],
-                'is_active'=>1,
+                'is_default'=>1,
             ],
             [
                 'name'       => 'Pastel',
@@ -44,7 +44,7 @@ class EmailTemplateThemeSeeder extends Seeder
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#4c05a1',
                 ],
-                'is_active'=>0,
+                'is_default'=>0,
             ],
             [
                 'name'       => 'Elegant Contrast',
@@ -62,7 +62,7 @@ class EmailTemplateThemeSeeder extends Seeder
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#8E24AA', // Matching with header
                 ],
-                'is_active'=>0,
+                'is_default'=>0,
             ],
             [
                 'name'       => 'Earthy & Calm',
@@ -79,7 +79,7 @@ class EmailTemplateThemeSeeder extends Seeder
                     'button_color'       => '#2A2A11',
                     'anchor_color'       => '#43A047', // Matching with header
                 ],
-                'is_active'=>0,
+                'is_default'=>0,
             ],
 
         ];

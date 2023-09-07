@@ -20,7 +20,7 @@ class EmailTemplateTheme extends Model
     protected $fillable = [
         'name',
         'colours',
-        'is_active',
+        'is_default',
     ];
 
     /**

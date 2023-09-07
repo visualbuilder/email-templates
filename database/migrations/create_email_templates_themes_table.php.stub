@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name', 191)->nullable()->comment('Name');
             $table->json('colours')->nullable();
-            $table->boolean('is_active')->default(0)->comment('1: Active | 0: Not Active');
+            $table->boolean('is_default')->default(0)->comment('1: Active | 0: Not Active');
             $table->softDeletes();
             $table->timestamps();
         });
