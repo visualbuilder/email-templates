@@ -32,15 +32,11 @@ class EmailTemplateThemeResource extends Resource
     public static function getPreviewData()
     {
         $emailTemplate = EmailTemplate::findEmailByKey('user-verify-email');
-        $test = $emailTemplate->theme;
-        
         return $emailTemplate->getEmailPreviewData();
     }
 
     public static function form(Form $form): Form
     {
-
-
         return $form
             ->schema([
                 Forms\Components\Group::make()

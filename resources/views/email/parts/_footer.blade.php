@@ -37,5 +37,3 @@
 </tr>
 </table>
 
-</body>
-</html>

@@ -6,7 +6,7 @@
             <tr>
                 <td align="center" valign="top" width="{{config('email-templates.content_width')}}">
         <![endif]-->
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: {{config('email-templates.content_width')}}px;" >
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: {{config('email-templates.content_width')}}px;">
             <tr>
                 <td bgcolor="{{$data['theme']["content_bg_color"]}}" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: {{config('email-templates
                 .body_color')}}; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
