@@ -16,7 +16,7 @@ return new class extends Migration
       Schema::create(config('email-templates.table_name'), function (Blueprint $table) {
                      $columnName = config('email-templates.theme_table_name') . '_id';
                  $table->increments('id');
-                 $table->unsignedBigInteger($columnName)->nullable();
+                 $table->unsignedInteger($columnName)->nullable();
                  $table->string('key', 191)->comment('Must be unique when combined with language');
                  $table->string('language', 8)->default(config('email-templates.default_locale'),);
                  $table->string('name', 191)->nullable()->comment('Friendly Name');
