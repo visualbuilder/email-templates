@@ -38,7 +38,7 @@ trait BuildGenericEmail
             'content' => $this->tokenHelper->replaceTokens($template->content, $this),
             'preHeaderText' => $this->tokenHelper->replaceTokens($template->preheader, $this),
             'title' => $this->tokenHelper->replaceTokens($template->title, $this),
-            'theme'=>$template->theme->colours
+            'theme' => $template->theme->colours,
         ];
 
         return $this->from($template->from, config('app.name'))
