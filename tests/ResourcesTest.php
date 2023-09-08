@@ -1,10 +1,10 @@
 <?php
 
+use Filament\Actions;
 use Filament\Pages\Actions\DeleteAction;
 use Filament\Pages\Actions\ForceDeleteAction;
-use Filament\Pages\Actions\RestoreAction;
 
-use Filament\Actions;
+use Filament\Pages\Actions\RestoreAction;
 
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
@@ -14,7 +14,6 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
-use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 
 // listing tests
 it('can access email template list page', function () {

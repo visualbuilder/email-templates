@@ -3,7 +3,6 @@
 namespace Visualbuilder\EmailTemplates\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 
 class EmailTemplateThemeFactory extends Factory
