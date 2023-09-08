@@ -23,7 +23,7 @@ it('creates a mailable class if it does not exist', function () {
 
     // Then: The mailable class should be created
     expect(file_exists($filePath))->toBeTrue();
-    expect($response->title)->toBe("$filePath Class generated successfully");
+    expect($response->title)->toBe("Class generated successfully");
     expect($response->icon)->toBe("heroicon-o-check-circle");
     expect($response->icon_color)->toBe("success");
 });

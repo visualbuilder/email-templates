@@ -28,6 +28,8 @@ it('can replace tokens in user welcome email', function () {
                             ##config.app.name##</p>",
         ]
     );
+
+    $this->makeTheme();
     $user = User::factory()->create();
     $mailable = new UserRegisteredEmail($user);
     $mailable->assertSeeInHtml("Dear $user->name,");
@@ -54,6 +56,7 @@ it('can replace tokens in user password reset request email', function () {
         ]
     );
 
+    $this->makeTheme();
     $user = User::factory()->create();
     $token = Password::broker()->createToken($user);
     $tokenUrl = "https://yourwebsite.com/user/password/reset/$token";
@@ -79,6 +82,7 @@ it('can replace tokens in user password reset success email', function () {
         ]
     );
 
+    $this->makeTheme();
     $user = User::factory()->create();
     $mailable = new UserPasswordResetSuccessEmail($user);
     $mailable->assertSeeInHtml("Dear $user->name,");
@@ -103,6 +107,7 @@ it('can replace tokens in user account locked out email', function () {
         ]
     );
 
+    $this->makeTheme();
     $user = User::factory()->create();
     $mailable = new UserLockedOutEmail($user);
     $mailable->assertSeeInHtml("Dear $user->name,");
@@ -129,6 +134,8 @@ it('can replace tokens in user verify email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
+
+    $this->makeTheme();
     $user = User::factory()->create();
     $token = Str::random(64);
     $verificationUrl = "https://yourwebsite.com/verify-email/$user->id/$token";
@@ -153,6 +160,7 @@ it('can replace tokens in user verified email', function () {
         ]
     );
 
+    $this->makeTheme();
     $user = User::factory()->create();
     $mailable = new UserVerifiedEmail($user);
     $mailable->assertSeeInHtml("Hi $user->name,");
@@ -176,6 +184,8 @@ it('can replace tokens in user logged in email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
+
+    $this->makeTheme();
     $user = User::factory()->create();
     $mailable = new UserLoginEmail($user);
     $mailable->assertSeeInHtml("Hi $user->name,");

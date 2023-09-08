@@ -15,6 +15,7 @@ class UserRegisteredEmail extends Mailable
 
     public $template = 'user-welcome';
     public $sendTo;
+    public $user;
 
     /**
      * Create a new message instance.
