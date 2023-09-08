@@ -314,7 +314,7 @@ it('can preview user verify email', function () {
         'record' => $emailData->getRouteKey(),
     ])->mountAction(Actions\ViewAction::class, ['
         record' => $emailData,
-    ])->assertSee('To activate your account please click the button below');    
+    ])->assertSee('To activate your account please click the button below');
 });
 
 it('can preview user verified email', function () {
@@ -341,7 +341,7 @@ it('can preview user verified email', function () {
         'record' => $emailData->getRouteKey(),
     ])->mountAction(Actions\ViewAction::class, ['
         record' => $emailData,
-    ])->assertSee('has been verified on'); 
+    ])->assertSee('has been verified on');
 });
 
 it('can preview user logged in email', function () {
@@ -370,5 +370,5 @@ it('can preview user logged in email', function () {
         'record' => $emailData->getRouteKey(),
     ])->mountAction(Actions\ViewAction::class, ['
         record' => $emailData,
-    ])->assertSee('You have been logged into'); 
+    ])->assertSee('You have been logged into');
 });
