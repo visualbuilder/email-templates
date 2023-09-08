@@ -189,10 +189,14 @@ it('can preview user welcome email', function () {
                             ##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('Thanks for registering with');
-})->todo();
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('Thanks for registering with');
+});
 
 it('can preview user password reset request email', function () {
     $emailData = EmailTemplate::factory()->create(
@@ -214,10 +218,17 @@ it('can preview user password reset request email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('You are receiving this email because we received a password reset request for your account');
-})->todo();
+    // get(EmailTemplateResource::getUrl('view', [
+    //     'record' => $emailData,
+    // ]))->assertSee('You are receiving this email because we received a password reset request for your account');
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('You are receiving this email because we received a password reset request for your account');
+});
 
 it('can preview user password reset success email', function () {
     $emailData = EmailTemplate::factory()->create(
@@ -234,10 +245,17 @@ it('can preview user password reset success email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('Your password has been reset');
-})->todo();
+    // get(EmailTemplateResource::getUrl('view', [
+    //     'record' => $emailData,
+    // ]))->assertSee('Your password has been reset');
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('Your password has been reset');
+});
 
 it('can preview user account locked out email', function () {
     $emailData = EmailTemplate::factory()->create(
@@ -255,10 +273,18 @@ it('can preview user account locked out email', function () {
                                 <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('Sorry your account has been locked out due to too many bad password attempts');
-})->todo();
+    // get(EmailTemplateResource::getUrl('view', [
+    //     'record' => $emailData,
+    // ]))->assertSee('Sorry your account has been locked out due to too many bad password attempts');
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('Sorry your account has been locked out due to too many bad password attempts');
+
+});
 
 it('can preview user verify email', function () {
     $emailData = EmailTemplate::factory()->create(
@@ -279,10 +305,17 @@ it('can preview user verify email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('To activate your account please click the button below');
-})->todo();
+    // get(EmailTemplateResource::getUrl('view', [
+    //     'record' => $emailData,
+    // ]))->assertSee('To activate your account please click the button below');
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('To activate your account please click the button below');    
+});
 
 it('can preview user verified email', function () {
     $emailData = EmailTemplate::factory()->create(
@@ -299,10 +332,17 @@ it('can preview user verified email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('has been verified on');
-})->todo();
+    // get(EmailTemplateResource::getUrl('view', [
+    //     'record' => $emailData,
+    // ]))->assertSee('has been verified on');
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('has been verified on'); 
+});
 
 it('can preview user logged in email', function () {
     $emailData = EmailTemplate::factory()->create(
@@ -321,7 +361,14 @@ it('can preview user logged in email', function () {
                             <p>Kind Regards,<br>##config.app.name##</p>",
         ]
     );
-    get(EmailTemplateResource::getUrl('view', [
-        'record' => $emailData,
-    ]))->assertSee('You have been logged into');
-})->todo();
+    // get(EmailTemplateResource::getUrl('view', [
+    //     'record' => $emailData,
+    // ]))->assertSee('You have been logged into');
+
+    $this->makeTheme();
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailData->getRouteKey(),
+    ])->mountAction(Actions\ViewAction::class, ['
+        record' => $emailData,
+    ])->assertSee('You have been logged into'); 
+});
