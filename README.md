@@ -25,7 +25,7 @@
 
 We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new templates.
 
-![Email Preview](./guides/TemplateScreenShot.png)
+![Email Preview](./media/ThemeEditor.png)
 
 ## Installation
 
@@ -66,7 +66,7 @@ You can publish EmailTemplateResource to your project. Run the command given bel
 
 ### HTML Editor
 Edit email content in the admin and use tokens to inject model or config content.
-![Email Preview](./guides/EmailEditor.png)
+![Email Preview](./media/EmailEditor.png)
 
 Note: The seeder can also be edited directly if you wish to prepopulate with your own content.
 `Database\Seeders\EmailTemplateSeeder.php`

@@ -125,7 +125,7 @@ class EmailTemplateResource extends Resource
                                         TiptapEditor::make('content')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
-                                        ->default("<p>Dear ##user.firstname##, </p>"),
+                                            ->default("<p>Dear ##user.firstname##, </p>"),
                                     ]
                                 ),
 
@@ -175,7 +175,7 @@ class EmailTemplateResource extends Resource
                                 ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                 ->send();
                         }),
-                    Tables\Actions\ViewAction::make('Preview')
+                        Action::make('Preview')
                         ->icon('heroicon-o-magnifying-glass')
                         ->modalContent(fn (EmailTemplate $record): View => view(
                             'vb-email-templates::forms.components.iframe',
