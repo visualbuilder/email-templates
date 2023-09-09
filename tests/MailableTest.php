@@ -163,7 +163,7 @@ it('can replace tokens in user verified email', function () {
     $this->makeTheme();
     $user = User::factory()->create();
     $mailable = new UserVerifiedEmail($user);
-    $mailable->assertSeeInHtml("Hi $user->name,");
+    $mailable->assertSeeInHtml($user->email);
 
 });
 
