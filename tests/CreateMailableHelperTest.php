@@ -36,6 +36,7 @@ it('returns an error if the mailable class already exists', function () {
     // And: The mailable class already exists
     $className = Str::studly($record->key);
     $filePath = app_path(config('email-templates.mailable_directory')."/{$className}.php");
+    File::ensureDirectoryExists(app_path(config('email-templates.mailable_directory')), 0755);
     File::put($filePath, '');
 
     // When: We run the createMailable method
