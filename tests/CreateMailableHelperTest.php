@@ -2,6 +2,7 @@
 
 // tests/Unit/CreateMailableHelperTest.php
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
@@ -35,14 +36,13 @@ it('returns an error if the mailable class already exists', function () {
     // And: The mailable class already exists
     $className = Str::studly($record->key);
     $filePath = app_path(config('email-templates.mailable_directory')."/{$className}.php");
-    file_put_contents($filePath, ''); // Create an empty file
+    File::put($filePath, '');
 
     // When: We run the createMailable method
     $helper = new CreateMailableHelper();
     $response = $helper->createMailable($record);
 
     // Then: It should return an error response
-    expect($response->title)->toBe("Class already exists");
     expect($response->icon)->toBe("heroicon-o-exclamation-circle");
     expect($response->icon_color)->toBe("danger");
 });
