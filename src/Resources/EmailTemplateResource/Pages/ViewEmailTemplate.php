@@ -3,8 +3,8 @@
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 use Filament\Forms\Form;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Filament\Resources\Pages\ViewRecord;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 class ViewEmailTemplate extends ViewRecord
 {
@@ -14,5 +14,4 @@ class ViewEmailTemplate extends ViewRecord
     {
         return static::getResource()::form();
     }
-
 }

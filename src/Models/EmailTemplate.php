@@ -61,7 +61,7 @@ class EmailTemplate extends Model
             'deleted_at' => 'datetime:Y-m-d H:i:s',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
-            'from'       => 'array'
+            'from' => 'array',
     ];
     /**
      * @var string[]
@@ -162,12 +162,12 @@ class EmailTemplate extends Model
         $model = self::createEmailPreviewData();
 
         return [
-                'user'          => $model->user,
-                'content'       => $this->replaceTokens($this->content, $model),
-                'subject'       => $this->replaceTokens($this->subject, $model),
+                'user' => $model->user,
+                'content' => $this->replaceTokens($this->content, $model),
+                'subject' => $this->replaceTokens($this->subject, $model),
                 'preHeaderText' => $this->replaceTokens($this->preheader, $model),
-                'title'         => $this->replaceTokens($this->title, $model),
-                'theme'         => $this->theme->colours,
+                'title' => $this->replaceTokens($this->title, $model),
+                'theme' => $this->theme->colours,
         ];
     }
 
@@ -205,8 +205,8 @@ class EmailTemplate extends Model
 
         return $query->whereIn('language', $languages)
                 ->orderByRaw(
-                        "(CASE WHEN language = ? THEN 1 ELSE 2 END)",
-                        [$language]
+                    "(CASE WHEN language = ? THEN 1 ELSE 2 END)",
+                    [$language]
                 );
     }
 
@@ -216,7 +216,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-                get: fn() => config('filament-email-templates.template_view_path').'.'.$this->view
+            get: fn () => config('filament-email-templates.template_view_path').'.'.$this->view
         );
     }
 
@@ -241,7 +241,7 @@ class EmailTemplate extends Model
         $directory = str_replace('/', '\\', config('filament-email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
-        if (!class_exists($fullClassName)) {
+        if (! class_exists($fullClassName)) {
             throw new \Exception("Mailable class {$fullClassName} does not exist.");
         }
 
