@@ -1,9 +1,8 @@
-# Email template editor for Filament
+# Email template editor for Filament 3.0
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
 [![Total Downloads](https://img.shields.io/packagist/dt/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
 [![run-tests](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml/badge.svg?branch=3.x)](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml)
-[![Check & fix styling](https://github.com/visualbuilder/email-templates/actions/workflows/php-cs-fixer.yml/badge.svg)](https://github.com/visualbuilder/email-templates/actions/workflows/php-cs-fixer.yml)
 
 ### Why businesses and applications should use Email Templates
 - **Time-saving**: Email templates eliminate the need to create emails from scratch, saving valuable time and effort.
@@ -22,8 +21,9 @@
 - Templates can include model attribute tokens or config values which will be replaced, eg ##user.name## or ##config.app.name##
 - Templates can be saved with different locales for multi-lingual capability.
 - A generic method for quickly creating mail classes to speed up adding new templates and faster automation possiblities.
+- Theme editor - Set your own colours and apply to specific templates.
 
-We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new templates.
+We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new template Classes
 
 ![Email Preview](./media/ThemeEditor.png)
 
@@ -53,6 +53,8 @@ public function panel(Panel $panel): Panel
         ]);
 }
 ```
+Menu Group and sort order can be set in the config
+
 
 ## Publish EmailTemplateResource
 
@@ -205,7 +207,7 @@ see https://www.npmjs.com/package/flag-icons
 The index page will provide an action to build the class if the file does not exist.
 Click to create the Mailable in app\Mail\VisualBuilder\EmailTemplates
 
-![Build Class](media/Build Class.png)
+![Build Class](./media/Build Class.png)
 
 
 Generated Mailable Classes will use the BuildGenericEmail Trait
