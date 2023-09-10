@@ -92,11 +92,9 @@ class EmailTemplateResource extends Resource
                                             ->allowHtml(),
                                         TextInput::make('from.email')->default(config('mail.from.address'))
                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                                ->required()
                                                 ->email(),
-                                        TextInput::make('from.name')->default(config('mail.from.address'))
+                                        TextInput::make('from.name')->default(config('mail.from.name'))
                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
-                                                ->required()
                                                 ->string(),
                                     ]
                                 ),

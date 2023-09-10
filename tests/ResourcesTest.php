@@ -44,8 +44,7 @@ it('can create email template', function () {
             'cc' => $newData->cc,
             'bcc' => $newData->bcc,
             'send_to' => $newData->send_to,
-            'from.name' => $newData->from['name'],
-            'from.email' => $newData->from['email'],
+            //'from' => $newData->from,
             'name' => $newData->name,
             'preheader' => $newData->preheader,
             'subject' => $newData->subject,
@@ -63,8 +62,7 @@ it('can create email template', function () {
         'cc' => $storedData->data['cc'],
         'bcc' => $storedData->data['bcc'],
         'send_to' => $storedData->data['send_to'],
-        'from.name' => $storedData->data['from.name'],
-        'from.email' => $storedData->data['from.email'],
+       //'from' => $storedData->data['from'],
         'name' => $storedData->data['name'],
         'preheader' => $storedData->data['preheader'],
         'subject' => $storedData->data['subject'],
@@ -81,7 +79,7 @@ it('can access email template edit page', function () {
     ]))->assertSuccessful();
 });
 
-it('can update email template', function () {
+it('can update email an email template', function () {
     $data = EmailTemplate::factory()->create();
     $newData = EmailTemplate::factory()->make();
 
@@ -94,8 +92,8 @@ it('can update email template', function () {
             'cc' => $newData->cc,
             'bcc' => $newData->bcc,
             'send_to' => $newData->send_to,
-            'from.name' => $newData->from['name'],
             'from.email' => $newData->from['email'],
+            'from.name' => $newData->from['name'],
             'name' => $newData->name,
             'preheader' => $newData->preheader,
             'subject' => $newData->subject,
@@ -113,8 +111,6 @@ it('can update email template', function () {
         'cc' => $updatedData->data['cc'],
         'bcc' => $updatedData->data['bcc'],
         'send_to' => $updatedData->data['send_to'],
-        'from.email' => $updatedData->data['from.email'],
-        'from.name' => $updatedData->data['from.name'],
         'name' => $updatedData->data['name'],
         'preheader' => $updatedData->data['preheader'],
         'subject' => $updatedData->data['subject'],
@@ -290,7 +286,6 @@ it('can preview user verify email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-verify-email',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Verify Email',
             'title' => 'Verify your email',
@@ -321,7 +316,6 @@ it('can preview user verified email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-verified',
-            'from' => config('mail.from.address'),
             'name' => 'User Verified',
             'title' => 'Verification Success',
             'send_to' => 'user',
@@ -348,7 +342,6 @@ it('can preview user logged in email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-login',
-            'from' => config('mail.from.address'),
             'name' => 'User Logged In',
             'title' => 'Login Success',
             'send_to' => 'user',

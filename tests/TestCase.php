@@ -35,7 +35,7 @@ class TestCase extends Orchestra
             User::create(['email' => 'admin@domain.com', 'name' => 'Admin', 'password' => 'password'])
         );
 
-        Config::set('email-templates.recipients', ['\\Visualbuilder\\EmailTemplates\\Tests\\Models\\User']);
+        Config::set('filament-email-templates.recipients', ['\\Visualbuilder\\EmailTemplates\\Tests\\Models\\User']);
     }
 
     protected function getPackageProviders($app): array

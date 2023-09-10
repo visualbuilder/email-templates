@@ -25,8 +25,8 @@ return [
     'logo'                    => 'media/email-templates/logo.png',
 
     //Logo size in pixels -> 200 pixels high is plenty big enough.
-    'logo_width'              => '476',
-    'logo_height'             => '117',
+    'logo_width'              => '500',
+    'logo_height'             => '126',
 
     //Content Width in Pixels
     'content_width'           => '600',

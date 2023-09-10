@@ -28,7 +28,7 @@ class EmailTemplateFactory extends Factory
             'cc'         => null,
             'bcc'        => null,
             'send_to'    => 'user',
-            'from'       => ['name'=>$this->faker->email,'email'=>$this->faker->name],
+            'from'       => ['email'=>$this->faker->email,'name'=>$this->faker->name],
             'name'       => $this->faker->name,
             'preheader'  => $this->faker->sentence,
             'subject'    => $this->faker->sentence,
