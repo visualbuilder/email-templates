@@ -189,12 +189,12 @@ class EmailTemplateResource extends Resource
                                 ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                 ->send();
                         }),
-                        Action::make('Preview')
+                    Tables\Actions\ViewAction::make('Preview')
                         ->icon('heroicon-o-magnifying-glass')
                         ->modalContent(fn (EmailTemplate $record): View => view(
                             'vb-email-templates::forms.components.iframe',
                             ['record' => $record],
-                        ))
+                        ))->form(null)
                         ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: '.$record->name)
                         ->modalSubmitAction(false)
                         ->modalCancelAction(false)
