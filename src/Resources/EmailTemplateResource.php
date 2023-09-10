@@ -22,7 +22,6 @@ use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
@@ -98,11 +97,12 @@ class EmailTemplateResource extends Resource
                                         TextInput::make('from.name')->default(config('mail.from.address'))
                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
                                                 ->required()
-                                                ->string()
-                                    ]),
+                                                ->string(),
+                                    ]
+                                ),
                                 Grid::make(['default' => 3, 'sm' => 1, 'md' => 3])
                                         ->schema(
-                                                [
+                                            [
                                         Select::make('view')
                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
                                                 ->options($templates)
@@ -118,9 +118,9 @@ class EmailTemplateResource extends Resource
                                         Select::make(config('filament-email-templates.theme_table_name') . '_id')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
                                                 ->relationship(name: 'theme', titleAttribute: 'name')
-                                            ->searchable()
+                                            ->searchable(),
                                     ]
-                                ),
+                                        ),
 
                             Grid::make(['default' => 1])
                                 ->schema(

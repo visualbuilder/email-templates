@@ -34,7 +34,7 @@ trait BuildGenericEmail
             'theme' => $template->theme->colours,
         ];
 
-        return $this->from($template->from['email'],$template->from['name'])
+        return $this->from($template->from['email'], $template->from['name'])
             ->view($template->view_path)
             ->subject($template->replaceTokens($template->subject, $this))
             ->to($this->sendTo)
