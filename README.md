@@ -194,7 +194,7 @@ Languages that should be shown on the language picker can be set in the config
     ]
 ```
 
-![Email Preview](./media/Languages.png)
+![Language Picker](./media/Languages.png)
 
 Flag icons are loaded from CDN: https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css
 see https://www.npmjs.com/package/flag-icons
@@ -202,9 +202,10 @@ see https://www.npmjs.com/package/flag-icons
 
 ### Creating a new Mail Class
 
-The index page will provide an action to Build Class if the file does not exist.
+The index page will provide an action to build the class if the file does not exist.
+Click to create the Mailable in app\Mail\VisualBuilder\EmailTemplates
 
-![Build Class](/Users/lee/webs/packages/visualbuilder/email-templates/media/Build Class.png)
+![Build Class](media/Build Class.png)
 
 
 Generated Mailable Classes will use the BuildGenericEmail Trait
