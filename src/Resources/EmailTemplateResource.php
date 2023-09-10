@@ -96,23 +96,14 @@ class EmailTemplateResource extends Resource
                                         TextInput::make('from.name')->default(config('mail.from.name'))
                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
                                                 ->string(),
-                                    ]
-                                ),
-                                Grid::make(['default' => 3, 'sm' => 1, 'md' => 3])
-                                        ->schema(
-                                            [
+
                                         Select::make('view')
                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
                                                 ->options($templates)
                                                 ->default(current($templates))
                                                 ->searchable()
                                                 ->required(),
-                                        Select::make('send_to')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to'))
-                                            ->options($recipients)
-                                            ->default(current($recipients))
-                                            ->searchable()
-                                            ->required(),
+
                                         Select::make(config('filament-email-templates.theme_table_name') . '_id')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
                                                 ->relationship(name: 'theme', titleAttribute: 'name')

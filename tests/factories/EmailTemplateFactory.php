@@ -28,7 +28,6 @@ class EmailTemplateFactory extends Factory
                 'view' => config('filament-email-templates.default_view'),
                 'cc' => null,
                 'bcc' => null,
-                'send_to' => 'user',
                 'from' => ['email' => $this->faker->email,'name' => $this->faker->name],
                 'name' => $this->faker->name,
                 'preheader' => $this->faker->sentence,

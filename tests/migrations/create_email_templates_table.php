@@ -21,7 +21,6 @@ return new class () extends Migration {
             $table->string('name', 191)->nullable()->comment('Friendly Name');
             $table->string('view', 191)->default(config('filament-email-templates.default_view'))->comment('Blade Template to load into');
             $table->json('from')->nullable()->comment('From address to override system default');
-            $table->string('send_to', 191)->nullable()->comment('The Notifiable model class');
             $table->json('cc')->nullable();
             $table->json('bcc')->nullable();
             $table->string('subject', 191)->nullable();

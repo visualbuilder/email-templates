@@ -43,7 +43,6 @@ it('can create email template', function () {
             'view' => $newData->view,
             'cc' => $newData->cc,
             'bcc' => $newData->bcc,
-            'send_to' => $newData->send_to,
             //'from' => $newData->from,
             'name' => $newData->name,
             'preheader' => $newData->preheader,
@@ -61,7 +60,6 @@ it('can create email template', function () {
         'view' => $storedData->data['view'],
         'cc' => $storedData->data['cc'],
         'bcc' => $storedData->data['bcc'],
-        'send_to' => $storedData->data['send_to'],
        //'from' => $storedData->data['from'],
         'name' => $storedData->data['name'],
         'preheader' => $storedData->data['preheader'],
@@ -91,7 +89,6 @@ it('can update email an email template', function () {
             'view' => $newData->view,
             'cc' => $newData->cc,
             'bcc' => $newData->bcc,
-            'send_to' => $newData->send_to,
             'from.email' => $newData->from['email'],
             'from.name' => $newData->from['name'],
             'name' => $newData->name,
@@ -110,7 +107,6 @@ it('can update email an email template', function () {
         'view' => $updatedData->data['view'],
         'cc' => $updatedData->data['cc'],
         'bcc' => $updatedData->data['bcc'],
-        'send_to' => $updatedData->data['send_to'],
         'name' => $updatedData->data['name'],
         'preheader' => $updatedData->data['preheader'],
         'subject' => $updatedData->data['subject'],
@@ -178,7 +174,7 @@ it('can preview user welcome email', function () {
             'key' => 'user-welcome',
             'name' => 'User Welcome Email',
             'title' => 'Welcome to ##config.app.name##',
-            'send_to' => 'user',
+
             'subject' => 'Welcome to ##config.app.name##',
             'preheader' => 'Lets get you started',
             'content' => "<p>Dear ##user.name##,</p>
@@ -201,7 +197,6 @@ it('can preview user password reset request email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-request-reset',
-            'send_to' => 'user',
             'name' => 'User Request Password Reset',
             'title' => 'Reset your password',
             'subject' => '##config.app.name## Password Reset',
@@ -232,7 +227,7 @@ it('can preview user password reset success email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-password-reset-success',
-            'send_to' => 'user',
+
             'name' => 'User Password Reset',
             'title' => 'Password Reset Success',
             'subject' => '##config.app.name## password has been reset',
@@ -258,7 +253,7 @@ it('can preview user account locked out email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-locked-out',
-            'send_to' => 'user',
+
             'name' => 'User Account Locked Out',
             'title' => 'Account Locked',
             'subject' => '##config.app.name## account has been locked',
@@ -286,7 +281,6 @@ it('can preview user verify email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-verify-email',
-            'send_to' => 'user',
             'name' => 'User Verify Email',
             'title' => 'Verify your email',
             'subject' => 'Verify your email with ##config.app.name##',
@@ -318,7 +312,6 @@ it('can preview user verified email', function () {
             'key' => 'user-verified',
             'name' => 'User Verified',
             'title' => 'Verification Success',
-            'send_to' => 'user',
             'subject' => 'Verification success for ##config.app.name##',
             'preheader' => 'Verification success for ##config.app.name##',
             'content' => "<p>Hi ##user.name##,</p>
@@ -344,7 +337,6 @@ it('can preview user logged in email', function () {
             'key' => 'user-login',
             'name' => 'User Logged In',
             'title' => 'Login Success',
-            'send_to' => 'user',
             'subject' => 'Login Success for ##config.app.name##',
             'preheader' => 'Login Success for ##config.app.name##',
             'content' => "<p>Hi ##user.name##,</p>

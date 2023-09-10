@@ -20,7 +20,6 @@ use Visualbuilder\EmailTemplates\Traits\TokenHelper;
  * @property array $from
  * @property string $name
  * @property string $view
- * @property string $send_to
  * @property object $cc
  * @property object $bcc
  * @property string $subject
@@ -51,7 +50,6 @@ class EmailTemplate extends Model
             'preheader',
             'content',
             'language',
-            'send_to',
     ];
 
     /**

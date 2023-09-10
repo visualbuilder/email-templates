@@ -14,7 +14,6 @@ class EmailTemplateSeeder extends Seeder
                 'from'      =>  ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
                 'name'      => 'User Welcome Email',
                 'title'     => 'Welcome to ##config.app.name##',
-                'send_to'   => 'user',
                 'subject'   => 'Welcome to ##config.app.name##',
                 'preheader' => 'Lets get you started',
                 'content'   => "<p>Dear ##user.name##,</p>
@@ -26,7 +25,6 @@ class EmailTemplateSeeder extends Seeder
             [
                 'key'       => 'user-request-reset',
                 'from'      => ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
-                'send_to'   => 'user',
                 'name'      => 'User Request Password Reset',
                 'title'     => 'Reset your password',
                 'subject'   => '##config.app.name## Password Reset',
@@ -43,7 +41,6 @@ class EmailTemplateSeeder extends Seeder
             [
                 'key'       => 'user-password-reset-success',
                 'from'      => ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
-                'send_to'   => 'user',
                 'name'      => 'User Password Reset',
                 'title'     => 'Password Reset Success',
                 'subject'   => '##config.app.name## password has been reset',
@@ -55,7 +52,7 @@ class EmailTemplateSeeder extends Seeder
             [
                 'key'       => 'user-locked-out',
                 'from'      => ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
-                'send_to'   => 'user',
+
                 'name'      => 'User Account Locked Out',
                 'title'     => 'Account Locked',
                 'subject'   => '##config.app.name## account has been locked',
@@ -69,7 +66,7 @@ class EmailTemplateSeeder extends Seeder
             [
                 'key'       => 'user-verify-email',
                 'from'      => ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
-                'send_to'   => 'user',
+
                 'name'      => 'User Verify Email',
                 'title'     => 'Verify your email',
                 'subject'   => 'Verify your email with ##config.app.name##',
@@ -87,7 +84,6 @@ class EmailTemplateSeeder extends Seeder
                 'from'      => ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
                 'name'      => 'User Verified',
                 'title'     => 'Verification Success',
-                'send_to'   => 'user',
                 'subject'   => 'Verification success for ##config.app.name##',
                 'preheader' => 'Verification success for ##config.app.name##',
                 'content'   => "<p>Hi ##user.name##,</p>
@@ -99,7 +95,6 @@ class EmailTemplateSeeder extends Seeder
                 'from'      => ['email'=>config('mail.from.address'),'name'=>config('mail.from.name')],
                 'name'      => 'User Logged In',
                 'title'     => 'Login Success',
-                'send_to'   => 'user',
                 'subject'   => 'Login Success for ##config.app.name##',
                 'preheader' => 'Login Success for ##config.app.name##',
                 'content'   => "<p>Hi ##user.name##,</p>
