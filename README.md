@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
 [![Total Downloads](https://img.shields.io/packagist/dt/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
-[![Tests](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml/badge.svg)](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml)
+[![run-tests](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml/badge.svg?branch=3.x)](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml)
 [![Check & fix styling](https://github.com/visualbuilder/email-templates/actions/workflows/php-cs-fixer.yml/badge.svg)](https://github.com/visualbuilder/email-templates/actions/workflows/php-cs-fixer.yml)
 
 ### Why businesses and applications should use Email Templates
