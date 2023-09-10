@@ -21,12 +21,12 @@ class EmailTemplateThemeResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return config('email-templates.navigation.group');
+        return config('filament-email-templates.navigation.group');
     }
 
     public static function getNavigationSort(): ?int
     {
-        return config('email-templates.navigation.sort');
+        return config('filament-email-templates.navigation.sort');
     }
 
     public static function getPreviewData()

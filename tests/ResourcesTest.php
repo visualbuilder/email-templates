@@ -44,7 +44,8 @@ it('can create email template', function () {
             'cc' => $newData->cc,
             'bcc' => $newData->bcc,
             'send_to' => $newData->send_to,
-            'from' => $newData->from,
+            'from.name' => $newData->from['name'],
+            'from.email' => $newData->from['email'],
             'name' => $newData->name,
             'preheader' => $newData->preheader,
             'subject' => $newData->subject,
@@ -62,7 +63,8 @@ it('can create email template', function () {
         'cc' => $storedData->data['cc'],
         'bcc' => $storedData->data['bcc'],
         'send_to' => $storedData->data['send_to'],
-        'from' => $storedData->data['from'],
+        'from.name' => $storedData->data['from.name'],
+        'from.email' => $storedData->data['from.email'],
         'name' => $storedData->data['name'],
         'preheader' => $storedData->data['preheader'],
         'subject' => $storedData->data['subject'],
@@ -92,7 +94,8 @@ it('can update email template', function () {
             'cc' => $newData->cc,
             'bcc' => $newData->bcc,
             'send_to' => $newData->send_to,
-            'from' => $newData->from,
+            'from.name' => $newData->from['name'],
+            'from.email' => $newData->from['email'],
             'name' => $newData->name,
             'preheader' => $newData->preheader,
             'subject' => $newData->subject,
@@ -110,7 +113,8 @@ it('can update email template', function () {
         'cc' => $updatedData->data['cc'],
         'bcc' => $updatedData->data['bcc'],
         'send_to' => $updatedData->data['send_to'],
-        'from' => $updatedData->data['from'],
+        'from.email' => $updatedData->data['from.email'],
+        'from.name' => $updatedData->data['from.name'],
         'name' => $updatedData->data['name'],
         'preheader' => $updatedData->data['preheader'],
         'subject' => $updatedData->data['subject'],
@@ -176,7 +180,6 @@ it('can preview user welcome email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-welcome',
-            'from' => config('mail.from.address'),
             'name' => 'User Welcome Email',
             'title' => 'Welcome to ##config.app.name##',
             'send_to' => 'user',
@@ -202,7 +205,6 @@ it('can preview user password reset request email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-request-reset',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Request Password Reset',
             'title' => 'Reset your password',
@@ -234,7 +236,6 @@ it('can preview user password reset success email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-password-reset-success',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Password Reset',
             'title' => 'Password Reset Success',
@@ -261,7 +262,6 @@ it('can preview user account locked out email', function () {
     $emailData = EmailTemplate::factory()->create(
         [
             'key' => 'user-locked-out',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Account Locked Out',
             'title' => 'Account Locked',

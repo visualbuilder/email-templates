@@ -18,7 +18,7 @@ class EmailTemplatesAuthServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        if(config('email-templates.send_emails.verification')) {
+        if(config('filament-email-templates.send_emails.verification')) {
             //Override default Laravel VerifyEmail notification toMail function
             VerifyEmail::toMailUsing(function (User $user, string $verificationUrl) {
                 return (new UserVerifyEmail($user, $verificationUrl));

@@ -135,48 +135,37 @@ Another Laravel built in notification, but to enable the custom email just add t
 
 
 ### Customising the email template
+Some theme colour options have been provided.  Email templates will use the default theme unless you specify otherwise on the email template.
 
-In the config file ``config/email-templates.php`` logo,colours and messaging can be updated.
+In the config file ``config/filament-email-templates.php`` logo, contacts, links and admin preferences can be set
 ```php
-   //Default Email Styling
-    'logo'             => 'media/email-templates/logo.png',
+
+    //Default Logo
+    'logo'                    => 'media/email-templates/logo.png',
 
     //Logo size in pixels -> 200 pixels high is plenty big enough.
-    'logo_width'       => '476',
-    'logo_height'      => '117',
+    'logo_width'              => '476',
+    'logo_height'             => '117',
 
     //Content Width in Pixels
-    'content_width'    => '600',
-
-    //Background Colours
-    'header_bg_color'  => '#B8B8D1',
-    'body_bg_color'    => '#f4f4f4',
-    'content_bg_color' => '#FFFFFB',
-    'footer_bg_color'  => '#5B5F97',
-    'callout_bg_color' => '#B8B8D1',
-    'button_bg_color'  => '#FFC145',
-
-    //Text Colours
-    'body_color'       => '#333333',
-    'callout_color'    => '#000000',
-    'button_color'     => '#2A2A11',
-    'anchor_color'     => '#4c05a1',
+    'content_width'           => '600',
 
     //Contact details included in default email templates
- 'customer-services'  => ['email' => 'support@yourcompany.com',
+    'customer-services'  => ['email' => 'support@yourcompany.com',
                              'phone' => '+441273 455702'],
 
     //Footer Links
-    'links' =>[
-        ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
-        ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
+    'links'                   => [
+        ['name' => 'Website', 'url' => 'https://yourwebsite.com', 'title' => 'Goto website'],
+        ['name' => 'Privacy Policy', 'url' => 'https://yourwebsite.com/privacy-policy', 'title' => 'View Privacy Policy'],
     ],
+
 ```
 
-If you wish to directly edit the template blade file see the primary template here:-
+If you wish to directly edit the template blade files see the primary template here:-
 `resources/views/vendor/vb-email-templates/email/default.php`
 
-You are free to create new templates in this directory which will be automatically visible in the email template editor for selection.
+You are free to create new templates in this directory which will be automatically visible in the email template editor dropdown for selection.
 
 ### Translations
 Each email template has a key and a language so
@@ -188,7 +177,7 @@ We opted to use a separate record for each locale (rather than using a json colu
 more sense to have a separate row.
 
 
-Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead.
+Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead but you can set this as you wish.
 
 Languages that should be shown on the language picker can be set in the config
 ```php
@@ -205,7 +194,7 @@ Languages that should be shown on the language picker can be set in the config
     ]
 ```
 
-![Email Preview](./guides/Languages.png)
+![Email Preview](./media/Languages.png)
 
 Flag icons are loaded from CDN: https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css
 see https://www.npmjs.com/package/flag-icons
@@ -213,14 +202,12 @@ see https://www.npmjs.com/package/flag-icons
 
 ### Creating a new Mail Class
 
-As normal create a new mail with :-
+The index page will provide an action to Build Class if the file does not exist.
 
-```php
-php artisan make:mail MyFunkyNewEmail
-```
+![Build Class](/Users/lee/webs/packages/visualbuilder/email-templates/media/Build Class.png)
 
-Add the **BuildGenericEmail** Trait which saves duplication of code in each mail class keeping the code dry.
 
+Generated Mailable Classes will use the BuildGenericEmail Trait
 ```php
 <?php
 
@@ -342,7 +329,7 @@ You should also include the filetype.
             'title'         => $this->replaceTokens($template->title, $this)
         ];
 
-        return $this->from($template->from, config('app.name'))
+        return $this->from($template->from['email'],$template->from['name'])
             ->view($template->view_path)
             ->subject($this->replaceTokens($template->subject, $this))
             ->to($this->sendTo)

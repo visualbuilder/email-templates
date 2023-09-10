@@ -41,7 +41,7 @@ class UserLoginNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        if(config('email-templates.send_emails.login')) {
+        if(config('filament-email-templates.send_emails.login')) {
             return app(UserLoginEmail::class, ['user' => $notifiable]);
         }
     }

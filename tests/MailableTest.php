@@ -15,7 +15,6 @@ it('can replace tokens in user welcome email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-welcome',
-            'from' => config('mail.from.address'),
             'name' => 'User Welcome Email',
             'title' => 'Welcome to ##config.app.name##',
             'send_to' => 'user',
@@ -39,7 +38,6 @@ it('can replace tokens in user password reset request email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-request-reset',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Request Password Reset',
             'title' => 'Reset your password',
@@ -70,7 +68,6 @@ it('can replace tokens in user password reset success email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-password-reset-success',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Password Reset',
             'title' => 'Password Reset Success',
@@ -94,7 +91,6 @@ it('can replace tokens in user account locked out email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-locked-out',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Account Locked Out',
             'title' => 'Account Locked',
@@ -119,7 +115,6 @@ it('can replace tokens in user verify email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-verify-email',
-            'from' => config('mail.from.address'),
             'send_to' => 'user',
             'name' => 'User Verify Email',
             'title' => 'Verify your email',
@@ -148,7 +143,6 @@ it('can replace tokens in user verified email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-verified',
-            'from' => config('mail.from.address'),
             'name' => 'User Verified',
             'title' => 'Verification Success',
             'send_to' => 'user',
@@ -171,7 +165,6 @@ it('can replace tokens in user logged in email', function () {
     EmailTemplate::factory()->create(
         [
             'key' => 'user-login',
-            'from' => config('mail.from.address'),
             'name' => 'User Logged In',
             'title' => 'Login Success',
             'send_to' => 'user',

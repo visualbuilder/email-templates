@@ -22,6 +22,7 @@ use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
+use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
@@ -32,12 +33,12 @@ class EmailTemplateResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return config('email-templates.navigation.group');
+        return config('filament-email-templates.navigation.group');
     }
 
     public static function getNavigationSort(): ?int
     {
-        return config('email-templates.navigation.sort');
+        return config('filament-email-templates.navigation.sort');
     }
 
     public static function getModelLabel(): string
@@ -87,24 +88,37 @@ class EmailTemplateResource extends Resource
                                             ->unique(ignorable: fn ($record) => $record),
                                         Select::make('language')
                                             ->options($formHelper->getLanguageOptions())
-                                            ->default(config('email-templates.default_locale'))
+                                            ->default(config('filament-email-templates.default_locale'))
                                             ->searchable()
                                             ->allowHtml(),
+                                        TextInput::make('from.email')->default(config('mail.from.address'))
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
+                                                ->required()
+                                                ->email(),
+                                        TextInput::make('from.name')->default(config('mail.from.address'))
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
+                                                ->required()
+                                                ->string()
+                                    ]),
+                                Grid::make(['default' => 3, 'sm' => 1, 'md' => 3])
+                                        ->schema(
+                                                [
                                         Select::make('view')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
-                                            ->options($templates)
-                                            ->default(current($templates))
-                                            ->searchable()
-                                            ->required(),
-                                        TextInput::make('from')->default(config('mail.from.address'))
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                            ->required(),
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
+                                                ->options($templates)
+                                                ->default(current($templates))
+                                                ->searchable()
+                                                ->required(),
                                         Select::make('send_to')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to'))
                                             ->options($recipients)
                                             ->default(current($recipients))
                                             ->searchable()
                                             ->required(),
+                                        Select::make(config('filament-email-templates.theme_table_name') . '_id')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
+                                                ->relationship(name: 'theme', titleAttribute: 'name')
+                                            ->searchable()
                                     ]
                                 ),
 

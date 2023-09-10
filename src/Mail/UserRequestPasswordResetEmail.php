@@ -14,7 +14,7 @@ class UserRequestPasswordResetEmail extends Mailable
     use BuildGenericEmail;
 
     public $user;
-    public $token;
+    public $tokenUrl;
     public $template = 'user-request-reset';
     public $sendTo;
 

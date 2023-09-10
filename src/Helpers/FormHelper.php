@@ -8,7 +8,7 @@ class FormHelper implements FormHelperInterface
 {
     public function getLanguageOptions()
     {
-        return collect(config('email-templates.languages'))->mapWithKeys(function ($langVal, $langKey) {
+        return collect(config('filament-email-templates.languages'))->mapWithKeys(function ($langVal, $langKey) {
             return [
                 $langKey => '<span class="flag-icon flag-icon-'.$langVal["flag-icon"].'"></span> '.$langVal["display"],
             ];
@@ -18,7 +18,7 @@ class FormHelper implements FormHelperInterface
     public function getTemplateViewOptions()
     {
         $overrideDirectory = resource_path('views/vendor/vb-email-templates/email');
-        $packageDirectory = dirname(view(config('email-templates.template_view_path').'.default')->getPath());
+        $packageDirectory = dirname(view(config('filament-email-templates.template_view_path').'.default')->getPath());
 
         $directories = [$overrideDirectory, $packageDirectory];
 
@@ -83,7 +83,7 @@ class FormHelper implements FormHelperInterface
 
     public function getRecipientOptions()
     {
-        return collect(config('email-templates.recipients'))->mapWithKeys(function ($recipient) {
+        return collect(config('filament-email-templates.recipients'))->mapWithKeys(function ($recipient) {
             $splitNamespace = explode('\\', $recipient);
             $className = end($splitNamespace); // Get the class name without namespace
 
