@@ -10,17 +10,16 @@ use Visualbuilder\EmailTemplates\Commands\InstallCommand;
 use Visualbuilder\EmailTemplates\Commands\PublishEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
+
 use Visualbuilder\EmailTemplates\Helpers\CreateMailableHelper;
 use Visualbuilder\EmailTemplates\Helpers\FormHelper;
-use Visualbuilder\EmailTemplates\Helpers\TokenHelper;
 
 class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package->name("filament-email-templates")
-            ->hasMigrations(['create_email_templates_table','create_email_templates_themes_table'])
+            ->hasMigrations(['create_email_templates_themes_table','create_email_templates_table'])
             ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
             ->hasAssets()
             ->hasViews('vb-email-templates')
@@ -35,7 +34,6 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     {
         parent::packageRegistered();
 
-        $this->app->singleton(TokenHelperInterface::class, TokenHelper::class);
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->singleton(FormHelperInterface::class, FormHelper::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
@@ -61,6 +59,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         $this->publishes([
                              __DIR__
                              .'/../database/seeders/EmailTemplateSeeder.php' => database_path('seeders/EmailTemplateSeeder.php'),
+                             __DIR__.'/../database/seeders/EmailTemplateThemeSeeder.php' => database_path('seeders/EmailTemplateThemeSeeder.php'),
                          ], 'filament-email-templates-seeds');
 
         $this->publishes([

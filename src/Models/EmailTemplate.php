@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
+use Visualbuilder\EmailTemplates\Traits\TokenHelper;
 
 /**
  * @property int $id
@@ -35,6 +36,7 @@ class EmailTemplate extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use TokenHelper;
 
     /**
      * @var array
@@ -51,12 +53,26 @@ class EmailTemplate extends Model
         'language',
         'send_to',
     ];
+
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'deleted_at' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+    /**
+     * @var string[]
+     */
     protected $dates = ['deleted_at'];
+
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['theme'];
 
     public function __construct(array $attributes = [])
     {
@@ -69,60 +85,58 @@ class EmailTemplate extends Model
         $this->table = config('email-templates.table_name');
     }
 
-    protected static function newFactory()
-    {
-        return EmailTemplateFactory::new();
-    }
-
-    public function __toString()
-    {
-        return $this->name ?? class_basename($this);
-    }
-
     public static function findEmailByKey($key, $language = null)
     {
-        return self::query()
-            ->language($language ?? config('email-templates.default_locale'))
-            ->where("key", $key)
-            ->firstOrFail();
+        $cacheKey = "email_by_key_{$key}_{$language}";
+
+        //For multi site domains this key will need to include the site_id
+        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
+            return self::query()
+                ->language($language ?? config('email-templates.default_locale'))
+                ->where("key", $key)
+                ->firstOrFail();
+        });
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public static function getSendToSelectOptions()
     {
         return collect(config('emailTemplate.recipients'));
     }
 
-    public static function createEmailPreviewData()
+    /**
+     * @return EmailTemplateFactory
+     */
+    protected static function newFactory()
     {
-        $model = (object) [];
-        $userModel = config('email-templates.recipients')[0];
-        //Setup some data for previewing email template
-        $model->user = $userModel::first();
-
-        $model->tokenUrl = URL::to('/');
-        $model->verificationUrl = URL::to('/');
-        $model->expiresAt = now();
-        $model->plainText = Str::random(32);
-
-        return $model;
+        return EmailTemplateFactory::new();
     }
 
-    public function getEmailPreviewData()
+    /**
+     * @return string
+     */
+    public function __toString()
     {
-        $tokenHelper = app(TokenHelperInterface::class);
-        $model = self::createEmailPreviewData();
+        return $this->name ?? class_basename($this);
+    }
 
-        return [
-            'user' => $model->user,
-            'content' => $tokenHelper->replaceTokens($this->content, $model),
-            'subject' => $tokenHelper->replaceTokens($this->subject, $model),
-            'preHeaderText' => $tokenHelper->replaceTokens($this->preheader, $model),
-            'title' => $tokenHelper->replaceTokens($this->title, $model),
-        ];
+    /**
+     * Get the assigned theme or the default
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function theme()
+    {
+        return $this->belongsTo(EmailTemplateTheme::class, 'vb_email_templates_themes_id')->withDefault(function ($model) {
+            return EmailTemplateTheme::where('is_default', true)->first();
+        });
     }
 
     /**
      * Gets base64 encoded content - to add to an iframe
+     *
      * @return string
      */
     public function getBase64EmailPreviewData()
@@ -137,6 +151,43 @@ class EmailTemplate extends Model
         $content = view($this->view_path, ['data' => $data])->render();
 
         return base64_encode($content);
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmailPreviewData()
+    {
+        $model = self::createEmailPreviewData();
+
+        return [
+            'user' => $model->user,
+            'content' => $this->replaceTokens($this->content, $model),
+            'subject' => $this->replaceTokens($this->subject, $model),
+            'preHeaderText' => $this->replaceTokens($this->preheader, $model),
+            'title' => $this->replaceTokens($this->title, $model),
+            'theme' => $this->theme->colours,
+        ];
+    }
+
+    /**
+     * @return object
+     */
+    public static function createEmailPreviewData()
+    {
+        $model = (object) [];
+
+        $userModel = config('email-templates.recipients')[0];
+        //Setup some data for previewing email template
+        $model->user = $userModel::first();
+
+        $model->tokenUrl = URL::to('/');
+        $model->verificationUrl = URL::to('/');
+        $model->expiresAt = now();
+        /* Not used in preview but need to add something */
+        $model->plainText = Str::random(32);
+
+        return $model;
     }
 
     /**

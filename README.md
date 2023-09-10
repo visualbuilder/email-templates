@@ -25,7 +25,7 @@
 
 We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new templates.
 
-![Email Preview](./guides/TemplateScreenShot.png)
+![Email Preview](./media/ThemeEditor.png)
 
 ## Installation
 
@@ -66,7 +66,7 @@ You can publish EmailTemplateResource to your project. Run the command given bel
 
 ### HTML Editor
 Edit email content in the admin and use tokens to inject model or config content.
-![Email Preview](./guides/EmailEditor.png)
+![Email Preview](./media/EmailEditor.png)
 
 Note: The seeder can also be edited directly if you wish to prepopulate with your own content.
 `Database\Seeders\EmailTemplateSeeder.php`
@@ -220,7 +220,7 @@ php artisan make:mail MyFunkyNewEmail
 ```
 
 Add the **BuildGenericEmail** Trait which saves duplication of code in each mail class keeping the code dry.
-Inject the **TokenHelperInterface** which handles replacement of tokens.
+
 ```php
 <?php
 
@@ -229,7 +229,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class MyFunkyNewEmail extends Mailable
@@ -244,9 +243,8 @@ class MyFunkyNewEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($user, TokenHelperInterface $tokenHelper) {
+    public function __construct($user) {
         $this->sendTo = $user;
-        $this->initializeTokenHelper($tokenHelper);
     }
 }
 ```
@@ -267,7 +265,6 @@ class MyFunkyNewEmai extends Mailable
             $this->user       = $user;
             $this->booking    = $booking;
             $this->sendTo     = $user->email;
-            $this->initializeTokenHelper($tokenHelper);
         }
 ```
 
@@ -319,7 +316,6 @@ class SalesOrderEmail extends Mailable
             $this->order      = $order;
             $this->attachment = $invoice;
             $this->sendTo     = $user->email;
-            $this->initializeTokenHelper($tokenHelper);
         }
 ```
 
@@ -341,14 +337,14 @@ You should also include the filetype.
         }
 
         $data = [
-            'content'       => $this->tokenHelper->replaceTokens($template->content, $this),
-            'preHeaderText' => $this->tokenHelper->replaceTokens($template->preheader, $this),
-            'title'         => $this->tokenHelper->replaceTokens($template->title, $this)
+            'content'       => $this->replaceTokens($template->content, $this),
+            'preHeaderText' => $this->replaceTokens($template->preheader, $this),
+            'title'         => $this->replaceTokens($template->title, $this)
         ];
 
         return $this->from($template->from, config('app.name'))
             ->view($template->view_path)
-            ->subject($this->tokenHelper->replaceTokens($template->subject, $this))
+            ->subject($this->replaceTokens($template->subject, $this))
             ->to($this->sendTo)
             ->with(['data'=>$data]);
     }

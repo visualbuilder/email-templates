@@ -25,7 +25,6 @@ class PreviewEmailTemplate extends ViewRecord
         return __('vb-email-templates::email-templates.general-labels.preview-email', ['label' => $this->record->name]);
     }
 
-    protected $tokenHelper;
 
     public $iframe;
     public $src;

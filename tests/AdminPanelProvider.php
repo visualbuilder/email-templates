@@ -16,6 +16,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->resources([
                 EmailTemplateResource::class,
+                EmailTemplateThemeResource::class,
             ])
             ->middleware([
                 EncryptCookies::class,

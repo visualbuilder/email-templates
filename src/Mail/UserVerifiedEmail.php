@@ -5,7 +5,6 @@ namespace Visualbuilder\EmailTemplates\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Visualbuilder\EmailTemplates\Contracts\TokenHelperInterface;
 use Visualbuilder\EmailTemplates\Traits\BuildGenericEmail;
 
 class UserVerifiedEmail extends Mailable
@@ -23,10 +22,9 @@ class UserVerifiedEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($user, TokenHelperInterface $tokenHelper)
+    public function __construct($user)
     {
         $this->user = $user;
         $this->sendTo = $user->email;
-        $this->initializeTokenHelper($tokenHelper);
     }
 }
