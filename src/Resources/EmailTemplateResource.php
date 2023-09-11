@@ -105,9 +105,9 @@ class EmailTemplateResource extends Resource
                                                 ->required(),
 
                                         Select::make(config('filament-email-templates.theme_table_name') . '_id')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
                                                 ->relationship(name: 'theme', titleAttribute: 'name')
-                                            ->searchable(),
+                                                ->native(false)
                                     ]
                                         ),
 

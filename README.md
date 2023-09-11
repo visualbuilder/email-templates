@@ -33,10 +33,13 @@ Get the package via composer:
 ```bash
 composer require visualbuilder/email-templates
 ```
-Run the install command
+Running the install command will copy the template views, migrations, seeders and config file to your app.  
+
+The --seed option will populate 7 default templates which you can then edit in the admin panel.
 ```bash
- php artisan filament-email-templates:install
+ php artisan filament-email-templates:install --seed
 ```
+
 
 ### Adding the plugin to a panel
 Add this plugin to panel using plugins() method in app/Providers/Filament/AdminPanelProvider.php:
@@ -55,14 +58,6 @@ public function panel(Panel $panel): Panel
 ```
 Menu Group and sort order can be set in the config
 
-
-## Publish EmailTemplateResource
-
-You can publish EmailTemplateResource to your project. Run the command given below then go to `config/email-templates.php` and set `publish_resource` to `true`
-
-```bash
- php artisan email-template:publish
-```
 
 ## Usage
 
@@ -94,13 +89,24 @@ The following email templates are included to get you started and show different
  - **User Locked Out** - Oops - What to do now?
  - **User Login** - Success
 
-Not all systems will require a login notification,  but it's good practice for security so include here.
+Not all systems will require a login notification, but it's good practice for security so included here.
 
 #### New User Registered Email
 A new **Registered** event is triggered when creating a new user.
 
-It's good practice to welcome the new user to your platform with a friendly email, so we've included a listener for the Illuminate\Auth\Events\Registered Event
-and will send the email if enabled in the config.
+We want to welcome new users with a friendly email so we've included a listener for the Illuminate\Auth\Events\Registered Event
+which will send the email if enabled in the config:-
+
+```php
+  'send_emails'             => [
+        'new_user_registered'    => true,
+        'verification'           => true,
+        'user_verified'          => true,
+        'login'                  => true,
+        'password_reset_success' => true,
+    ],
+
+```
 
 #### User Verify Email
 This notification is built in to Laravel so we have overidden the default toMail function to use our custom email template.
@@ -122,6 +128,9 @@ and include the **verified** middleware in your routes.
 Another Laravel built in notification, but to enable the custom email just add this function to your authenticatable user model.
 
 ```php
+
+use Visualbuilder\EmailTemplates\Notifications\UserResetPasswordRequestNotification;
+
 /**
      * @param $token
      *
@@ -131,7 +140,7 @@ Another Laravel built in notification, but to enable the custom email just add t
     {
         $url = \Illuminate\Support\Facades\URL::secure(route('password.reset', ['token' => $token, 'email' =>$this->email]));
 
-        $this->notify(new \Visualbuilder\EmailTemplates\Notifications\UserResetPasswordRequestNotification($url));
+        $this->notify(new UserResetPasswordRequestNotification($url));
     }
 ```
 
@@ -171,17 +180,17 @@ You are free to create new templates in this directory which will be automatical
 
 ### Translations
 Each email template has a key and a language so
+
 **Key**: user-password-reset
+
 **Language**: en_gb
 
-Allows the relevant template to be selected based on the users locale - You will need to save the users preferred language to implement this.
-We opted to use a separate record for each locale (rather than using a json column with an object) as most of the attributes values are content that should be translated.  So in this case it makes 
-more sense to have a separate row.
+This allows the relevant template to be selected based on the users locale - You will need to save the users preferred language to implement this.
 
-
-Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead but you can set this as you wish.
+Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead but you can set this value as you wish.
 
 Languages that should be shown on the language picker can be set in the config
+
 ```php
     'default_locale'   => 'en_GB',
 
@@ -202,15 +211,16 @@ Flag icons are loaded from CDN: https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6
 see https://www.npmjs.com/package/flag-icons
 
 
-### Creating a new Mail Class
+### Creating new Mail Classes
 
-The index page will provide an action to build the class if the file does not exist.
-Click to create the Mailable in app\Mail\VisualBuilder\EmailTemplates
+We've currently opted to keep using a separate Mailable Class for each email type.  This means when you create a new template in the admin, it will require a new php Class.
+The package provides an action to build the class if the file does not exist in app\Mail\VisualBuilder\EmailTemplates.
 
-![Build Class](./media/Build Class.png)
+![Build Class](./media/BuildClass.png)
 
+Note: I think we could easily implement a GenericMailable class to eliminate the need to create classes for each mail type.
 
-Generated Mailable Classes will use the BuildGenericEmail Trait
+Currently generated Mailable Classes will use the BuildGenericEmail Trait
 ```php
 <?php
 
@@ -340,6 +350,7 @@ You should also include the filetype.
     }
 ```
 
+To maximise compatibility we've kept with the L9 mailable methods -> which still work on L10. 
 
 ### Testing
 
