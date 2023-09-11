@@ -22,8 +22,8 @@ use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
-use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 class EmailTemplateResource extends Resource
 {
