@@ -52,7 +52,6 @@ class EmailTemplate extends Model
         'content',
         'language',
         'send_to',
-        'vb_email_templates_themes_id',
     ];
 
     /**
