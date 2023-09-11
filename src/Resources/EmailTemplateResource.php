@@ -23,6 +23,7 @@ use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 
 class EmailTemplateResource extends Resource
 {
@@ -105,6 +106,10 @@ class EmailTemplateResource extends Resource
                                             ->default(current($recipients))
                                             ->searchable()
                                             ->required(),
+                                        Select::make('vb_email_templates_themes_id')
+                                            ->label('Select Theme')
+                                            ->options(EmailTemplateTheme::all()->pluck('name', 'id'))
+                                            ->searchable(),
                                     ]
                                 ),
 
