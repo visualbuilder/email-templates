@@ -18,7 +18,7 @@
                         <td align="center" valign="top" style="padding: 30px 10px 30px 10px;">
                             <a href="{{\Illuminate\Support\Facades\URL::to('/')}}" target="_blank" title="{{config('app.name')}}">
                                 <img alt="{{config('app.name')}} Logo"
-                                     src="{{asset(config('filament-email-templates.logo'))}}"
+                                     src="{{asset($data['logo'])}}"
                                      width="{{config('filament-email-templates.logo_width')}}"
                                      height="{{config('filament-email-templates.logo_height')}}"
                                      style="display: block; width: {{config('filament-email-templates.logo_width')}}px; max-width: {{config('filament-email-templates.logo_width')}}px; min-width: {{config

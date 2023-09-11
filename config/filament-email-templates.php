@@ -24,6 +24,9 @@ return [
     //Default Logo
     'logo'                    => 'media/email-templates/logo.png',
 
+    //Browsed Logo
+    'browsed_logo'            => 'media/email-templates/logos',
+
     //Logo size in pixels -> 200 pixels high is plenty big enough.
     'logo_width'              => '500',
     'logo_height'             => '126',

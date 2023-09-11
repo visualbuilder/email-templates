@@ -28,6 +28,9 @@ return new class extends Migration
                  $table->string('preheader', 191)->nullable()->comment('Only shows on some email clients below subject line');
                  $table->string('title', 50)->nullable()->comment('First line of email h1 string');
                  $table->text('content')->nullable();
+                 $table->enum('logo_type', ['website_logo', 'browse_another', 'paste_url'])->default('website_logo');
+                 $table->string('logo_img', 191)->nullable();
+                 $table->string('logo_url', 191)->nullable();
                  $table->timestamps();
                  $table->softDeletes();
                  $table->unique(['key', 'language']);

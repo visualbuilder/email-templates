@@ -50,6 +50,10 @@ class EmailTemplate extends Model
             'preheader',
             'content',
             'language',
+            'logo_type',
+            'logo_img',
+            'logo_url',
+
     ];
 
     /**
@@ -158,6 +162,18 @@ class EmailTemplate extends Model
     public function getEmailPreviewData()
     {
         $model = self::createEmailPreviewData();
+        $logo = "";
+
+        switch ($this->logo_type) {
+            case "browse_another":
+                $logo = 'storage/'.$this->logo_img;
+                break;
+            case "paste_url":
+                $logo = $this->logo_url;
+                break;
+            default:
+                $logo = config('filament-email-templates.logo');
+        }
 
         return [
                 'user' => $model->user,
@@ -166,6 +182,7 @@ class EmailTemplate extends Model
                 'preHeaderText' => $this->replaceTokens($this->preheader, $model),
                 'title' => $this->replaceTokens($this->title, $model),
                 'theme' => $this->theme->colours,
+                'logo' => $logo,
         ];
     }
 

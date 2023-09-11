@@ -23,6 +23,9 @@ use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Get;
 
 class EmailTemplateResource extends Resource
 {
@@ -129,6 +132,33 @@ class EmailTemplateResource extends Resource
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
                                             ->default("<p>Dear ##user.firstname##, </p>"),
+
+                                        Radio::make('logo_type')
+                                            ->label('Logo Type')
+                                            ->options([
+                                                'website_logo' => 'Website logo',
+                                                'browse_another' => 'Browse another',
+                                                'paste_url' => 'Paste url',
+                                            ])
+                                            ->default('website_logo')
+                                            ->inline()
+                                            ->live(),
+
+                                        FileUpload::make('logo_img')
+                                            ->label('Logo')
+                                            ->hint('Browse image')
+                                            ->hidden(fn (Get $get) => $get('logo_type') !== 'browse_another')
+                                            ->directory(config('filament-email-templates.browsed_logo'))
+                                            ->image()
+                                            ->required(),
+
+                                        TextInput::make('logo_url')
+                                            ->label('Logo')
+                                            ->hint('Paste image url here')
+                                            ->placeholder('https://www.example.com/media/test.png')
+                                            ->hidden(fn (Get $get) => $get('logo_type') !== 'paste_url')
+                                            ->activeUrl()
+                                            ->required(),
                                     ]
                                 ),
 
