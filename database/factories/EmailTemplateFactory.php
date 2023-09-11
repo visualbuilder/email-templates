@@ -14,7 +14,7 @@ class EmailTemplateFactory extends Factory
      * @var string
      */
     protected $model = EmailTemplate::class;
- 
+
     /**
      * Define the model's default state.
      *
@@ -23,12 +23,11 @@ class EmailTemplateFactory extends Factory
     public function definition() {
         return [
             'key'        => Str::random(20),
-            'language'   => config('email-templates.default_locale'),
-            'view'       => config('email-templates.default_view'),
+            'language'   => config('filament-email-templates.default_locale'),
+            'view'       => config('filament-email-templates.default_view'),
             'cc'         => null,
             'bcc'        => null,
-            'send_to'    => 'user',
-            'from'       => $this->faker->email,
+            'from'       => ['email'=>$this->faker->email,'name'=>$this->faker->name],
             'name'       => $this->faker->name,
             'preheader'  => $this->faker->sentence,
             'subject'    => $this->faker->sentence,

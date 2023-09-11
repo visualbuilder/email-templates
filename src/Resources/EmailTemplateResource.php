@@ -32,12 +32,12 @@ class EmailTemplateResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return config('email-templates.navigation.group');
+        return config('filament-email-templates.navigation.group');
     }
 
     public static function getNavigationSort(): ?int
     {
-        return config('email-templates.navigation.sort');
+        return config('filament-email-templates.navigation.sort');
     }
 
     public static function getModelLabel(): string
@@ -87,26 +87,29 @@ class EmailTemplateResource extends Resource
                                             ->unique(ignorable: fn ($record) => $record),
                                         Select::make('language')
                                             ->options($formHelper->getLanguageOptions())
-                                            ->default(config('email-templates.default_locale'))
+                                            ->default(config('filament-email-templates.default_locale'))
                                             ->searchable()
                                             ->allowHtml(),
+                                        TextInput::make('from.email')->default(config('mail.from.address'))
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
+                                                ->email(),
+                                        TextInput::make('from.name')->default(config('mail.from.name'))
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
+                                                ->string(),
+
                                         Select::make('view')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
-                                            ->options($templates)
-                                            ->default(current($templates))
-                                            ->searchable()
-                                            ->required(),
-                                        TextInput::make('from')->default(config('mail.from.address'))
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                            ->required(),
-                                        Select::make('send_to')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-to'))
-                                            ->options($recipients)
-                                            ->default(current($recipients))
-                                            ->searchable()
-                                            ->required(),
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
+                                                ->options($templates)
+                                                ->default(current($templates))
+                                                ->searchable()
+                                                ->required(),
+
+                                        Select::make(config('filament-email-templates.theme_table_name') . '_id')
+                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
+                                                ->relationship(name: 'theme', titleAttribute: 'name')
+                                                ->native(false)
                                     ]
-                                ),
+                                        ),
 
                             Grid::make(['default' => 1])
                                 ->schema(
@@ -125,7 +128,7 @@ class EmailTemplateResource extends Resource
                                         TiptapEditor::make('content')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
-                                        ->default("<p>Dear ##user.firstname##, </p>"),
+                                            ->default("<p>Dear ##user.firstname##, </p>"),
                                     ]
                                 ),
 
@@ -180,7 +183,7 @@ class EmailTemplateResource extends Resource
                         ->modalContent(fn (EmailTemplate $record): View => view(
                             'vb-email-templates::forms.components.iframe',
                             ['record' => $record],
-                        ))
+                        ))->form(null)
                         ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: '.$record->name)
                         ->modalSubmitAction(false)
                         ->modalCancelAction(false)

@@ -5,10 +5,8 @@ return [
     'table_name'       => 'vb_email_templates',
     'theme_table_name'       => 'vb_email_templates_themes',
 
-    //If you want to use your own resource for email templates,
-    //you can set this to true and use `php artisan email-template:publish` to publish the resource
-    "publish_resource" => false,
 
+    //This is the app directory where generated Classes should be put
     "mailable_directory" => 'Mail/Visualbuilder/EmailTemplates',
 
     //Admin Panel Resource Navigation Options
@@ -16,35 +14,22 @@ return [
         'sort'=>50,
         'group'=>'Settings',
     ],
+
     //Email templates will be copied to resources/views/vendor/vb-email-templates/email
     //default.blade.php is base view that can be customised below
     'default_view'       => 'default',
 
     'template_view_path'      => 'vb-email-templates::email',
 
-    //Default Email Styling
+    //Default Logo
     'logo'                    => 'media/email-templates/logo.png',
 
     //Logo size in pixels -> 200 pixels high is plenty big enough.
-    'logo_width'              => '476',
-    'logo_height'             => '117',
+    'logo_width'              => '500',
+    'logo_height'             => '126',
 
     //Content Width in Pixels
     'content_width'           => '600',
-
-    //Background Colours
-    'header_bg_color'         => '#B8B8D1',
-    'body_bg_color'           => '#f4f4f4',
-    'content_bg_color'        => '#FFFFFB',
-    'footer_bg_color'         => '#5B5F97',
-    'callout_bg_color'        => '#B8B8D1',
-    'button_bg_color'         => '#FFC145',
-
-    //Text Colours
-    'body_color'              => '#333333',
-    'callout_color'           => '#000000',
-    'button_color'            => '#2A2A11',
-    'anchor_color'            => '#4c05a1',
 
     //Contact details included in default email templates
     'customer-services'  => ['email' => 'support@yourcompany.com',
@@ -57,8 +42,8 @@ return [
     ],
 
     //Options for alternative languages
-    //Note that Laravel default locale is just 'en'
-    //We are being more specific to cater for English vs USA languages
+    //Note that Laravel default locale is just 'en' you can use this but
+    //we are being more specific to cater for English vs USA languages
     'default_locale'          => 'en_GB',
 
     //These will be included in the language picker when editing an email template
@@ -75,9 +60,6 @@ return [
     'recipients'              => [
         '\\App\\Models\\User',
     ],
-
-    //Guards who are authorised to edit email templates
-    'editor_guards'           => ['web'],
 
     /**
      * Allowed config keys which can be inserted into email templates

@@ -41,7 +41,7 @@ class UserLockoutNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        if(config('email-templates.send_emails.user_lockout')) {
+        if(config('filament-email-templates.send_emails.user_lockout')) {
             return app(UserLockedOutEmail::class, ['user' => $notifiable]);
         }
     }

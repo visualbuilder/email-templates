@@ -1,9 +1,8 @@
-# Email template editor for Filament
+# Email template editor for Filament 3.0
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
 [![Total Downloads](https://img.shields.io/packagist/dt/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
-[![Tests](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml/badge.svg)](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml)
-[![Check & fix styling](https://github.com/visualbuilder/email-templates/actions/workflows/php-cs-fixer.yml/badge.svg)](https://github.com/visualbuilder/email-templates/actions/workflows/php-cs-fixer.yml)
+[![run-tests](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml/badge.svg?branch=3.x)](https://github.com/visualbuilder/email-templates/actions/workflows/run-tests.yml)
 
 ### Why businesses and applications should use Email Templates
 - **Time-saving**: Email templates eliminate the need to create emails from scratch, saving valuable time and effort.
@@ -22,10 +21,11 @@
 - Templates can include model attribute tokens or config values which will be replaced, eg ##user.name## or ##config.app.name##
 - Templates can be saved with different locales for multi-lingual capability.
 - A generic method for quickly creating mail classes to speed up adding new templates and faster automation possiblities.
+- Theme editor - Set your own colours and apply to specific templates.
 
-We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new templates.
+We use the standard Laravel mail sending capability, the package simply allows content editing and faster adding of new template Classes
 
-![Email Preview](./guides/TemplateScreenShot.png)
+![Email Preview](./media/ThemeEditor.png)
 
 ## Installation
 
@@ -33,10 +33,13 @@ Get the package via composer:
 ```bash
 composer require visualbuilder/email-templates
 ```
-Run the install command
+Running the install command will copy the template views, migrations, seeders and config file to your app.  
+
+The --seed option will populate 7 default templates which you can then edit in the admin panel.
 ```bash
- php artisan filament-email-templates:install
+ php artisan filament-email-templates:install --seed
 ```
+
 
 ### Adding the plugin to a panel
 Add this plugin to panel using plugins() method in app/Providers/Filament/AdminPanelProvider.php:
@@ -53,20 +56,14 @@ public function panel(Panel $panel): Panel
         ]);
 }
 ```
+Menu Group and sort order can be set in the config
 
-## Publish EmailTemplateResource
-
-You can publish EmailTemplateResource to your project. Run the command given below then go to `config/email-templates.php` and set `publish_resource` to `true`
-
-```bash
- php artisan email-template:publish
-```
 
 ## Usage
 
 ### HTML Editor
 Edit email content in the admin and use tokens to inject model or config content.
-![Email Preview](./guides/EmailEditor.png)
+![Email Preview](./media/EmailEditor.png)
 
 Note: The seeder can also be edited directly if you wish to prepopulate with your own content.
 `Database\Seeders\EmailTemplateSeeder.php`
@@ -92,13 +89,24 @@ The following email templates are included to get you started and show different
  - **User Locked Out** - Oops - What to do now?
  - **User Login** - Success
 
-Not all systems will require a login notification,  but it's good practice for security so include here.
+Not all systems will require a login notification, but it's good practice for security so included here.
 
 #### New User Registered Email
 A new **Registered** event is triggered when creating a new user.
 
-It's good practice to welcome the new user to your platform with a friendly email, so we've included a listener for the Illuminate\Auth\Events\Registered Event
-and will send the email if enabled in the config.
+We want to welcome new users with a friendly email so we've included a listener for the Illuminate\Auth\Events\Registered Event
+which will send the email if enabled in the config:-
+
+```php
+  'send_emails'             => [
+        'new_user_registered'    => true,
+        'verification'           => true,
+        'user_verified'          => true,
+        'login'                  => true,
+        'password_reset_success' => true,
+    ],
+
+```
 
 #### User Verify Email
 This notification is built in to Laravel so we have overidden the default toMail function to use our custom email template.
@@ -120,6 +128,9 @@ and include the **verified** middleware in your routes.
 Another Laravel built in notification, but to enable the custom email just add this function to your authenticatable user model.
 
 ```php
+
+use Visualbuilder\EmailTemplates\Notifications\UserResetPasswordRequestNotification;
+
 /**
      * @param $token
      *
@@ -129,68 +140,57 @@ Another Laravel built in notification, but to enable the custom email just add t
     {
         $url = \Illuminate\Support\Facades\URL::secure(route('password.reset', ['token' => $token, 'email' =>$this->email]));
 
-        $this->notify(new \Visualbuilder\EmailTemplates\Notifications\UserResetPasswordRequestNotification($url));
+        $this->notify(new UserResetPasswordRequestNotification($url));
     }
 ```
 
 
 ### Customising the email template
+Some theme colour options have been provided.  Email templates will use the default theme unless you specify otherwise on the email template.
 
-In the config file ``config/email-templates.php`` logo,colours and messaging can be updated.
+In the config file ``config/filament-email-templates.php`` logo, contacts, links and admin preferences can be set
 ```php
-   //Default Email Styling
-    'logo'             => 'media/email-templates/logo.png',
+
+    //Default Logo
+    'logo'                    => 'media/email-templates/logo.png',
 
     //Logo size in pixels -> 200 pixels high is plenty big enough.
-    'logo_width'       => '476',
-    'logo_height'      => '117',
+    'logo_width'              => '476',
+    'logo_height'             => '117',
 
     //Content Width in Pixels
-    'content_width'    => '600',
-
-    //Background Colours
-    'header_bg_color'  => '#B8B8D1',
-    'body_bg_color'    => '#f4f4f4',
-    'content_bg_color' => '#FFFFFB',
-    'footer_bg_color'  => '#5B5F97',
-    'callout_bg_color' => '#B8B8D1',
-    'button_bg_color'  => '#FFC145',
-
-    //Text Colours
-    'body_color'       => '#333333',
-    'callout_color'    => '#000000',
-    'button_color'     => '#2A2A11',
-    'anchor_color'     => '#4c05a1',
+    'content_width'           => '600',
 
     //Contact details included in default email templates
- 'customer-services'  => ['email' => 'support@yourcompany.com',
+    'customer-services'  => ['email' => 'support@yourcompany.com',
                              'phone' => '+441273 455702'],
 
     //Footer Links
-    'links' =>[
-        ['name'=>'Website','url'=>'https://yourwebsite.com','title'=>'Goto website'],
-        ['name'=>'Privacy Policy','url'=>'https://yourwebsite.com/privacy-policy','title'=>'View Privacy Policy'],
+    'links'                   => [
+        ['name' => 'Website', 'url' => 'https://yourwebsite.com', 'title' => 'Goto website'],
+        ['name' => 'Privacy Policy', 'url' => 'https://yourwebsite.com/privacy-policy', 'title' => 'View Privacy Policy'],
     ],
+
 ```
 
-If you wish to directly edit the template blade file see the primary template here:-
+If you wish to directly edit the template blade files see the primary template here:-
 `resources/views/vendor/vb-email-templates/email/default.php`
 
-You are free to create new templates in this directory which will be automatically visible in the email template editor for selection.
+You are free to create new templates in this directory which will be automatically visible in the email template editor dropdown for selection.
 
 ### Translations
 Each email template has a key and a language so
+
 **Key**: user-password-reset
+
 **Language**: en_gb
 
-Allows the relevant template to be selected based on the users locale - You will need to save the users preferred language to implement this.
-We opted to use a separate record for each locale (rather than using a json column with an object) as most of the attributes values are content that should be translated.  So in this case it makes 
-more sense to have a separate row.
+This allows the relevant template to be selected based on the users locale - You will need to save the users preferred language to implement this.
 
-
-Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead.
+Please note laravel default locale is just "en" we prefer to separate British and American English so typically use en_GB and en_US instead but you can set this value as you wish.
 
 Languages that should be shown on the language picker can be set in the config
+
 ```php
     'default_locale'   => 'en_GB',
 
@@ -205,22 +205,22 @@ Languages that should be shown on the language picker can be set in the config
     ]
 ```
 
-![Email Preview](./guides/Languages.png)
+![Language Picker](./media/Languages.png)
 
 Flag icons are loaded from CDN: https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css
 see https://www.npmjs.com/package/flag-icons
 
 
-### Creating a new Mail Class
+### Creating new Mail Classes
 
-As normal create a new mail with :-
+We've currently opted to keep using a separate Mailable Class for each email type.  This means when you create a new template in the admin, it will require a new php Class.
+The package provides an action to build the class if the file does not exist in app\Mail\VisualBuilder\EmailTemplates.
 
-```php
-php artisan make:mail MyFunkyNewEmail
-```
+![Build Class](./media/BuildClass.png)
 
-Add the **BuildGenericEmail** Trait which saves duplication of code in each mail class keeping the code dry.
+Note: I think we could easily implement a GenericMailable class to eliminate the need to create classes for each mail type.
 
+Currently generated Mailable Classes will use the BuildGenericEmail Trait
 ```php
 <?php
 
@@ -342,7 +342,7 @@ You should also include the filetype.
             'title'         => $this->replaceTokens($template->title, $this)
         ];
 
-        return $this->from($template->from, config('app.name'))
+        return $this->from($template->from['email'],$template->from['name'])
             ->view($template->view_path)
             ->subject($this->replaceTokens($template->subject, $this))
             ->to($this->sendTo)
@@ -350,6 +350,7 @@ You should also include the filetype.
     }
 ```
 
+To maximise compatibility we've kept with the L9 mailable methods -> which still work on L10. 
 
 ### Testing
 

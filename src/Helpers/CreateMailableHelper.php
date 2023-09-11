@@ -16,9 +16,9 @@ class CreateMailableHelper implements CreateMailableInterface
         try {
             $className = Str::studly($record->key);
 
-            $this->prepareDirectory(config('email-templates.mailable_directory'));
+            $this->prepareDirectory(config('filament-email-templates.mailable_directory'));
 
-            $filePath = app_path(config('email-templates.mailable_directory')."/$className.php");
+            $filePath = app_path(config('filament-email-templates.mailable_directory')."/$className.php");
 
             if (file_exists($filePath)) {
                 return $this->response("Class already exists", "heroicon-o-exclamation-circle", "danger", $filePath);

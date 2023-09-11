@@ -17,10 +17,9 @@ use Visualbuilder\EmailTemplates\Traits\TokenHelper;
 /**
  * @property int $id
  * @property string $key
- * @property string $from
+ * @property array $from
  * @property string $name
  * @property string $view
- * @property string $send_to
  * @property object $cc
  * @property object $bcc
  * @property string $subject
@@ -42,25 +41,25 @@ class EmailTemplate extends Model
      * @var array
      */
     protected $fillable = [
-        'from',
-        'key',
-        'name',
-        'view',
-        'subject',
-        'title',
-        'preheader',
-        'content',
-        'language',
-        'send_to',
+            'from',
+            'key',
+            'name',
+            'view',
+            'subject',
+            'title',
+            'preheader',
+            'content',
+            'language',
     ];
 
     /**
      * @var string[]
      */
     protected $casts = [
-        'deleted_at' => 'datetime:Y-m-d H:i:s',
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+            'deleted_at' => 'datetime:Y-m-d H:i:s',
+            'created_at' => 'datetime:Y-m-d H:i:s',
+            'updated_at' => 'datetime:Y-m-d H:i:s',
+            'from' => 'array',
     ];
     /**
      * @var string[]
@@ -82,7 +81,7 @@ class EmailTemplate extends Model
 
     public function setTableFromConfig()
     {
-        $this->table = config('email-templates.table_name');
+        $this->table = config('filament-email-templates.table_name');
     }
 
     public static function findEmailByKey($key, $language = null)
@@ -92,9 +91,9 @@ class EmailTemplate extends Model
         //For multi site domains this key will need to include the site_id
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
             return self::query()
-                ->language($language ?? config('email-templates.default_locale'))
-                ->where("key", $key)
-                ->firstOrFail();
+                    ->language($language ?? config('filament-email-templates.default_locale'))
+                    ->where("key", $key)
+                    ->firstOrFail();
         });
     }
 
@@ -161,12 +160,12 @@ class EmailTemplate extends Model
         $model = self::createEmailPreviewData();
 
         return [
-            'user' => $model->user,
-            'content' => $this->replaceTokens($this->content, $model),
-            'subject' => $this->replaceTokens($this->subject, $model),
-            'preHeaderText' => $this->replaceTokens($this->preheader, $model),
-            'title' => $this->replaceTokens($this->title, $model),
-            'theme' => $this->theme->colours,
+                'user' => $model->user,
+                'content' => $this->replaceTokens($this->content, $model),
+                'subject' => $this->replaceTokens($this->subject, $model),
+                'preHeaderText' => $this->replaceTokens($this->preheader, $model),
+                'title' => $this->replaceTokens($this->title, $model),
+                'theme' => $this->theme->colours,
         ];
     }
 
@@ -177,7 +176,7 @@ class EmailTemplate extends Model
     {
         $model = (object) [];
 
-        $userModel = config('email-templates.recipients')[0];
+        $userModel = config('filament-email-templates.recipients')[0];
         //Setup some data for previewing email template
         $model->user = $userModel::first();
 
@@ -200,11 +199,13 @@ class EmailTemplate extends Model
      */
     public function scopeLanguage(Builder $query, $language)
     {
-        $languages = [$language, config('email-templates.default_locale')];
+        $languages = [$language, config('filament-email-templates.default_locale')];
 
         return $query->whereIn('language', $languages)
-            ->orderBy('language');
-        //  ->orderByRaw('field(language, ?, ?)', $languages); // order by field is not present in sqlite
+                ->orderByRaw(
+                    "(CASE WHEN language = ? THEN 1 ELSE 2 END)",
+                    [$language]
+                );
     }
 
     /**
@@ -213,7 +214,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn () => config('email-templates.template_view_path').'.'.$this->view
+            get: fn () => config('filament-email-templates.template_view_path').'.'.$this->view
         );
     }
 
@@ -223,7 +224,7 @@ class EmailTemplate extends Model
     public function getMailableExistsAttribute(): bool
     {
         $className = Str::studly($this->key);
-        $filePath = app_path(config('email-templates.mailable_directory')."/{$className}.php");
+        $filePath = app_path(config('filament-email-templates.mailable_directory')."/{$className}.php");
 
         return File::exists($filePath);
     }
@@ -235,7 +236,7 @@ class EmailTemplate extends Model
     public function getMailableClass()
     {
         $className = Str::studly($this->key);
-        $directory = str_replace('/', '\\', config('email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
+        $directory = str_replace('/', '\\', config('filament-email-templates.mailable_directory', 'Mail/Visualbuilder/EmailTemplates')); // Convert slashes to namespace format
         $fullClassName = "\\App\\{$directory}\\{$className}";
 
         if (! class_exists($fullClassName)) {

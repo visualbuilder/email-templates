@@ -18,7 +18,7 @@ class EditEmailTemplate extends EditRecord
             Actions\ViewAction::make()->label('Preview')->modalContent(fn (EmailTemplate $record): View => view(
                 'vb-email-templates::forms.components.iframe',
                 ['record' => $record],
-            )),
+            ))->form(null),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),

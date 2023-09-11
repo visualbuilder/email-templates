@@ -7,7 +7,6 @@ use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
-use Visualbuilder\EmailTemplates\Commands\PublishEmailTemplateResource;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 
@@ -20,13 +19,12 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
     {
         $package->name("filament-email-templates")
             ->hasMigrations(['create_email_templates_themes_table','create_email_templates_table'])
-            ->hasConfigFile(['email-templates', 'filament-tiptap-editor'])
+            ->hasConfigFile(['filament-email-templates', 'filament-tiptap-editor'])
             ->hasAssets()
             ->hasViews('vb-email-templates')
             ->runsMigrations()
             ->hasCommands([
                 InstallCommand::class,
-                PublishEmailTemplateResource::class,
             ]);
     }
 

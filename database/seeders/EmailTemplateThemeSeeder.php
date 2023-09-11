@@ -18,7 +18,7 @@ class EmailTemplateThemeSeeder extends Seeder
                     'footer_bg_color'    => '#34495E',
 
                     'callout_bg_color'   => '#FFC107',
-                    'button_bg_color'    => '#FFEB3B',
+                    'button_bg_color'    => '#FFC107',
 
                     'body_color'         => '#333333',
                     'callout_color'      => '#212121',

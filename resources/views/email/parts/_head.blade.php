@@ -60,7 +60,7 @@
         }
 
         /* MOBILE STYLES */
-        @media screen and (max-width:{{config('email-templates.content_width')}}px){
+        @media screen and (max-width:{{config('filament-email-templates.content_width')}}px){
             h1 {
                 font-size: 24px !important;
                 line-height: 24px !important;

@@ -44,7 +44,7 @@ class EmailTemplateTheme extends Model
 
     public function setTableFromConfig()
     {
-        $this->table = config('email-templates.theme_table_name');
+        $this->table = config('filament-email-templates.theme_table_name');
     }
 
     protected static function newFactory()

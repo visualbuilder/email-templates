@@ -16,6 +16,7 @@ trait BuildGenericEmail
     {
         $template = EmailTemplate::findEmailByKey($this->template, App::currentLocale());
 
+
         if($this->attachment ?? false) {
             $this->attach(
                 $this->attachment->filepath,
@@ -33,7 +34,7 @@ trait BuildGenericEmail
             'theme' => $template->theme->colours,
         ];
 
-        return $this->from($template->from, config('app.name'))
+        return $this->from($template->from['email'], $template->from['name'])
             ->view($template->view_path)
             ->subject($template->replaceTokens($template->subject, $this))
             ->to($this->sendTo)

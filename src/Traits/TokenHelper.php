@@ -36,7 +36,7 @@ trait TokenHelper
         }
 
         // Replace config tokens.
-        $allowedConfigKeys = config('email-templates.config_keys');
+        $allowedConfigKeys = config('filament-email-templates.config_keys');
 
         preg_match_all('/##config\.(.*?)##/', $content, $matches);
         if (count($matches) > 0 && count($matches[0]) > 0) {
