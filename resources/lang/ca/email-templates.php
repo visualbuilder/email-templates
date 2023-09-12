@@ -29,9 +29,41 @@ return [
         'title' => 'Títol',
         'title-hint' => '(Es mostra gran a la part superior del correu electrònic)',
         'content' => 'Contingut',
+        'logo-type' => 'Tipus de logotip',
+        'browse-another' => 'Navegueu per un altre',
+        'paste-url' => 'Enganxeu l\'URL',
+        'logo' => 'Logotip',
+        'logo-hint' => '(Navegueu la imatge)',
+        'logo-url' => 'URL del logotip',
+        'logo-url-hint' => '(Enganxeu l\'URL de la imatge aquí)',
+
     ],
     'resource_name' => [
         'singular' => 'Plantilla de correu electrònic',
         'plural' => 'Plantilles de correu electrònic',
     ],
+    'theme-form-fields-labels' => [
+        'template_preview' => 'Previsualització del model',
+        'theme-name' => 'Nom',
+        'is-default' => 'Per defecte',
+        'set-colors' => 'Establir colors',
+        'header-bg' => 'Fons de la capçalera',
+        'body-bg' => 'Fons del cos',
+        'content-bg' => 'Fons del contingut',
+        'footer-bg' => 'Fons del peu de pàgina',
+        'callout-bg' => 'Fons de l\'avís',
+        'button-bg' => 'Fons del botó',
+        'body-color' => 'Color del cos',
+        'callout-color' => 'Color de l\'avís',
+        'button-color' => 'Color del botó',
+        'anchor-color' => 'Color de l\'àncora',
+        'title-hint' => '(Es mostra gran a la part superior del correu electrònic)',
+        'content' => 'Contingut',
+    ],
+    
+    'theme_resource_name' => [
+        'singular' => 'Tema de plantilla de correu electrònic',
+        'plural' => 'Temas de plantilles de correu electrònic',
+    ],
+    
 ];
