@@ -136,15 +136,14 @@ class EmailTemplateResource extends Resource
                                         Radio::make('logo_type')
                                             ->label('Logo Type')
                                             ->options([
-                                                'website_logo' => 'Website logo',
                                                 'browse_another' => 'Browse another',
                                                 'paste_url' => 'Paste url',
                                             ])
-                                            ->default('website_logo')
+                                            ->default('browse_another')
                                             ->inline()
                                             ->live(),
 
-                                        FileUpload::make('logo_img')
+                                        FileUpload::make('logo')
                                             ->label('Logo')
                                             ->hint('Browse image')
                                             ->hidden(fn (Get $get) => $get('logo_type') !== 'browse_another')
@@ -251,5 +250,13 @@ class EmailTemplateResource extends Resource
                     SoftDeletingScope::class,
                 ]
             );
+    }
+
+    public function handleLogo(array $data): array
+    {
+        if($data['logo_type'] == "paste_url" && $data['logo_url'])
+            $data['logo'] = $data['logo_url'];
+
+        return $data;
     }
 }

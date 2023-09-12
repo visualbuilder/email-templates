@@ -7,6 +7,8 @@ use Filament\Resources\Pages\EditRecord;
 use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
 class EditEmailTemplate extends EditRecord
 {
@@ -23,5 +25,28 @@ class EditEmailTemplate extends EditRecord
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['logo_type'] = 'browse_another';
+
+        if(!is_null($data['logo']) && Str::isUrl($data['logo']))
+        {
+            $data['logo_type'] = 'paste_url';
+            $data['logo_url'] = $data['logo'];
+        }
+
+        return $data;
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $emailTemplateResource = new EmailTemplateResource();
+        $sortedData = $emailTemplateResource->handleLogo($data);
+
+        $record->update($sortedData);
+
+        return $record;
     }
 }

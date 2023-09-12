@@ -50,9 +50,7 @@ class EmailTemplate extends Model
             'preheader',
             'content',
             'language',
-            'logo_type',
-            'logo_img',
-            'logo_url',
+            'logo',
 
     ];
 
