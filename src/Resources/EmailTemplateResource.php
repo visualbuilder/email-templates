@@ -157,6 +157,7 @@ class EmailTemplateResource extends Resource
                                             ->placeholder('https://www.example.com/media/test.png')
                                             ->hidden(fn (Get $get) => $get('logo_type') !== 'paste_url')
                                             ->activeUrl()
+                                            ->maxLength(191)
                                             ->required(),
                                     ]
                                 ),
@@ -254,8 +255,9 @@ class EmailTemplateResource extends Resource
 
     public function handleLogo(array $data): array
     {
-        if($data['logo_type'] == "paste_url" && $data['logo_url'])
+        if($data['logo_type'] == "paste_url" && $data['logo_url']) {
             $data['logo'] = $data['logo_url'];
+        }
 
         return $data;
     }

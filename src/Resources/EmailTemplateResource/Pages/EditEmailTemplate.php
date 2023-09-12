@@ -31,8 +31,7 @@ class EditEmailTemplate extends EditRecord
     {
         $data['logo_type'] = 'browse_another';
 
-        if(!is_null($data['logo']) && Str::isUrl($data['logo']))
-        {
+        if(!is_null($data['logo']) && Str::isUrl($data['logo'])) {
             $data['logo_type'] = 'paste_url';
             $data['logo_url'] = $data['logo'];
         }
