@@ -26,6 +26,7 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Get;
+use Illuminate\Support\Facades\File;
 
 class EmailTemplateResource extends Resource
 {
@@ -221,7 +222,10 @@ class EmailTemplateResource extends Resource
 
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make()
+                        ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
+                            $emailTemplateResource->handleLogoDelete($record->logo);
+                        }),
                     Tables\Actions\RestoreAction::make(),
                 ]
             )
@@ -260,5 +264,15 @@ class EmailTemplateResource extends Resource
         }
 
         return $data;
+    }
+
+    public function handleLogoDelete($logo)
+    {
+        if($logo && !Str::isUrl($logo)) {
+            $logoPath = storage_path('app/public/'.$logo);
+            if(File::exists($logoPath)) {
+                File::delete($logoPath);
+            }
+        }
     }
 }

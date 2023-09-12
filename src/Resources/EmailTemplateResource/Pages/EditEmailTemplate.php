@@ -9,6 +9,7 @@ use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 class EditEmailTemplate extends EditRecord
 {
@@ -22,7 +23,10 @@ class EditEmailTemplate extends EditRecord
                 ['record' => $record],
             ))->form(null),
             Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make(),
+            Actions\ForceDeleteAction::make()
+                ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
+                    $emailTemplateResource->handleLogoDelete($record->logo);
+                }),
             Actions\RestoreAction::make(),
         ];
     }
@@ -43,6 +47,11 @@ class EditEmailTemplate extends EditRecord
     {
         $emailTemplateResource = new EmailTemplateResource();
         $sortedData = $emailTemplateResource->handleLogo($data);
+
+        // deleting previous logo
+        if ($record->logo != $sortedData['logo']) {
+            $emailTemplateResource->handleLogoDelete($record->logo);
+        }
 
         $record->update($sortedData);
 
