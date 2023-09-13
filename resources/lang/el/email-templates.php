@@ -43,7 +43,7 @@ return [
         'plural' => 'Email Templates',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Προεπισκόπηση προτύπου',
+        'template-preview' => 'Προεπισκόπηση προτύπου',
         'theme-name' => 'Όνομα',
         'is-default' => 'Προεπιλεγμένο',
         'set-colors' => 'Ορισμός χρωμάτων',

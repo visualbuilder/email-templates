@@ -43,7 +43,7 @@ return [
         'plural' => 'Predlošci e-pošte',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Pregled šablona',
+        'template-preview' => 'Pregled šablona',
         'theme-name' => 'Ime',
         'is-default' => 'Zadano',
         'set-colors' => 'Postavi boje',

@@ -43,7 +43,7 @@ return [
         'plural' => 'E-mailové šablony',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Náhled šablony',
+        'template-preview' => 'Náhled šablony',
         'theme-name' => 'Název',
         'is-default' => 'Výchozí',
         'set-colors' => 'Nastavit barvy',

@@ -43,7 +43,7 @@ return [
         'plural' => 'Sähköpostimallit',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Mallin esikatselu',
+        'template-preview' => 'Mallin esikatselu',
         'theme-name' => 'Nimi',
         'is-default' => 'Oletus',
         'set-colors' => 'Aseta värit',

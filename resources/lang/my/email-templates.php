@@ -43,7 +43,7 @@ return [
         'plural' => 'Email Templates',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'တင်သွင်းအားအတွက် ပရိုဂရမ်',
+        'template-preview' => 'တင်သွင်းအားအတွက် ပရိုဂရမ်',
         'theme-name' => 'အမည်',
         'is-default' => 'ပြည်ထောင်စု',
         'set-colors' => 'အရောင်းရောင်စုရန်',

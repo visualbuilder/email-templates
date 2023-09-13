@@ -43,7 +43,7 @@ return [
         'plural' => 'Plantilles de correu electrònic',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Previsualització del model',
+        'template-preview' => 'Previsualització del model',
         'theme-name' => 'Nom',
         'is-default' => 'Per defecte',
         'set-colors' => 'Establir colors',

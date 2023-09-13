@@ -43,7 +43,7 @@ return [
         'plural' => 'Șabloane de email',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Previzualizare șablon',
+        'template-preview' => 'Previzualizare șablon',
         'theme-name' => 'Nume',
         'is-default' => 'Implicit',
         'set-colors' => 'Setează culorile',

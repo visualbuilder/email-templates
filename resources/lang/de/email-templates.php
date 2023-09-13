@@ -43,7 +43,7 @@ return [
         'plural' => 'E-Mail-Vorlagen',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Vorlage anzeigen',
+        'template-preview' => 'Vorlage anzeigen',
         'theme-name' => 'Name',
         'is-default' => 'Standard',
         'set-colors' => 'Farben festlegen',

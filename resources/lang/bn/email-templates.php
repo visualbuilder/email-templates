@@ -43,7 +43,7 @@ return [
         'plural' => 'Email Templates',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'টেমপ্লেট প্রিভিউ',
+        'template-preview' => 'টেমপ্লেট প্রিভিউ',
         'theme-name' => 'নাম',
         'is-default' => 'ডিফল্ট',
         'set-colors' => 'রঙ সেট করুন',

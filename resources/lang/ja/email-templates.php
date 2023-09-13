@@ -42,7 +42,7 @@ return [
         'plural' => 'メールテンプレート',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'テンプレートプレビュー',
+        'template-preview' => 'テンプレートプレビュー',
         'theme-name' => '名前',
         'is-default' => 'デフォルト',
         'set-colors' => '色の設定',

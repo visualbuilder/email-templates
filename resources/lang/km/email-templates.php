@@ -42,7 +42,7 @@ return [
         'plural' => 'Email Templates',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'មុខរបរ​បំណុត',
+        'template-preview' => 'មុខរបរ​បំណុត',
         'theme-name' => 'ឈ្មោះ',
         'is-default' => 'លំនាំដើម',
         'set-colors' => 'កំណត់ពណ៌',

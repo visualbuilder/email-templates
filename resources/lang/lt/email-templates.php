@@ -42,7 +42,7 @@ return [
         'plural' => 'El. laiškų šablonai',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Šablono peržiūra',
+        'template-preview' => 'Šablono peržiūra',
         'theme-name' => 'Pavadinimas',
         'is-default' => 'Numatytasis',
         'set-colors' => 'Nustatyti spalvas',

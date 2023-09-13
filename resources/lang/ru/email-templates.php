@@ -43,7 +43,7 @@ return [
         'plural' => 'Шаблоны электронной почты',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Предварительный просмотр шаблона',
+        'template-preview' => 'Предварительный просмотр шаблона',
         'theme-name' => 'Имя',
         'is-default' => 'По умолчанию',
         'set-colors' => 'Настройка цветов',

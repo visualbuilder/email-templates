@@ -43,7 +43,7 @@ return [
         'plural' => 'תבניות ד',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'תצוגה מקדימה של התבנית',
+        'template-preview' => 'תצוגה מקדימה של התבנית',
         'theme-name' => 'שם',
         'is-default' => 'ברירת מחדל',
         'set-colors' => 'הגדרת צבעים',

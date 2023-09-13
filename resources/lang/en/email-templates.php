@@ -52,7 +52,7 @@ return [
 
     // Theme Form Field Labels
     'theme-form-fields-labels' => [
-        'template_preview'     => 'Template Preview',
+        'template-preview'     => 'Template Preview',
         'theme-name'           => 'Name',
         'is-default'           => 'Is Default',
         'set-colors'           => 'Set Colors',

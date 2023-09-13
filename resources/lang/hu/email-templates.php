@@ -43,7 +43,7 @@ return [
         'plural' => 'E-mail sablonok',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Sablon előnézete',
+        'template-preview' => 'Sablon előnézete',
         'theme-name' => 'Név',
         'is-default' => 'Alapértelmezett',
         'set-colors' => 'Színek beállítása',

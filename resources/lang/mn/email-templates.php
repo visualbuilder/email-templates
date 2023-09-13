@@ -43,7 +43,7 @@ return [
         'plural' => 'Имэйл загварууд',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Загварын өмнөх харах',
+        'template-preview' => 'Загварын өмнөх харах',
         'theme-name' => 'Нэр',
         'is-default' => 'Өгөгдмөл',
         'set-colors' => 'Өнгө тохируулах',

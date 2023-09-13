@@ -43,7 +43,7 @@ return [
         'plural' => 'E-postmallar',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Förhandsgranskning av mall',
+        'template-preview' => 'Förhandsgranskning av mall',
         'theme-name' => 'Namn',
         'is-default' => 'Standard',
         'set-colors' => 'Ange färger',

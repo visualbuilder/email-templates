@@ -43,7 +43,7 @@ return [
         'plural' => 'Violezo vya Barua pepe',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Onyesho la Kielelezo',
+        'template-preview' => 'Onyesho la Kielelezo',
         'theme-name' => 'Jina',
         'is-default' => 'Chaguo-msingi',
         'set-colors' => 'Weka Rangi',

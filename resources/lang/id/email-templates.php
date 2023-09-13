@@ -43,7 +43,7 @@ return [
         'plural' => 'Template Email',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Pratinjau Templat',
+        'template-preview' => 'Pratinjau Templat',
         'theme-name' => 'Nama',
         'is-default' => 'Default',
         'set-colors' => 'Atur Warna',

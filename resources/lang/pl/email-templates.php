@@ -43,7 +43,7 @@ return [
         'plural' => 'Szablony e-maili',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Podgląd szablonu',
+        'template-preview' => 'Podgląd szablonu',
         'theme-name' => 'Nazwa',
         'is-default' => 'Domyślny',
         'set-colors' => 'Ustaw kolory',

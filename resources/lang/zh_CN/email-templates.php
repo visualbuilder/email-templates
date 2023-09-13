@@ -43,7 +43,7 @@ return [
         'plural' => '邮件模板',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => '模板预览',
+        'template-preview' => '模板预览',
         'theme-name' => '名称',
         'is-default' => '默认',
         'set-colors' => '设置颜色',

@@ -43,7 +43,7 @@ return [
         'plural' => 'Templat Emel',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Pratonton Templat',
+        'template-preview' => 'Pratonton Templat',
         'theme-name' => 'Nama',
         'is-default' => 'Lalai',
         'set-colors' => 'Tetapkan Warna',

@@ -43,7 +43,7 @@ return [
         'plural' => 'E-mailsjablonen',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Voorbeeld van sjabloon',
+        'template-preview' => 'Voorbeeld van sjabloon',
         'theme-name' => 'Naam',
         'is-default' => 'Standaard',
         'set-colors' => 'Kleuren instellen',

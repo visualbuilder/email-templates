@@ -43,7 +43,7 @@ return [
         'plural' => 'قالب های ایمیل',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'پیش‌نمایش قالب',
+        'template-preview' => 'پیش‌نمایش قالب',
         'theme-name' => 'نام',
         'is-default' => 'پیش‌فرض',
         'set-colors' => 'تنظیم رنگ‌ها',

@@ -43,7 +43,7 @@ return [
         'plural' => 'Plantillas de correo electrónico',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Vista previa de la plantilla',
+        'template-preview' => 'Vista previa de la plantilla',
         'theme-name' => 'Nombre',
         'is-default' => 'Predeterminado',
         'set-colors' => 'Establecer colores',

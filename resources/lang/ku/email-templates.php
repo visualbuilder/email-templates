@@ -42,7 +42,7 @@ return [
         'plural' => 'Email Templates',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'چەندین بەرنامەی ئیمەیڵ نیشان',
+        'template-preview' => 'چەندین بەرنامەی ئیمەیڵ نیشان',
         'theme-name' => 'ناو',
         'is-default' => 'بنەڕەت',
         'set-colors' => 'رەنگەکان دابنە',

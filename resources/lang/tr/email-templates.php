@@ -43,7 +43,7 @@ return [
         'plural' => 'E-posta Şablonları',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Şablonu Önizle',
+        'template-preview' => 'Şablonu Önizle',
         'theme-name' => 'Ad',
         'is-default' => 'Varsayılan',
         'set-colors' => 'Renkleri Ayarla',

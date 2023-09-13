@@ -43,7 +43,7 @@ return [
         'plural' => 'قوالب البريد الإلكتروني',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'معاينة القالب',
+        'template-preview' => 'معاينة القالب',
         'theme-name' => 'الاسم',
         'is-default' => 'الافتراضي',
         'set-colors' => 'تعيين الألوان',

@@ -42,7 +42,7 @@ return [
         'plural' => '이메일 템플릿들',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => '템플릿 미리보기',
+        'template-preview' => '템플릿 미리보기',
         'theme-name' => '이름',
         'is-default' => '기본값',
         'set-colors' => '색상 설정',

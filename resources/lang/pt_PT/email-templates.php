@@ -43,7 +43,7 @@ return [
         'plural' => 'Modelos de Email',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Pré-visualização do modelo',
+        'template-preview' => 'Pré-visualização do modelo',
         'theme-name' => 'Nome',
         'is-default' => 'Padrão',
         'set-colors' => 'Definir cores',

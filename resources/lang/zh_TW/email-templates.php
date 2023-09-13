@@ -43,7 +43,7 @@ return [
         'plural' => '電子郵件模板',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => '模板預覽',
+        'template-preview' => '模板預覽',
         'theme-name' => '名稱',
         'is-default' => '預設',
         'set-colors' => '設定顏色',

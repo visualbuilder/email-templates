@@ -43,7 +43,7 @@ return [
         'plural' => 'Email Templates',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Կաղապարի Նախադիմում',
+        'template-preview' => 'Կաղապարի Նախադիմում',
         'theme-name' => 'Անուն',
         'is-default' => 'Կանխադրված',
         'set-colors' => 'Նախապատրաստել գույները',

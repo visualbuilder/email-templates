@@ -43,7 +43,7 @@ return [
         'plural' => 'Posta elektronikoaren txantiloiak',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Txantiloiaren Aurrebista',
+        'template-preview' => 'Txantiloiaren Aurrebista',
         'theme-name' => 'Izena',
         'is-default' => 'Lehenetsia',
         'set-colors' => 'Ezarri Koloreak',

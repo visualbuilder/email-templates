@@ -43,7 +43,7 @@ return [
         'plural' => 'E-mail-skabeloner',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Skabelonvisning',
+        'template-preview' => 'Skabelonvisning',
         'theme-name' => 'Navn',
         'is-default' => 'Standard',
         'set-colors' => 'Indstil farver',

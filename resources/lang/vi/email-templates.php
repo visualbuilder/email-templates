@@ -43,7 +43,7 @@ return [
         'plural' => 'Mẫu email',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Xem trước mẫu',
+        'template-preview' => 'Xem trước mẫu',
         'theme-name' => 'Tên',
         'is-default' => 'Mặc định',
         'set-colors' => 'Đặt màu sắc',

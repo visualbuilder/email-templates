@@ -135,26 +135,26 @@ class EmailTemplateResource extends Resource
                                             ->default("<p>Dear ##user.firstname##, </p>"),
 
                                         Radio::make('logo_type')
-                                            ->label('Logo Type')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-type'))
                                             ->options([
-                                                'browse_another' => 'Browse another',
-                                                'paste_url' => 'Paste url',
+                                                'browse_another' => __('vb-email-templates::email-templates.form-fields-labels.browse-another'),
+                                                'paste_url' => __('vb-email-templates::email-templates.form-fields-labels.paste-url'),
                                             ])
                                             ->default('browse_another')
                                             ->inline()
                                             ->live(),
 
                                         FileUpload::make('logo')
-                                            ->label('Logo')
-                                            ->hint('Browse image')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-hint'))
                                             ->hidden(fn (Get $get) => $get('logo_type') !== 'browse_another')
                                             ->directory(config('filament-email-templates.browsed_logo'))
                                             ->image()
                                             ->required(),
 
                                         TextInput::make('logo_url')
-                                            ->label('Logo')
-                                            ->hint('Paste image url here')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-url'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-url-hint'))
                                             ->placeholder('https://www.example.com/media/test.png')
                                             ->hidden(fn (Get $get) => $get('logo_type') !== 'paste_url')
                                             ->activeUrl()

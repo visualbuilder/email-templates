@@ -42,7 +42,7 @@ return [
         'plural' => 'E-pasta veidnes',
     ],
     'theme-form-fields-labels' => [
-        'template_preview' => 'Veidnes priekšskatījums',
+        'template-preview' => 'Veidnes priekšskatījums',
         'theme-name' => 'Nosaukums',
         'is-default' => 'Noklusējums',
         'set-colors' => 'Iestatīt krāsas',
