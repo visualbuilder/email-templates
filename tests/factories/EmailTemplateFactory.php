@@ -34,6 +34,7 @@ class EmailTemplateFactory extends Factory
                 'subject' => $this->faker->sentence,
                 'title' => $this->faker->sentence,
                 'content' => $this->faker->text,
+                'logo' => config('filament-email-templates.logo'),
                 'created_at' => now(),
                 'updated_at' => now(),
                 'deleted_at' => null,

@@ -149,8 +149,7 @@ class EmailTemplateResource extends Resource
                                             ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-hint'))
                                             ->hidden(fn (Get $get) => $get('logo_type') !== 'browse_another')
                                             ->directory(config('filament-email-templates.browsed_logo'))
-                                            ->image()
-                                            ->required(),
+                                            ->image(),
 
                                         TextInput::make('logo_url')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-url'))
@@ -158,8 +157,7 @@ class EmailTemplateResource extends Resource
                                             ->placeholder('https://www.example.com/media/test.png')
                                             ->hidden(fn (Get $get) => $get('logo_type') !== 'paste_url')
                                             ->activeUrl()
-                                            ->maxLength(191)
-                                            ->required(),
+                                            ->maxLength(191),
                                     ]
                                 ),
 

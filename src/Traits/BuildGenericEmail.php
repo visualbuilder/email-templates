@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Traits;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\App;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
@@ -16,7 +17,6 @@ trait BuildGenericEmail
     {
         $template = EmailTemplate::findEmailByKey($this->template, App::currentLocale());
 
-
         if($this->attachment ?? false) {
             $this->attach(
                 $this->attachment->filepath,
@@ -27,11 +27,15 @@ trait BuildGenericEmail
             );
         }
 
+        // preparing logo
+        $logo = $template->prepareLogo($template->logo);
+
         $data = [
             'content' => $template->replaceTokens($template->content, $this),
             'preHeaderText' => $template->replaceTokens($template->preheader, $this),
             'title' => $template->replaceTokens($template->title, $this),
             'theme' => $template->theme->colours,
+            'logo'  => $logo,
         ];
 
         return $this->from($template->from['email'], $template->from['name'])

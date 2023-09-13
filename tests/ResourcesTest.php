@@ -53,7 +53,7 @@ it('can create email template', function () {
         ])
         ->call('create')
         ->assertHasNoFormErrors();
-
+    
     $this->assertDatabaseHas(EmailTemplate::class, [
         'key' => $storedData->data['key'],
         'language' => $storedData->data['language'],

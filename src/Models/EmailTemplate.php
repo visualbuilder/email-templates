@@ -160,18 +160,9 @@ class EmailTemplate extends Model
     public function getEmailPreviewData()
     {
         $model = self::createEmailPreviewData();
-        $logo = "";
 
-        switch ($this->logo_type) {
-            case "browse_another":
-                $logo = 'storage/'.$this->logo_img;
-                break;
-            case "paste_url":
-                $logo = $this->logo_url;
-                break;
-            default:
-                $logo = config('filament-email-templates.logo');
-        }
+        // preparing logo
+        $logo = $this->prepareLogo($this->logo);
 
         return [
                 'user' => $model->user,
@@ -259,5 +250,21 @@ class EmailTemplate extends Model
         }
 
         return $fullClassName;
+    }
+
+    /**
+     * @return string
+     */
+    public function prepareLogo($logo)
+    {
+        $preparedLogo = "";
+
+        $preparedLogo = is_null($logo)
+            ? asset(config('filament-email-templates.logo'))
+            : (Str::isUrl($logo)
+                ? $logo
+                : asset('storage/' . $logo));
+
+        return $preparedLogo;
     }
 }
