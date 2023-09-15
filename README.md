@@ -83,7 +83,7 @@ The following email templates are included to get you started and show different
 
  - **User Registered**  - Welcome them to the platform
  - **User Verify Email** - Check they are human
- - **User Verified Email** - Yes they are
+ - **User Verification Success** - Yes they are
  - **User Request Password Reset** - Let them change the password
  - **User Password Reset Success** - Yay, you changed your password
  - **User Locked Out** - Oops - What to do now?

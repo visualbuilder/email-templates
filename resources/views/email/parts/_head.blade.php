@@ -69,7 +69,10 @@
 
         /* ANDROID CENTER FIX */
         div[style*="margin: 16px 0;"] { margin: 0 !important; }
+
+        /* Long URL Fix */
+        a {word-break: break-all;}
     </style>
 </head>
-<body style="background-color: {{$data['theme']["header_bg_color"]}}; margin: 0 !important; padding: 0 !important;">
+<body style="background-color: {{$data['theme']["body_bg_color"]}}; margin: 0 !important; padding: 0 !important;">
 

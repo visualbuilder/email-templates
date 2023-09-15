@@ -23,10 +23,10 @@ class UserVerifyEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($user, $token)
+    public function __construct($user, $url)
     {
         $this->user = $user;
-        $this->verificationUrl = $token;
+        $this->verificationUrl = $url;
         $this->sendTo = $user->email;
     }
 }
