@@ -130,6 +130,7 @@ class EmailTemplateResource extends Resource
                                             ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
 
                                         TiptapEditor::make('content')
+                                                ->tools([])
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
                                             ->default("<p>Dear ##user.firstname##, </p>"),

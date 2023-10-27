@@ -28,7 +28,7 @@ trait BuildGenericEmail
         }
 
         // preparing logo
-        $logo = $template->prepareLogo($template->logo);
+        $logo = $template->resolveLogoUrl($template->logo);
 
         $data = [
             'content' => $template->replaceTokens($template->content, $this),

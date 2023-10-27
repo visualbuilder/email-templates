@@ -39,9 +39,9 @@ class UserVerifiedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        if(config('filament-email-templates.send_emails.user_verified')) {
+       
             return app(UserVerifiedEmail::class, ['user' => $notifiable]);
-        }
+        
     }
 
     /**

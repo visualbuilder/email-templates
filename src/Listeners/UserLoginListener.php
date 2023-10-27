@@ -16,7 +16,9 @@ class UserLoginListener
      */
     public function handle(Login $event)
     {
-        $user = $event->user;
-        $user->notify(new UserLoginNotification());
+        if(config('filament-email-templates.send_emails.login')) {
+            $user = $event->user;
+            $user->notify(new UserLoginNotification());
+        }
     }
 }

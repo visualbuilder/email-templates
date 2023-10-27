@@ -41,7 +41,7 @@ class EmailTemplateThemeResource extends Resource
 
     public static function getPreviewData()
     {
-        $emailTemplate = EmailTemplate::findEmailByKey('user-verify-email');
+        $emailTemplate = EmailTemplate::first();
 
         return $emailTemplate->getEmailPreviewData();
     }

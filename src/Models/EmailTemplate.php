@@ -162,7 +162,7 @@ class EmailTemplate extends Model
         $model = self::createEmailPreviewData();
 
         // preparing logo
-        $logo = $this->prepareLogo($this->logo);
+        $logo = $this->resolveLogoUrl($this->logo);
 
         return [
                 'user' => $model->user,
@@ -253,18 +253,19 @@ class EmailTemplate extends Model
     }
 
     /**
+     * Resolve logo to a url
      * @return string
      */
-    public function prepareLogo($logo)
+    public function resolveLogoUrl($logo):string
     {
-        $preparedLogo = "";
+        if (is_null($logo)) {
+            return asset(config('filament-email-templates.logo'));
+        }
 
-        $preparedLogo = is_null($logo)
-            ? asset(config('filament-email-templates.logo'))
-            : (Str::isUrl($logo)
-                ? $logo
-                : asset('storage/' . $logo));
+        if (Str::isUrl($logo)) {
+            return $logo;
+        }
 
-        return $preparedLogo;
+        return asset($logo);
     }
 }
