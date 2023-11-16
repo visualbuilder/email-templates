@@ -12,7 +12,7 @@ return [
     //Admin Panel Resource Navigation Options
     'navigation'=>[
         'sort'=>50,
-        'group'=>'Settings',
+        'group'=>'Content Management',
     ],
 
     //Email templates will be copied to resources/views/vendor/vb-email-templates/email
@@ -23,6 +23,9 @@ return [
 
     //Default Logo
     'logo'                    => 'media/email-templates/logo.png',
+
+    //Browsed Logo
+    'browsed_logo'            => 'media/email-templates/logos',
 
     //Logo size in pixels -> 200 pixels high is plenty big enough.
     'logo_width'              => '500',
@@ -81,6 +84,7 @@ return [
         'user_verified'          => true,
         'login'                  => true,
         'password_reset_success' => true,
+        'locked_out'             => true,
     ],
 
 ];

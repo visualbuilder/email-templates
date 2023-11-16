@@ -36,11 +36,43 @@ return [
         'title'              => 'Title',
         'title-hint'         => '(Displays large at very top of email)',
         'content'            => 'Content',
+        'logo-type'          => 'Logo Type',
+        'browse-another'     => 'Browse another',
+        'paste-url'          => 'Paste url',
+        'logo'               => 'Logo',
+        'logo-hint'          => '(Browse image)',
+        'logo-url'           => 'Logo Url',
+        'logo-url-hint'      => '(Paste image url here)',
     ],
 
     'resource_name' => [
         'singular' => 'Email Template',
         'plural'   => 'Email Templates',
+    ],
+
+    // Theme Form Field Labels
+    'theme-form-fields-labels' => [
+        'template-preview'     => 'Template Preview',
+        'theme-name'           => 'Name',
+        'is-default'           => 'Is Default',
+        'set-colors'           => 'Set Colors',
+        'header-bg'            => 'Header Background',
+        'body-bg'              => 'Body Background',
+        'content-bg'           => 'Content Background',
+        'footer-bg'            => 'Footer Background',
+        'callout-bg'           => 'Callout Background',
+        'button-bg'            => 'Button Background',
+        'body-color'           => 'Body Color',
+        'callout-color'        => 'Callout Color',
+        'button-color'         => 'Button Color',
+        'anchor-color'         => 'Anchor Color',
+        'title-hint'           => '(Displays large at very top of email)',
+        'content'              => 'Content',
+    ],
+
+    'theme_resource_name' => [
+        'singular' => 'Email Template Theme',
+        'plural'   => 'Email Template Themes',
     ]
 
 ];

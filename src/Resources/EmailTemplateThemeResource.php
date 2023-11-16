@@ -29,9 +29,19 @@ class EmailTemplateThemeResource extends Resource
         return config('filament-email-templates.navigation.sort');
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('vb-email-templates::email-templates.theme_resource_name.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('vb-email-templates::email-templates.theme_resource_name.plural');
+    }
+
     public static function getPreviewData()
     {
-        $emailTemplate = EmailTemplate::findEmailByKey('user-verify-email');
+        $emailTemplate = EmailTemplate::first();
 
         return $emailTemplate->getEmailPreviewData();
     }
@@ -42,7 +52,7 @@ class EmailTemplateThemeResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Template Preview')
+                        Forms\Components\Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.template-preview'))
                             ->schema([
                                 Forms\Components\ViewField::make('preview')->view('vb-email-templates::email.default_preview', ['data' => self::getPreviewData()]),
                             ])
@@ -55,49 +65,56 @@ class EmailTemplateThemeResource extends Resource
                         Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.theme-name'))
                                     ->columnSpan(3),
 
                                 Forms\Components\Toggle::make('is_default')
-                                    ->label('Is Active')
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.is-default'))
                                     ->inline(false)
                                     ->onColor('success')
                                     ->offColor('danger'),
                             ]),
 
-                        Forms\Components\Section::make('Set Colors')
+                        Forms\Components\Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.set-colors'))
                             ->schema([
                                 Forms\Components\ColorPicker::make('colours.header_bg_color')
-                                    ->label('Header Background')
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.header-bg'))
                                     ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.body_bg_color')
-                                    ->label('Body Background')
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.body-bg'))
                                     ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.content_bg_color')
-                                    ->label('Content Background')
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.content-bg'))
                                     ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.footer_bg_color')
-                                    ->label('Footer Background'),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.footer-bg')),
 
                                 Forms\Components\ColorPicker::make('colours.callout_bg_color')
-                                    ->label('Callout Background')->live(),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.callout-bg'))
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.button_bg_color')
-                                    ->label('Button Background')->live(),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.button-bg'))
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.body_color')
-                                    ->label('Body Color')->live(),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.body-color'))
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.callout_color')
-                                    ->label('Callout Color'),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.callout-color'))
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.button_color')
-                                    ->label('Button Color')->live(),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.button-color'))
+                                    ->live(),
 
                                 Forms\Components\ColorPicker::make('colours.anchor_color')
-                                    ->label('Anchor Color')->live(),
+                                    ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.anchor-color'))
+                                    ->live(),
                             ]),
 
                     ])

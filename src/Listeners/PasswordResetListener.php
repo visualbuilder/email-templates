@@ -26,8 +26,10 @@ class PasswordResetListener
      */
     public function handle(PasswordReset $event)
     {
-        $user = $event->user;
-        $user->notify(new UserPasswordResetNotification());
+        if(config('filament-email-templates.send_emails.password_reset_success')) {
+            $user = $event->user;
+            $user->notify(new UserPasswordResetNotification());
+        }
 
 
     }

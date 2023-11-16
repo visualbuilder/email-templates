@@ -23,6 +23,10 @@ use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Get;
+use Illuminate\Support\Facades\File;
 
 class EmailTemplateResource extends Resource
 {
@@ -126,9 +130,35 @@ class EmailTemplateResource extends Resource
                                             ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
 
                                         TiptapEditor::make('content')
+                                                ->tools([])
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
                                             ->default("<p>Dear ##user.firstname##, </p>"),
+
+                                        Radio::make('logo_type')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-type'))
+                                            ->options([
+                                                'browse_another' => __('vb-email-templates::email-templates.form-fields-labels.browse-another'),
+                                                'paste_url' => __('vb-email-templates::email-templates.form-fields-labels.paste-url'),
+                                            ])
+                                            ->default('browse_another')
+                                            ->inline()
+                                            ->live(),
+
+                                        FileUpload::make('logo')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-hint'))
+                                            ->hidden(fn (Get $get) => $get('logo_type') !== 'browse_another')
+                                            ->directory(config('filament-email-templates.browsed_logo'))
+                                            ->image(),
+
+                                        TextInput::make('logo_url')
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-url'))
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-url-hint'))
+                                            ->placeholder('https://www.example.com/media/test.png')
+                                            ->hidden(fn (Get $get) => $get('logo_type') !== 'paste_url')
+                                            ->activeUrl()
+                                            ->maxLength(191),
                                     ]
                                 ),
 
@@ -191,7 +221,10 @@ class EmailTemplateResource extends Resource
 
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make()
+                        ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
+                            $emailTemplateResource->handleLogoDelete($record->logo);
+                        }),
                     Tables\Actions\RestoreAction::make(),
                 ]
             )
@@ -221,5 +254,24 @@ class EmailTemplateResource extends Resource
                     SoftDeletingScope::class,
                 ]
             );
+    }
+
+    public function handleLogo(array $data): array
+    {
+        if($data['logo_type'] == "paste_url" && $data['logo_url']) {
+            $data['logo'] = $data['logo_url'];
+        }
+
+        return $data;
+    }
+
+    public function handleLogoDelete($logo)
+    {
+        if($logo && !Str::isUrl($logo)) {
+            $logoPath = storage_path('app/public/'.$logo);
+            if(File::exists($logoPath)) {
+                File::delete($logoPath);
+            }
+        }
     }
 }

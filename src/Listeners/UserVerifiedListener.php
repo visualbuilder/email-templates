@@ -25,9 +25,9 @@ class UserVerifiedListener
      */
     public function handle(Verified $event)
     {
-        $user = $event->user;
-        $user->notify(new UserVerifiedNotification());
-
-
+        if(config('filament-email-templates.send_emails.user_verified')) {
+            $user = $event->user;
+            $user->notify(new UserVerifiedNotification());
+        }
     }
 }
