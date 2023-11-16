@@ -13,16 +13,20 @@ class EmailTemplateThemeSeeder extends Seeder
                 'name'       => 'Modern Bold',
                 'colours'=>[
                     'header_bg_color'    => '#1E88E5',
-                    'body_bg_color'      => '#f4f4f4',
                     'content_bg_color'   => '#FFFFFB',
+
+                    'body_bg_color'      => '#f4f4f4',
+                    'body_color'         => '#333333',
+
                     'footer_bg_color'    => '#34495E',
+                    'footer_color'       => '#FFFFFB',
 
                     'callout_bg_color'   => '#FFC107',
-                    'button_bg_color'    => '#FFC107',
-
-                    'body_color'         => '#333333',
                     'callout_color'      => '#212121',
+
+                    'button_bg_color'    => '#FFC107',
                     'button_color'       => '#2A2A11',
+
                     'anchor_color'       => '#1E88E5',
                 ],
                 'is_default'=>1,
