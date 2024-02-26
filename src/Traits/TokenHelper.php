@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Traits;
 
+use App\Models\EndUser;
 use Illuminate\Support\Facades\View;
 
 trait TokenHelper
@@ -34,6 +35,31 @@ trait TokenHelper
                 }
             }
         }
+
+        //Insert user-consent
+        if(isset($models->consentOptions)){
+            $content =  str_replace('##consent-options##',view('vendor.user-consent.mails.accept-notification', ['consentOptions' => $models->consentOptions])->render(),$content);
+
+
+            $coachingContract = $models->consentOptions->filter(function ($option) {
+                return $option->key == 'coaching-contract';
+            });
+            if($coachingContract && $models->user instanceof EndUser)
+            {
+                if($order = $models->user->latestOrderWithCategory('Contract'))
+                {
+                    $totalCoachingHours = $order->total_coaching_duration;
+                    $expectedWeeks = estimateCoachingWeeks($totalCoachingHours);
+                    $content  = str_replace('{{ total_hours_coaching }}', $totalCoachingHours,$content);
+                    $content  = str_replace('{{ expected_weeks }}', $expectedMonths,$content);
+                }
+
+
+            }
+
+        }
+
+
 
         // Replace config tokens.
         $allowedConfigKeys = config('filament-email-templates.config_keys');
