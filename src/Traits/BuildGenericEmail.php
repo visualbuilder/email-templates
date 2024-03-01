@@ -19,10 +19,10 @@ trait BuildGenericEmail
 
         if($this->attachment ?? false) {
             $this->attach(
-                $this->attachment->filepath,
+                $this->attachment->getPath(),
                 [
                 'as' => $this->attachment->filename,
-                'mime' => $this->attachment->filetype,
+                'mime' => $this->attachment->mime_type,
             ]
             );
         }
