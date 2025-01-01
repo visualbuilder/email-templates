@@ -11,7 +11,6 @@ use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
-use FilamentTiptapEditor\FilamentTiptapEditorServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Livewire\LivewireServiceProvider;
@@ -51,7 +50,6 @@ class TestCase extends Orchestra
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
             NotificationsServiceProvider::class,
-            FilamentTiptapEditorServiceProvider::class,
             AdminPanelProvider::class,
             ActionsServiceProvider::class,
             WidgetsServiceProvider::class,

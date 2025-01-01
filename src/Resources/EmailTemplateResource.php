@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
+use AmidEsfahani\FilamentTinyEditor\TinyEditor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
@@ -18,7 +19,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\File;
@@ -223,11 +223,10 @@ class EmailTemplateResource extends Resource
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
                                             ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
 
-                                        TiptapEditor::make('content')
-                                            ->tools([])
+                                        TinyEditor::make('content')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                             ->profile('default')
-                                            ->default("<p>Dear ##user.firstname##, </p>"),
+                                            ->default("<p>Dear ##user.first_name##, </p>"),
 
                                         Radio::make('logo_type')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-type'))
