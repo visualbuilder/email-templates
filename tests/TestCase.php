@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Tests;
 
+use AmidEsfahani\FilamentTinyEditor\TinyeditorServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
@@ -53,6 +54,8 @@ class TestCase extends Orchestra
             AdminPanelProvider::class,
             ActionsServiceProvider::class,
             WidgetsServiceProvider::class,
+            TinyEditorServiceProvider::class,
+
         ];
     }
 
