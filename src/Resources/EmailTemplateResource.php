@@ -2,7 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
-use AmidEsfahani\FilamentTinyEditor\TinyEditor;
+use Visualbuilder\FilamentTinyEditor\TinyEditor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;

@@ -2,7 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Tests;
 
-use AmidEsfahani\FilamentTinyEditor\TinyeditorServiceProvider;
+use Visualbuilder\FilamentTinyEditor\TinyeditorServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;

@@ -17,9 +17,9 @@
     ],
     "require": {
         "php": "^8.2",
-        "amidesfahani/filament-tinyeditor": "^2.0",
         "filament/filament": "^3.0",
         "illuminate/contracts": "^10.0|^11.0",
+        "visualbuilder/filament-tinyeditor": "dev-main",
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
