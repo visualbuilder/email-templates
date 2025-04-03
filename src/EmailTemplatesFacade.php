@@ -4,9 +4,7 @@ namespace Visualbuilder\EmailTemplates;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see \Visualbuilder\EmailTemplates\Skeleton\SkeletonClass
- */
+
 class EmailTemplatesFacade extends Facade
 {
     /**
