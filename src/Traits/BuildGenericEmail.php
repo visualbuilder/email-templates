@@ -44,11 +44,11 @@ trait BuildGenericEmail
                 'logo'          => $this->emailTemplate->logo,
         ];
 
-        if(count($this->emailTemplate->cc)){
+        if(is_array($this->emailTemplate->cc)&&count($this->emailTemplate->cc)){
             $this->cc($this->emailTemplate->cc);
         };
 
-        if(count($this->emailTemplate->bcc)){
+        if(is_array($this->emailTemplate->bcc)&&count($this->emailTemplate->bcc)){
             $this->bcc($this->emailTemplate->bcc);
         };
 
