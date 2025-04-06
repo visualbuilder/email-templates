@@ -2,7 +2,6 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
-use Visualbuilder\FilamentTinyEditor\TinyEditor;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
@@ -23,12 +22,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+use Visualbuilder\FilamentTinyEditor\TinyEditor;
 
 class EmailTemplateResource extends Resource
 {
@@ -76,193 +78,193 @@ class EmailTemplateResource extends Resource
 
     public static function table(Table $table): Table
     {
-
         return $table
-            ->query(EmailTemplate::query())
-            ->columns(
-                [
-                    TextColumn::make('id')
-                        ->sortable()
-                        ->searchable(),
-                    TextColumn::make('name')
-                        ->limit(50)
-                        ->sortable()
-                        ->searchable(),
-                    TextColumn::make('language')
-                        ->limit(50),
-                    TextColumn::make('subject')
-                        ->searchable()
-                        ->limit(50),
-                ]
-            )
-            ->filters(
-                [
-                    Tables\Filters\TrashedFilter::make(),
-                ]
-            )
-            ->actions(
-                [
-                    Action::make('create-mail-class')
-                        ->label("Build Class")
-                        //Only show the button if the file does not exist
-                        ->visible(function (EmailTemplate $record) {
-                            return !$record->mailable_exists;
-                        })
-                        ->icon('heroicon-o-document-text')
-                        // ->action('createMailClass'),
-                        ->action(function (EmailTemplate $record) {
-                            $notify = app(CreateMailableInterface::class)->createMailable($record);
-                            Notification::make()
-                                ->title($notify->title)
-                                ->icon($notify->icon)
-                                ->iconColor($notify->icon_color)
-                                ->duration(10000)
-                                //Fix for bug where body hides the icon
-                                ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
-                                ->send();
-                        }),
-                    Tables\Actions\ViewAction::make('Preview')
-                        ->icon('heroicon-o-magnifying-glass')
-                        ->modalContent(fn(EmailTemplate $record): View => view(
-                            'vb-email-templates::forms.components.iframe',
-                            ['record' => $record],
-                        ))->form(null)
-                        ->modalHeading(fn(EmailTemplate $record): string => 'Preview Email: '.$record->name)
-                        ->modalSubmitAction(false)
-                        ->modalCancelAction(false)
-                        ->slideOver(),
+                ->query(EmailTemplate::query())
+                ->columns(
+                        [
+                                TextColumn::make('id')
+                                        ->sortable()
+                                        ->searchable(),
+                                TextColumn::make('name')
+                                        ->limit(50)
+                                        ->sortable()
+                                        ->searchable(),
+                                TextColumn::make('language')
+                                        ->limit(50),
+                                TextColumn::make('subject')
+                                        ->searchable()
+                                        ->limit(50),
+                        ]
+                )
+                ->filters(
+                        [
+                                Tables\Filters\TrashedFilter::make(),
+                        ]
+                )
+                ->actions(
+                        [
+                                Action::make('create-mail-class')
+                                        ->label("Build Class")
+                                        //Only show the button if the file does not exist
+                                        ->visible(function (EmailTemplate $record) {
+                                            return !$record->mailable_exists;
+                                        })
+                                        ->icon('heroicon-o-document-text')
+                                        // ->action('createMailClass'),
+                                        ->action(function (EmailTemplate $record) {
+                                            $notify = app(CreateMailableInterface::class)->createMailable($record);
+                                            Notification::make()
+                                                    ->title($notify->title)
+                                                    ->icon($notify->icon)
+                                                    ->iconColor($notify->icon_color)
+                                                    ->duration(10000)
+                                                    //Fix for bug where body hides the icon
+                                                    ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
+                                                    ->send();
+                                        }),
+                                Tables\Actions\ViewAction::make('Preview')
+                                        ->icon('heroicon-o-magnifying-glass')
+                                        ->modalContent(fn(EmailTemplate $record): View => view(
+                                                'vb-email-templates::forms.components.iframe',
+                                                ['record' => $record],
+                                        ))->form(null)
+                                        ->modalHeading(fn(EmailTemplate $record): string => 'Preview Email: '.$record->name)
+                                        ->modalSubmitAction(false)
+                                        ->modalCancelAction(false)
+                                        ->slideOver(),
 
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\ForceDeleteAction::make()
-                        ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
-                            $emailTemplateResource->handleLogoDelete($record->logo);
-                        }),
-                    Tables\Actions\RestoreAction::make(),
-                ]
-            )
-            ->bulkActions(
-                [
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
-                ]
-            );
+                                Tables\Actions\EditAction::make(),
+                                Tables\Actions\DeleteAction::make(),
+                                Tables\Actions\ForceDeleteAction::make()
+                                        ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
+                                            $emailTemplateResource->handleLogoDelete($record->logo);
+                                        }),
+                                Tables\Actions\RestoreAction::make(),
+                        ]
+                )
+                ->bulkActions(
+                        [
+                                Tables\Actions\DeleteBulkAction::make(),
+                                Tables\Actions\ForceDeleteBulkAction::make(),
+                                Tables\Actions\RestoreBulkAction::make(),
+                        ]
+                );
     }
 
     public static function form(Form $form): Form
     {
-
         $formHelper = app(FormHelperInterface::class);
         $templates = $formHelper->getTemplateViewOptions();
 
         return $form->schema(
-            [
-                Section::make()
-                    ->schema(
-                        [
-                            Grid::make(['default' => 1])
+                [
+                        Section::make()
                                 ->schema(
-                                    [
-                                        TextInput::make('name')
-                                            ->live()
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.template-name'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.template-name-hint'))
-                                            ->required(),
-                                    ]
+                                        [
+                                                Grid::make(['default' => 1])
+                                                        ->schema(
+                                                                [
+                                                                        TextInput::make('name')
+                                                                                ->live()
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.template-name'))
+                                                                                ->hint(__('vb-email-templates::email-templates.form-fields-labels.template-name-hint'))
+                                                                                ->required(),
+                                                                ]
+                                                        ),
+
+                                                Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
+                                                        ->schema(
+                                                                [
+                                                                        TextInput::make('key')
+                                                                                ->afterStateUpdated(
+                                                                                        fn(Set $set, ?string $state) => $set('key', Str::slug($state))
+                                                                                )
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
+                                                                                ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
+                                                                                ->required()
+                                                                                ->unique(table: EmailTemplate::class, column: 'key',ignoreRecord: true, modifyRuleUsing: function (Unique $rule, $get) {
+                                                                                    return $rule->where('language', $get('language'));
+                                                                                } )
+                                                                                ->maxLength(191),
+                                                                        Select::make('language')
+                                                                                ->options($formHelper->getLanguageOptions())
+                                                                                ->default(config('filament-email-templates.default_locale'))
+                                                                                ->searchable()
+                                                                                ->allowHtml(),
+                                                                        TextInput::make('from.email')->default(config('mail.from.address'))
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
+                                                                                ->email(),
+                                                                        TextInput::make('from.name')->default(config('mail.from.name'))
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
+                                                                                ->string()
+                                                                                ->maxLength(191),
+
+                                                                        Select::make('view')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
+                                                                                ->options($templates)
+                                                                                ->default(current($templates))
+                                                                                ->searchable()
+                                                                                ->required(),
+
+                                                                        Select::make(config('filament-email-templates.theme_table_name').'_id')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
+                                                                                ->relationship(name: 'theme', titleAttribute: 'name')
+                                                                                ->native(false)
+                                                                ]
+                                                        ),
+
+                                                Grid::make(['default' => 1])
+                                                        ->schema(
+                                                                [
+                                                                        TextInput::make('subject')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.subject'))
+                                                                                ->maxLength(191),
+
+                                                                        TextInput::make('preheader')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
+                                                                                ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint'))
+                                                                                ->maxLength(191),
+
+                                                                        TextInput::make('title')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
+                                                                                ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint'))
+                                                                                ->maxLength(191),
+
+                                                                        TinyEditor::make('content')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
+                                                                                ->profile('default')
+                                                                                ->default("<p>Dear ##user.first_name##, </p>"),
+
+                                                                        Radio::make('logo_type')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-type'))
+                                                                                ->options([
+                                                                                        'browse_another' => __('vb-email-templates::email-templates.form-fields-labels.browse-another'),
+                                                                                        'paste_url'      => __('vb-email-templates::email-templates.form-fields-labels.paste-url'),
+                                                                                ])
+                                                                                ->default('browse_another')
+                                                                                ->inline()
+                                                                                ->live(),
+
+                                                                        FileUpload::make('logo')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.logo'))
+                                                                                ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-hint'))
+                                                                                ->hidden(fn(Get $get) => $get('logo_type') !== 'browse_another')
+                                                                                ->directory(config('filament-email-templates.browsed_logo'))
+                                                                                ->image(),
+
+                                                                        TextInput::make('logo_url')
+                                                                                ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-url'))
+                                                                                ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-url-hint'))
+                                                                                ->placeholder('https://www.example.com/media/test.png')
+                                                                                ->hidden(fn(Get $get) => $get('logo_type') !== 'paste_url')
+                                                                                ->activeUrl()
+                                                                                ->maxLength(191),
+                                                                ]
+                                                        ),
+
+                                        ]
                                 ),
-
-                            Grid::make(['default' => 1, 'sm' => 1, 'md' => 2])
-                                ->schema(
-                                    [
-                                        TextInput::make('key')
-                                            ->afterStateUpdated(
-                                                fn(Set $set, ?string $state) => $set('key', Str::slug($state))
-                                            )
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
-                                            ->required()
-                                            ->maxLength(191)
-                                            ->unique(ignorable: fn($record) => $record),
-                                        Select::make('language')
-                                            ->options($formHelper->getLanguageOptions())
-                                            ->default(config('filament-email-templates.default_locale'))
-                                            ->searchable()
-                                            ->allowHtml(),
-                                        TextInput::make('from.email')->default(config('mail.from.address'))
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from'))
-                                            ->email(),
-                                        TextInput::make('from.name')->default(config('mail.from.name'))
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
-                                            ->string()
-                                            ->maxLength(191),
-
-                                        Select::make('view')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
-                                            ->options($templates)
-                                            ->default(current($templates))
-                                            ->searchable()
-                                            ->required(),
-
-                                        Select::make(config('filament-email-templates.theme_table_name').'_id')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.theme'))
-                                            ->relationship(name: 'theme', titleAttribute: 'name')
-                                            ->native(false)
-                                    ]
-                                ),
-
-                            Grid::make(['default' => 1])
-                                ->schema(
-                                    [
-                                        TextInput::make('subject')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.subject'))
-                                            ->maxLength(191),
-
-                                        TextInput::make('preheader')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint'))
-                                            ->maxLength(191),
-
-                                        TextInput::make('title')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint'))
-                                            ->maxLength(191),
-
-                                        TinyEditor::make('content')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
-                                            ->profile('default')
-                                            ->default("<p>Dear ##user.first_name##, </p>"),
-
-                                        Radio::make('logo_type')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-type'))
-                                            ->options([
-                                                'browse_another' => __('vb-email-templates::email-templates.form-fields-labels.browse-another'),
-                                                'paste_url' => __('vb-email-templates::email-templates.form-fields-labels.paste-url'),
-                                            ])
-                                            ->default('browse_another')
-                                            ->inline()
-                                            ->live(),
-
-                                        FileUpload::make('logo')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-hint'))
-                                            ->hidden(fn(Get $get) => $get('logo_type') !== 'browse_another')
-                                            ->directory(config('filament-email-templates.browsed_logo'))
-                                            ->image(),
-
-                                        TextInput::make('logo_url')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-url'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.logo-url-hint'))
-                                            ->placeholder('https://www.example.com/media/test.png')
-                                            ->hidden(fn(Get $get) => $get('logo_type') !== 'paste_url')
-                                            ->activeUrl()
-                                            ->maxLength(191),
-                                    ]
-                                ),
-
-                        ]
-                    ),
-            ]
+                ]
         );
     }
 
@@ -279,20 +281,20 @@ class EmailTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmailTemplates::route('/'),
-            'create' => Pages\CreateEmailTemplate::route('/create'),
-            'edit' => Pages\EditEmailTemplate::route('/{record}/edit'),
+                'index'  => Pages\ListEmailTemplates::route('/'),
+                'create' => Pages\CreateEmailTemplate::route('/create'),
+                'edit'   => Pages\EditEmailTemplate::route('/{record}/edit'),
         ];
     }
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->withoutGlobalScopes(
-                [
-                    SoftDeletingScope::class,
-                ]
-            );
+                ->withoutGlobalScopes(
+                        [
+                                SoftDeletingScope::class,
+                        ]
+                );
     }
 
     public function handleLogo(array $data): array
