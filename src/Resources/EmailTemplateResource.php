@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
@@ -182,9 +181,12 @@ class EmailTemplateResource extends Resource
                                                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
                                                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
                                                                                 ->required()
-                                                                                ->unique(table: EmailTemplate::class, column: 'key',ignoreRecord: true, modifyRuleUsing: function (Unique $rule, $get) {
-                                                                                    return $rule->where('language', $get('language'));
-                                                                                } )
+                                                                                ->unique(table: EmailTemplate::class,
+                                                                                        column: 'key',
+                                                                                        ignoreRecord: true,
+                                                                                        modifyRuleUsing: function (Unique $rule, $get) {
+                                                                                            return $rule->where('language', $get('language'));
+                                                                                        })
                                                                                 ->maxLength(191),
                                                                         Select::make('language')
                                                                                 ->options($formHelper->getLanguageOptions())
