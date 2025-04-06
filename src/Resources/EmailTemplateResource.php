@@ -182,6 +182,7 @@ class EmailTemplateResource extends Resource
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.key'))
                                             ->hint(__('vb-email-templates::email-templates.form-fields-labels.key-hint'))
                                             ->required()
+                                            ->maxLength(191)
                                             ->unique(ignorable: fn($record) => $record),
                                         Select::make('language')
                                             ->options($formHelper->getLanguageOptions())
@@ -193,7 +194,8 @@ class EmailTemplateResource extends Resource
                                             ->email(),
                                         TextInput::make('from.name')->default(config('mail.from.name'))
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.email-from-name'))
-                                            ->string(),
+                                            ->string()
+                                            ->maxLength(191),
 
                                         Select::make('view')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.template-view'))
@@ -213,15 +215,18 @@ class EmailTemplateResource extends Resource
                                 ->schema(
                                     [
                                         TextInput::make('subject')
-                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.subject')),
+                                            ->label(__('vb-email-templates::email-templates.form-fields-labels.subject'))
+                                            ->maxLength(191),
 
                                         TextInput::make('preheader')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.header'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint')),
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.header-hint'))
+                                            ->maxLength(191),
 
                                         TextInput::make('title')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.title'))
-                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint')),
+                                            ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint'))
+                                            ->maxLength(191),
 
                                         TinyEditor::make('content')
                                             ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
