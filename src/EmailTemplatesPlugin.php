@@ -13,7 +13,7 @@ class EmailTemplatesPlugin implements Plugin
 {
     use EvaluatesClosures;
 
-    public string $navigationGroup;
+    protected string|Closure|null $navigationGroup = null;
 
     protected bool|Closure|null $navigation = null;
 
@@ -44,7 +44,7 @@ class EmailTemplatesPlugin implements Plugin
         return $this->evaluate($this->navigation) ?? config('filament-email-templates.navigation.enabled',true);
     }
 
-    public function navigationGroup(string $navigationGroup): static
+    public function navigationGroup(string|Closure|null $navigationGroup): static
     {
         $this->navigationGroup = $navigationGroup;
         return $this;
@@ -53,7 +53,7 @@ class EmailTemplatesPlugin implements Plugin
 
     public function getNavigationGroup(): ?string
     {
-        return $this->navigationGroup ?? config('filament-email-templates.navigation.templates.group');
+        return $this->evaluate($this->navigationGroup) ?? config('filament-email-templates.navigation.templates.group');
     }
 
     public function register(Panel $panel): void
