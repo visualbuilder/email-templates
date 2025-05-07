@@ -272,10 +272,12 @@ class EmailTemplateResource extends Resource
 
     public function handleLogoDelete($logo)
     {
-        if ($logo && !Str::isUrl($logo)) {
-            $logoPath = storage_path('app/public/'.$logo);
-            if (File::exists($logoPath)) {
-                File::delete($logoPath);
+        if ($logo) {
+            $defaultLogoPath = config('filament-email-templates.logo');
+            $parsedLogoPath = str_replace(asset('/'), storage_path('app/public/'), $logo);
+
+            if (!str_contains($parsedLogoPath, $defaultLogoPath) && File::exists($parsedLogoPath)) {
+                File::delete($parsedLogoPath);
             }
         }
     }
