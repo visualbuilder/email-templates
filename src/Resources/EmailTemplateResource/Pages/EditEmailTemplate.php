@@ -52,7 +52,7 @@ class EditEmailTemplate extends EditRecord
         $sortedData = $emailTemplateResource->handleLogo($data);
 
         // deleting previous logo
-        if ($record->logo != $sortedData['logo']) {
+        if ($record->logo != ($sortedData['logo'] ?? null)) {
             $emailTemplateResource->handleLogoDelete($record->logo);
         }
 
