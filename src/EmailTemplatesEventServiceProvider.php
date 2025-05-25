@@ -50,4 +50,6 @@ class EmailTemplatesEventServiceProvider extends ServiceProvider
 
         //
     }
+
+    protected function configureEmailVerification() {}
 }
