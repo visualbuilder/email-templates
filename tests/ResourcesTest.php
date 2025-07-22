@@ -359,3 +359,43 @@ it('can preview user logged in email', function () {
         record' => $emailData,
     ])->assertSee('You have been logged into');
 });
+
+it('deletes previous logo when updated', function () {
+    $relativePath = 'media/email-templates/logos/old-logo.png';
+    $fullPath = storage_path('app/public/'.$relativePath);
+    \Illuminate\Support\Facades\File::ensureDirectoryExists(dirname($fullPath));
+    \Illuminate\Support\Facades\File::put($fullPath, 'fake');
+
+    $emailTemplate = EmailTemplate::factory()->create([
+        'logo' => $relativePath,
+    ]);
+
+    expect(file_exists($fullPath))->toBeTrue();
+
+    $newData = EmailTemplate::factory()->make();
+    $newLogoUrl = 'https://example.com/new-logo.png';
+
+    livewire(EditEmailTemplate::class, [
+        'record' => $emailTemplate->getRouteKey(),
+    ])
+        ->fillForm([
+            'language' => $newData->language,
+            'view' => $newData->view,
+            'cc' => $newData->cc,
+            'bcc' => $newData->bcc,
+            'from.email' => $newData->from['email'],
+            'from.name' => $newData->from['name'],
+            'name' => $newData->name,
+            'preheader' => $newData->preheader,
+            'subject' => $newData->subject,
+            'title' => $newData->title,
+            'content' => $newData->content,
+            'deleted_at' => $newData->deleted_at,
+            'logo_type' => 'paste_url',
+            'logo_url' => $newLogoUrl,
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(file_exists($fullPath))->toBeFalse();
+});
