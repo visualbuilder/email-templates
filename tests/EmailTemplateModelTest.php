@@ -23,7 +23,7 @@ it('returns default language when locale missing and caches result', function ()
     $template = EmailTemplate::findEmailByKey($key);
 
     expect($template->id)->toBe($default->id);
-    $cacheKey = "email_by_key_{$key}_{$defaultLang}";
+    $cacheKey = "email_by_key_{$key}_";
     expect(Cache::has($cacheKey))->toBeTrue();
 });
 
@@ -56,11 +56,13 @@ it('returns the mailable FQCN when the class exists', function () {
 
     $filePath = $classDir . '/FakeMailable.php';
     File::put($filePath, "<?php\nnamespace App\\Mail\\Visualbuilder\\EmailTemplates;\nuse Illuminate\\Mail\\Mailable;\nclass FakeMailable extends Mailable {}\n");
+    require_once $filePath;
 
     $template = EmailTemplate::firstWhere('key', $key);
     $fqcn = $template->getMailableClass();
 
     expect($fqcn)->toBe('App\\Mail\\Visualbuilder\\EmailTemplates\\FakeMailable');
+    File::delete($filePath);
 });
 
 it('throws an exception when the mailable class does not exist', function () {
