@@ -83,6 +83,23 @@ class EmailTemplate extends Model
     {
         parent::__construct($attributes);
         $this->setTableFromConfig();
+        // Include the theme foreign key as a fillable attribute
+        $this->fillable[] = config('filament-email-templates.theme_table_name') . '_id';
+    }
+
+    /**
+     * Remove temporary logo fields before mass assignment.
+     */
+    public function fill(array $attributes)
+    {
+        if (isset($attributes['logo_url'])) {
+            if (($attributes['logo_type'] ?? null) === 'paste_url' && $attributes['logo_url']) {
+                $attributes['logo'] = $attributes['logo_url'];
+            }
+            unset($attributes['logo_url'], $attributes['logo_type']);
+        }
+
+        return parent::fill($attributes);
     }
 
     protected static function boot()
