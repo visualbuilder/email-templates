@@ -69,7 +69,8 @@ class EmailTemplateThemeResource extends Resource
                         Forms\Components\Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.template-preview'))
                             ->schema([
                                 Forms\Components\ViewField::make('preview')->view('vb-email-templates::email.default_preview',
-                                    ['data' => self::getPreviewData()]),
+                                    ['data' => self::getPreviewData()])
+                                    ->dehydrated(false),
                             ])
                             ->columnSpan(['lg' => 2]),
                     ])
