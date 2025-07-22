@@ -36,6 +36,7 @@ class TestCase extends Orchestra
         );
 
         Config::set('filament-email-templates.recipients', ['\\Visualbuilder\\EmailTemplates\\Tests\\Models\\User']);
+        Config::set('auth.providers.users.model', User::class);
     }
 
     protected function getPackageProviders($app): array
