@@ -210,6 +210,29 @@ class User extends Authenticatable implements MustVerifyEmail
 
 and include the **verified** middleware in your routes.
 
+If you have a custom registration page and need to manually generate the
+verification URL, you can send the notification like this:
+
+```php
+use Illuminate\Support\Facades\URL;
+
+$notification = new \Filament\Notifications\Auth\VerifyEmail();
+$notification->url = URL::temporarySignedRoute(
+    'filament.actor.auth.email-verification.verify',
+    now()->addMinutes(config('auth.verification.expire', 60)),
+    [
+        'id' => $user->getKey(),
+        'hash' => sha1($user->getEmailForVerification()),
+    ]
+);
+
+$user->notify($notification);
+
+Auth::login($user);
+```
+
+> **Note** The `notify()` call must occur **before** logging in the user.
+
 #### User Request Password Reset
 
 Replacing the Filament default email requires extending the Filament RequestPasswordReset class to override the default request method like this:-
