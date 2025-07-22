@@ -4,6 +4,7 @@ namespace Visualbuilder\EmailTemplates\Helpers;
 
 use Exception;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 
