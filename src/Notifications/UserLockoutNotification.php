@@ -30,7 +30,9 @@ class UserLockoutNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return config('filament-email-templates.send_emails.locked_out')
+            ? ['mail']
+            : [];
     }
 
     /**
@@ -41,9 +43,7 @@ class UserLockoutNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        if(config('filament-email-templates.send_emails.user_lockout')) {
-            return app(UserLockedOutEmail::class, ['user' => $notifiable]);
-        }
+        return app(UserLockedOutEmail::class, ['user' => $notifiable]);
     }
 
     /**
