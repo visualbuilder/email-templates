@@ -1,5 +1,11 @@
 
-<?php $data['theme'] = $this->data['colours'] ?>
+@php
+    if (isset($data['colours'])) {
+        $data['theme'] = $data['colours'];
+    } elseif (isset($this) && isset($this->data['colours'])) {
+        $data['theme'] = $this->data['colours'];
+    }
+@endphp
 
 <div style="background-color: {{$data['theme']["body_bg_color"]}};">
 
