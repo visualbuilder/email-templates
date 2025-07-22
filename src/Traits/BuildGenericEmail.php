@@ -37,9 +37,9 @@ trait BuildGenericEmail
         }
 
         $data = [
-                'content'       => TokenHelper::replace($this->emailTemplate->content??"", $this),
-                'preHeaderText' => TokenHelper::replace($this->emailTemplate->preheader??"", $this),
-                'title'         => TokenHelper::replace($this->emailTemplate->title??"", $this),
+                'content'       => TokenHelper::replace($this->emailTemplate->content ?? '', $this),
+                'preHeaderText' => TokenHelper::replace($this->emailTemplate->preheader ?? '', $this),
+                'title'         => TokenHelper::replace($this->emailTemplate->title ?? '', $this),
                 'theme'         => $this->emailTemplate->theme->colours,
                 'logo'          => $this->emailTemplate->logo,
         ];
