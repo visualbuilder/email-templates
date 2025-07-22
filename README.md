@@ -550,8 +550,8 @@ You should also include the filetype.
 
         $data = [
             'content'       => TokenHelper::replace($template->content, $this),
-            'preHeaderText' => TokenHelper::replace($template->preheader, $this),
-            'title'         => TokenHelper::replace($template->title, $this)
+            'preHeaderText' => TokenHelper::replace($template->preheader ?? '', $this),
+            'title'         => TokenHelper::replace($template->title ?? '', $this)
         ];
 
         return $this->from($template->from['email'],$template->from['name'])
