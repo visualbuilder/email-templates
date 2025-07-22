@@ -200,6 +200,12 @@ template.
 
 For reference this is done in the `EmailTemplatesAuthServiceProvider`.
 
+> **Important** Register this provider so the override takes effect.
+> Add `Visualbuilder\EmailTemplates\EmailTemplatesAuthServiceProvider::class`
+> to the `providers` array in `config/app.php` (or within your own
+> `AppServiceProvider`). Without this, Laravel will send its default
+> verification email instead of your customised template.
+
 This can be disabled in the config.
 
 To Enable email verification ensure the User model implements the Laravel MustVerifyEmail contract:-
