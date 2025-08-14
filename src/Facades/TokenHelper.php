@@ -2,13 +2,14 @@
 
 namespace Visualbuilder\EmailTemplates\Facades;
 
+use Visualbuilder\EmailTemplates\Contracts\TokenReplacementInterface;
 use Illuminate\Support\Facades\Facade;
 
 class TokenHelper extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Visualbuilder\EmailTemplates\Contracts\TokenReplacementInterface::class;
+        return TokenReplacementInterface::class;
     }
 
     public static function replace(string $content, $models): string

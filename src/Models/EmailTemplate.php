@@ -2,6 +2,9 @@
 
 namespace Visualbuilder\EmailTemplates\Models;
 
+use Exception;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -142,7 +145,7 @@ class EmailTemplate extends Model
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public static function getSendToSelectOptions()
     {
@@ -168,7 +171,7 @@ class EmailTemplate extends Model
     /**
      * Get the assigned theme or the default
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function theme()
     {
@@ -275,7 +278,7 @@ class EmailTemplate extends Model
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function getMailableClass()
     {
@@ -284,7 +287,7 @@ class EmailTemplate extends Model
         $fullClassName = "App\\" . rtrim($directory, '\\') . "\\{$className}";
 
         if (!class_exists($fullClassName)) {
-            throw new \Exception("Mailable class {$fullClassName} does not exist.");
+            throw new Exception("Mailable class {$fullClassName} does not exist.");
         }
 
         return $fullClassName;

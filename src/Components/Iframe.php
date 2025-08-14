@@ -2,7 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Components;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 
 class Iframe extends Component
 {

@@ -2,20 +2,32 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Utilities\Get;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Notifications\Notification;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,6 +42,7 @@ use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 use Visualbuilder\FilamentTinyEditor\TinyEditor;
+use Filament\Schemas\Schema;
 
 class EmailTemplateResource extends Resource
 {
@@ -97,10 +110,10 @@ class EmailTemplateResource extends Resource
                 )
                 ->filters(
                         [
-                                Tables\Filters\TrashedFilter::make(),
+                                TrashedFilter::make(),
                         ]
                 )
-                ->actions(
+                ->recordActions(
                         [
                                 Action::make('create-mail-class')
                                         ->label("Build Class")
@@ -121,41 +134,41 @@ class EmailTemplateResource extends Resource
                                                     ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                                     ->send();
                                         }),
-                                Tables\Actions\ViewAction::make('Preview')
+                                ViewAction::make('Preview')
                                         ->icon('heroicon-o-magnifying-glass')
                                         ->modalContent(fn(EmailTemplate $record): View => view(
                                                 'vb-email-templates::forms.components.iframe',
                                                 ['record' => $record],
-                                        ))->form(null)
+                                        ))->schema(null)
                                         ->modalHeading(fn(EmailTemplate $record): string => 'Preview Email: '.$record->name)
                                         ->modalSubmitAction(false)
                                         ->modalCancelAction(false)
                                         ->slideOver(),
 
-                                Tables\Actions\EditAction::make(),
-                                Tables\Actions\DeleteAction::make(),
-                                Tables\Actions\ForceDeleteAction::make()
+                                EditAction::make(),
+                                DeleteAction::make(),
+                                ForceDeleteAction::make()
                                         ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
                                             $emailTemplateResource->handleLogoDelete($record->logo);
                                         }),
-                                Tables\Actions\RestoreAction::make(),
+                                RestoreAction::make(),
                         ]
                 )
-                ->bulkActions(
+                ->toolbarActions(
                         [
-                                Tables\Actions\DeleteBulkAction::make(),
-                                Tables\Actions\ForceDeleteBulkAction::make(),
-                                Tables\Actions\RestoreBulkAction::make(),
+                                DeleteBulkAction::make(),
+                                ForceDeleteBulkAction::make(),
+                                RestoreBulkAction::make(),
                         ]
                 );
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $formHelper = app(FormHelperInterface::class);
         $templates = $formHelper->getTemplateViewOptions();
 
-        return $form->schema(
+        return $schema->components(
                 [
                         Section::make()
                                 ->schema(
@@ -285,9 +298,9 @@ class EmailTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-                'index'  => Pages\ListEmailTemplates::route('/'),
-                'create' => Pages\CreateEmailTemplate::route('/create'),
-                'edit'   => Pages\EditEmailTemplate::route('/{record}/edit'),
+                'index'  => ListEmailTemplates::route('/'),
+                'create' => CreateEmailTemplate::route('/create'),
+                'edit'   => EditEmailTemplate::route('/{record}/edit'),
         ];
     }
 

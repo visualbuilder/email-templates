@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates\Notifications;
 
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Visualbuilder\EmailTemplates\Mail\UserVerifiedEmail;
@@ -37,7 +38,7 @@ class UserVerifyNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {

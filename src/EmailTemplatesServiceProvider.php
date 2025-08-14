@@ -2,6 +2,7 @@
 
 namespace Visualbuilder\EmailTemplates;
 
+use Visualbuilder\EmailTemplates\Contracts\TokenReplacementInterface;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
@@ -42,7 +43,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
 
         // Add the binding for TokenReplacementInterface
         $this->app->bind(
-            \Visualbuilder\EmailTemplates\Contracts\TokenReplacementInterface::class,
+            TokenReplacementInterface::class,
             config('filament-email-templates.tokenHelperClass')
         );
     }

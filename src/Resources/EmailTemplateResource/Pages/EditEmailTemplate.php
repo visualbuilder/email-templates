@@ -2,6 +2,11 @@
 
 namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\View\View;
@@ -18,19 +23,19 @@ class EditEmailTemplate extends EditRecord
     protected function getActions(): array
     {
         return [
-            Actions\Action::make('back')->label(__('Back'))
+            Action::make('back')->label(__('Back'))
             ->url(EmailTemplateResource::getUrl())
             ,
-            Actions\ViewAction::make()->label(__('Preview'))->modalContent(fn (EmailTemplate $record): View => view(
+            ViewAction::make()->label(__('Preview'))->modalContent(fn (EmailTemplate $record): View => view(
                 'vb-email-templates::forms.components.iframe',
                 ['record' => $record],
-            ))->form(null),
-            Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make()
+            ))->schema(null),
+            DeleteAction::make(),
+            ForceDeleteAction::make()
                 ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
                     $emailTemplateResource->handleLogoDelete($record->logo);
                 }),
-            Actions\RestoreAction::make(),
+            RestoreAction::make(),
         ];
     }
 

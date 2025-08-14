@@ -2,9 +2,24 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\ViewField;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\CreateAction;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages\ListEmailTemplateThemes;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages\CreateEmailTemplateTheme;
+use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages\EditEmailTemplateTheme;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,6 +29,7 @@ use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Models\EmailTemplateTheme;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource\Pages;
+use Filament\Schemas\Schema;
 
 class EmailTemplateThemeResource extends Resource
 {
@@ -60,15 +76,15 @@ class EmailTemplateThemeResource extends Resource
         return config('filament-email-templates.navigation.templates.position');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Group::make()
+        return $schema
+            ->components([
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.template-preview'))
+                        Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.template-preview'))
                             ->schema([
-                                Forms\Components\ViewField::make('preview')->view('vb-email-templates::email.default_preview',
+                                ViewField::make('preview')->view('vb-email-templates::email.default_preview',
                                     ['data' => self::getPreviewData()])
                                     ->dehydrated(false),
                             ])
@@ -76,59 +92,59 @@ class EmailTemplateThemeResource extends Resource
                     ])
                     ->columnSpan(['lg' => 2]),
 
-                Forms\Components\Group::make()
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.theme-name'))
                                     ->columnSpan(3),
 
-                                Forms\Components\Toggle::make('is_default')
+                                Toggle::make('is_default')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.is-default'))
                                     ->inline(false)
                                     ->onColor('success')
                                     ->offColor('danger'),
                             ]),
 
-                        Forms\Components\Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.set-colors'))
+                        Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.set-colors'))
                             ->schema([
-                                Forms\Components\ColorPicker::make('colours.header_bg_color')
+                                ColorPicker::make('colours.header_bg_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.header-bg'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.body_bg_color')
+                                ColorPicker::make('colours.body_bg_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.body-bg'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.content_bg_color')
+                                ColorPicker::make('colours.content_bg_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.content-bg'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.footer_bg_color')
+                                ColorPicker::make('colours.footer_bg_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.footer-bg')),
 
-                                Forms\Components\ColorPicker::make('colours.callout_bg_color')
+                                ColorPicker::make('colours.callout_bg_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.callout-bg'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.button_bg_color')
+                                ColorPicker::make('colours.button_bg_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.button-bg'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.body_color')
+                                ColorPicker::make('colours.body_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.body-color'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.callout_color')
+                                ColorPicker::make('colours.callout_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.callout-color'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.button_color')
+                                ColorPicker::make('colours.button_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.button-color'))
                                     ->live(),
 
-                                Forms\Components\ColorPicker::make('colours.anchor_color')
+                                ColorPicker::make('colours.anchor_color')
                                     ->label(__('vb-email-templates::email-templates.theme-form-fields-labels.anchor-color'))
                                     ->live(),
                             ]),
@@ -149,32 +165,32 @@ class EmailTemplateThemeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\IconColumn::make('is_default')->boolean(),
+                TextColumn::make('id')->sortable()->searchable(),
+                TextColumn::make('name')->sortable()->searchable(),
+                IconColumn::make('is_default')->boolean(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmailTemplateThemes::route('/'),
-            'create' => Pages\CreateEmailTemplateTheme::route('/create'),
-            'edit' => Pages\EditEmailTemplateTheme::route('/{record}/edit'),
+            'index' => ListEmailTemplateThemes::route('/'),
+            'create' => CreateEmailTemplateTheme::route('/create'),
+            'edit' => EditEmailTemplateTheme::route('/{record}/edit'),
         ];
     }
 
