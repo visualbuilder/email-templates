@@ -10,17 +10,17 @@ jobs:
             matrix:
                 os: [ubuntu-latest]
                 php: [8.2,8.3,8.4]
-                laravel: [10.*,11.*,12.*]
+                laravel: [11.*,12.*]
                 stability: [ prefer-stable ]
-                filament: [3.*]
+                filament: [4.*]
                 dependency-version: [ prefer-stable]
                 include:
                     -   laravel: 11.*
                         testbench: 9.*
-                        filament: 4.*
+                        filament: 3.*
                     -   laravel: 12.*
                         testbench: 10.*
-                        filament: 4.*
+                        filament: 3.*
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - - ${{ matrix.stability }}  - ${{ matrix.dependency-version }}
 
