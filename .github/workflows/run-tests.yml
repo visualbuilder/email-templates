@@ -17,10 +17,10 @@ jobs:
                 include:
                     -   laravel: 11.*
                         testbench: 9.*
-                        filament: 3.*
+                        filament: 4.*
                     -   laravel: 12.*
                         testbench: 10.*
-                        filament: 3.*
+                        filament: 4.*
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - - ${{ matrix.stability }}  - ${{ matrix.dependency-version }}
 
