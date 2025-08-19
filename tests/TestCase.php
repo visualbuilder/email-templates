@@ -16,6 +16,7 @@ use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ViewErrorBag;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
@@ -40,14 +41,15 @@ class TestCase extends Orchestra
         Config::set('filament-email-templates.recipients', ['\\Visualbuilder\\EmailTemplates\\Tests\\Models\\User']);
         Config::set('auth.providers.users.model', User::class);
         View::addNamespace('vb-email-templates', __DIR__.'/../resources/views');
+        View::share('errors', new ViewErrorBag);
     }
 
     protected function getPackageProviders($app): array
     {
         return [
             EmailTemplatesServiceProvider::class,
-            LivewireServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
+            LivewireServiceProvider::class,
             FilamentServiceProvider::class,
             SupportServiceProvider::class,
             SchemasServiceProvider::class,
