@@ -18,7 +18,6 @@
     "require": {
         "php": "^8.2",
         "filament/filament": "^4.0",
-        "illuminate/contracts": "^11.0",
         "visualbuilder/filament-tinyeditor": "dev-main",
         "spatie/laravel-package-tools": "^1.16"
     },
