@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\File;
-use ReflectionMethod;
 use Visualbuilder\EmailTemplates\Helpers\FormHelper;
 
 it('recursively collects blade views and ignores underscore directories', function () {

@@ -3,19 +3,27 @@
 namespace Visualbuilder\EmailTemplates\Resources;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Resource;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -121,7 +129,7 @@ class EmailTemplateResource extends Resource
                                                     ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
                                                     ->send();
                                         }),
-                                Tables\Actions\ViewAction::make('Preview')
+                                ViewAction::make('Preview')
                                         ->icon('heroicon-o-magnifying-glass')
                                         ->modalContent(fn(EmailTemplate $record): View => view(
                                                 'vb-email-templates::forms.components.iframe',
@@ -132,30 +140,30 @@ class EmailTemplateResource extends Resource
                                         ->modalCancelAction(false)
                                         ->slideOver(),
 
-                                Tables\Actions\EditAction::make(),
-                                Tables\Actions\DeleteAction::make(),
-                                Tables\Actions\ForceDeleteAction::make()
+                                EditAction::make(),
+                                DeleteAction::make(),
+                                ForceDeleteAction::make()
                                         ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
                                             $emailTemplateResource->handleLogoDelete($record->logo);
                                         }),
-                                Tables\Actions\RestoreAction::make(),
+                                RestoreAction::make(),
                         ]
                 )
                 ->bulkActions(
                         [
-                                Tables\Actions\DeleteBulkAction::make(),
-                                Tables\Actions\ForceDeleteBulkAction::make(),
-                                Tables\Actions\RestoreBulkAction::make(),
+                                DeleteBulkAction::make(),
+                                ForceDeleteBulkAction::make(),
+                                RestoreBulkAction::make(),
                         ]
                 );
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $formHelper = app(FormHelperInterface::class);
         $templates = $formHelper->getTemplateViewOptions();
 
-        return $form->schema(
+        return $schema->schema(
                 [
                         Section::make()
                                 ->schema(
