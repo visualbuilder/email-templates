@@ -96,6 +96,8 @@ Menu Group and sort order can be set in the config
 In the config file ``config/filament-email-templates.php`` navigation can be disabled/enabled
 
 ```php
+use Filament\Pages\Enums\SubNavigationPosition;
+
     /**
      * Admin panel navigation options
      */

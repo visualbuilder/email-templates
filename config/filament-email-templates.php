@@ -1,6 +1,6 @@
 <?php
 
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Visualbuilder\EmailTemplates\DefaultTokenHelper;
 
 return [
