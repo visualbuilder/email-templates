@@ -2,18 +2,6 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
-use Filament\Forms\Components\FileUpload;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\Radio;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Schemas\Schema;
-use Filament\Notifications\Notification;
-use Filament\Pages\Enums\SubNavigationPosition;
-use Filament\Resources\Resource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -23,6 +11,18 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -134,7 +134,7 @@ class EmailTemplateResource extends Resource
                                         ->modalContent(fn(EmailTemplate $record): View => view(
                                                 'vb-email-templates::forms.components.iframe',
                                                 ['record' => $record],
-                                        ))->form(null)
+                                        ))
                                         ->modalHeading(fn(EmailTemplate $record): string => 'Preview Email: '.$record->name)
                                         ->modalSubmitAction(false)
                                         ->modalCancelAction(false)
