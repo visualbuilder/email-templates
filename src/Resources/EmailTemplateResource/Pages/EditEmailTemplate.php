@@ -18,19 +18,19 @@ class EditEmailTemplate extends EditRecord
     protected function getActions(): array
     {
         return [
-            Actions\Action::make('back')->label(__('Back'))
-            ->url(EmailTemplateResource::getUrl())
+                Actions\Action::make('back')->label(__('Back'))
+                        ->url(EmailTemplateResource::getUrl())
             ,
-            Actions\ViewAction::make()->label(__('Preview'))->modalContent(fn (EmailTemplate $record): View => view(
-                'vb-email-templates::forms.components.iframe',
-                ['record' => $record],
-            ))->form(null),
-            Actions\DeleteAction::make(),
-            Actions\ForceDeleteAction::make()
-                ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
-                    $emailTemplateResource->handleLogoDelete($record->logo);
-                }),
-            Actions\RestoreAction::make(),
+                Actions\Action::make('preview')->label(__('Preview'))->modalContent(fn (EmailTemplate $record): View => view(
+                        'vb-email-templates::forms.components.iframe',
+                        ['record' => $record],
+                ))->form(null),
+                Actions\DeleteAction::make(),
+                Actions\ForceDeleteAction::make()
+                        ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
+                            $emailTemplateResource->handleLogoDelete($record->logo);
+                        }),
+                Actions\RestoreAction::make(),
         ];
     }
 
