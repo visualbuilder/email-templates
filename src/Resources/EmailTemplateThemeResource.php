@@ -74,6 +74,7 @@ class EmailTemplateThemeResource extends Resource
         return $schema
             ->schema([
                 Group::make()
+                    ->columnSpanFull()
                     ->schema([
                         Section::make()
                             ->schema([
