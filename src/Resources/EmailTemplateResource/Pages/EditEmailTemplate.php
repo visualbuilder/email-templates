@@ -4,12 +4,11 @@ namespace Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
 
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
 
 class EditEmailTemplate extends EditRecord
 {
@@ -19,12 +18,13 @@ class EditEmailTemplate extends EditRecord
     {
         return [
                 Actions\Action::make('back')->label(__('Back'))
-                        ->url(EmailTemplateResource::getUrl())
-            ,
-                Actions\Action::make('preview')->label(__('Preview'))->modalContent(fn (EmailTemplate $record): View => view(
+                        ->url(EmailTemplateResource::getUrl()),
+                Actions\Action::make('preview'
+                )->label(__('Preview'))
+                        ->modalContent(fn(EmailTemplate $record): View => view(
                         'vb-email-templates::forms.components.iframe',
                         ['record' => $record],
-                ))->form(null),
+                ))->schema(null),
                 Actions\DeleteAction::make(),
                 Actions\ForceDeleteAction::make()
                         ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
@@ -38,7 +38,7 @@ class EditEmailTemplate extends EditRecord
     {
         $data['logo_type'] = 'browse_another';
 
-        if(!is_null($data['logo']) && Str::isUrl($data['logo'])) {
+        if (!is_null($data['logo']) && Str::isUrl($data['logo'])) {
             $data['logo_type'] = 'paste_url';
             $data['logo_url'] = $data['logo'];
         }
