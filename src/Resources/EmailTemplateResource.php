@@ -166,6 +166,7 @@ class EmailTemplateResource extends Resource
         return $schema->schema(
                 [
                         Section::make()
+                                ->columnSpanFull()
                                 ->schema(
                                         [
                                                 Grid::make(['default' => 1])
