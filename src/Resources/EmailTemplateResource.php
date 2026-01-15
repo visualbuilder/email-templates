@@ -91,16 +91,34 @@ class EmailTemplateResource extends Resource
                         [
                                 TextColumn::make('id')
                                         ->sortable()
-                                        ->searchable(),
+                                        ->searchable()
+                                        ->toggleable(),
+                                TextColumn::make('key')
+                                        ->limit(50)
+                                        ->sortable()
+                                        ->searchable()
+                                        ->toggleable(isToggledHiddenByDefault: true),
                                 TextColumn::make('name')
                                         ->limit(50)
                                         ->sortable()
-                                        ->searchable(),
+                                        ->searchable()
+                                        ->toggleable(),
+                                TextColumn::make('title')
+                                        ->limit(50)
+                                        ->searchable()
+                                        ->toggleable(isToggledHiddenByDefault: true),
                                 TextColumn::make('language')
-                                        ->limit(50),
+                                        ->limit(50)
+                                        ->toggleable(isToggledHiddenByDefault: true),
                                 TextColumn::make('subject')
                                         ->searchable()
-                                        ->limit(50),
+                                        ->limit(50)
+                                        ->toggleable(),
+                                TextColumn::make('content')
+                                        ->limit(200)
+                                        ->wrap()
+                                        ->searchable()
+                                        ->toggleable(),
                         ]
                 )
                 ->filters(
