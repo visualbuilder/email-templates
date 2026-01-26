@@ -1,4 +1,4 @@
-# Email template editor for Filament 3.0
+# Email Template Editor for Filament
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/visualbuilder/email-templates.svg?style=flat-square)](https://packagist.org/packages/visualbuilder/email-templates)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/visualbuilder/email-templates)
@@ -53,11 +53,23 @@ Edit email content in the admin and use tokens to inject model or config content
 ![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/3.x/media/EmailEditor.png)
 
 
+## Version Compatibility
+
+| Package Version | Filament | Laravel | PHP |
+|-----------------|----------|---------|-----|
+| 5.x | 5.x | 11.x, 12.x | 8.2+ |
+| 4.x | 4.x | 11.x | 8.2+ |
+| 3.x | 3.x | 10.x, 11.x | 8.1+ |
+
 ## Installation
 Get the package via composer:
 
 ```bash
-composer require visualbuilder/email-templates
+# For Filament 5.x
+composer require visualbuilder/email-templates:^5.0
+
+# For Filament 4.x
+composer require visualbuilder/email-templates:^4.0
 ```
 
 Running the install command will copy the template views, migrations, seeders and config file to your app.
@@ -131,7 +143,7 @@ Or you can use a closure to enable navigation only for specific users:
 // ...
         EmailTemplatesPlugin::make()
                 ->enableNavigation(
-                    fn () => auth()->user()->can('view_email_templates') || auth()->user()->can('view_any_email_templates)'),
+                    fn () => auth()->user()->can('view_email_templates') || auth()->user()->can('view_any_email_templates'),
                ),
     ])
 ```
