@@ -147,6 +147,20 @@ return [
 
     //Most built-in emails can be automatically sent with minimal setup,
     //except "request password reset" requires a function in the User's model.  See readme.md for details
+    /**
+     * Map token prefixes to model classes for email preview.
+     * The first record of each model will be loaded for token replacement.
+     * e.g. 'endUser' => \App\Models\EndUser::class,
+     */
+    'preview_models' => [],
+
+    /**
+     * Static overrides for computed/URL tokens that can't come from a model.
+     * Applied before model-based token replacement in previews.
+     * e.g. 'order.edit_url' => 'https://example.com/orders/1/edit',
+     */
+    'preview_data' => [],
+
     'send_emails' => [
         'new_user_registered' => true,
         'verification' => true,

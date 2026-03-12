@@ -203,12 +203,23 @@ class EmailTemplate extends Model
     {
         $models = self::createEmailPreviewData();
 
+        $previewOverrides = config('filament-email-templates.preview_data', []);
+
+        // Apply static overrides: replace ##prefix.attr## before TokenHelper runs
+        $applyOverrides = function (string $content) use ($previewOverrides): string {
+            foreach ($previewOverrides as $tokenPath => $value) {
+                $content = str_replace("##{$tokenPath}##", (string) $value, $content);
+            }
+
+            return $content;
+        };
+
         return [
-            'user' => $models->user,
-            'content' => TokenHelper::replace($this->content ?? '', $models),
-            'subject' => TokenHelper::replace($this->subject ?? '', $models),
-            'preHeaderText' => TokenHelper::replace($this->preheader ?? '', $models),
-            'title' => TokenHelper::replace($this->title ?? '', $models),
+            'user' => $models->user ?? null,
+            'content' => TokenHelper::replace($applyOverrides($this->content ?? ''), $models),
+            'subject' => TokenHelper::replace($applyOverrides($this->subject ?? ''), $models),
+            'preHeaderText' => TokenHelper::replace($applyOverrides($this->preheader ?? ''), $models),
+            'title' => TokenHelper::replace($applyOverrides($this->title ?? ''), $models),
             'theme' => $this->theme->colours,
             'logo' => $this->logo,
         ];
@@ -221,14 +232,26 @@ class EmailTemplate extends Model
     {
         $models = (object)[];
 
-        $userModel = config('filament-email-templates.recipients')[0];
+        $userModel = config('filament-email-templates.recipients')[0] ?? null;
         //Setup some data for previewing email template
-        $models->user = $userModel::first();
+        if ($userModel) {
+            $models->user = $userModel::first();
+        }
         $models->tokenUrl = URL::to('/');
         $models->verificationUrl = URL::to('/');
-        $models->expiresAt = now();
+        $models->expiresAt = now()->addDays(7)->format('d/m/Y H:i');
         /* Not used in preview but need to add something */
         $models->plainText = Str::random(32);
+
+        // Load registered preview models (first record of each)
+        foreach (config('filament-email-templates.preview_models', []) as $prefix => $modelClass) {
+            if (class_exists($modelClass)) {
+                $record = $modelClass::first();
+                if ($record) {
+                    $models->{$prefix} = $record;
+                }
+            }
+        }
 
         return $models;
     }
