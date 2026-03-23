@@ -127,17 +127,6 @@ class EmailTemplate extends Model
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
 
-        // Check if cache was recently cleared (within 1 second)
-        // This prevents race conditions where cache is cleared but immediately repopulated
-        $clearMarkerKey = "{$cacheKey}_cleared";
-        if (Cache::get($clearMarkerKey)) {
-            // Cache was just cleared, bypass cache and query directly
-            return self::query()
-                ->language($language ?? config('filament-email-templates.default_locale'))
-                ->where("key", $key)
-                ->firstOrFail();
-        }
-
         //For multi site domains this key will need to include the site_id
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
             return self::query()
@@ -164,12 +153,6 @@ class EmailTemplate extends Model
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
 
-        // Set a marker that cache was cleared (expires after 2 seconds)
-        // This prevents race conditions where the cache is repopulated immediately
-        // after being cleared but before the wizard preview runs
-        $clearMarkerKey = "{$cacheKey}_cleared";
-        Cache::put($clearMarkerKey, true, now()->addSeconds(2));
-
         // Clear the actual cached template model
         Cache::forget($cacheKey);
 
@@ -177,18 +160,15 @@ class EmailTemplate extends Model
         // Using Artisan::call() ensures we're using Laravel's standard mechanism
         Artisan::call('view:clear');
 
-        // Additionally, physically delete compiled view files for this template
-        // This is more aggressive than view:clear and ensures the compiled views
-        // are regenerated even if view:clear doesn't work as expected
-        self::deleteCompiledViewsForTemplate($key);
-
-        // Clear OPcache if available
-        // Note: This may not work on all server configurations (e.g., AWS Beanstalk)
-        // but we try anyway. If OPcache clearing is needed, the server should be
-        // configured to allow opcache_reset() or use PHP-FPM reload
-        if (function_exists('opcache_reset')) {
-            @opcache_reset();
-        }
+//        // Additionally, physically delete compiled view files for this template
+//        // This is more aggressive than view:clear and ensures the compiled views
+//        // are regenerated even if view:clear doesn't work as expected
+//        self::deleteCompiledViewsForTemplate($key);
+//
+//        // Clear OPcache if available
+//        if (function_exists('opcache_reset')) {
+//            opcache_reset();
+//        }
     }
 
     /**
