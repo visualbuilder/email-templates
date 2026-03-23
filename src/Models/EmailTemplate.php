@@ -147,6 +147,19 @@ class EmailTemplate extends Model
         });
     }
 
+    /**
+     * Clear all caches related to this email template.
+     *
+     * This method ensures that when a template is updated, the changes are
+     * immediately visible to users by clearing:
+     * - Redis/cache driver cache for the template model
+     * - Compiled Blade view files
+     * - OPcache (PHP bytecode cache)
+     *
+     * @param string $key The template key
+     * @param string $language The template language
+     * @return void
+     */
     public static function clearEmailTemplateCache($key, $language)
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
@@ -157,16 +170,83 @@ class EmailTemplate extends Model
         $clearMarkerKey = "{$cacheKey}_cleared";
         Cache::put($clearMarkerKey, true, now()->addSeconds(2));
 
-        // Clear the actual cached template
+        // Clear the actual cached template model
         Cache::forget($cacheKey);
 
-        // Clear Laravel's compiled Blade view cache
-        // This ensures that any cached compiled views are regenerated
+        // Clear compiled Blade view cache
+        // Using Artisan::call() ensures we're using Laravel's standard mechanism
         Artisan::call('view:clear');
 
-        // Clear OPcache if enabled (for precompiled PHP files)
+        // Additionally, physically delete compiled view files for this template
+        // This is more aggressive than view:clear and ensures the compiled views
+        // are regenerated even if view:clear doesn't work as expected
+        self::deleteCompiledViewsForTemplate($key);
+
+        // Clear OPcache if available
+        // Note: This may not work on all server configurations (e.g., AWS Beanstalk)
+        // but we try anyway. If OPcache clearing is needed, the server should be
+        // configured to allow opcache_reset() or use PHP-FPM reload
         if (function_exists('opcache_reset')) {
-            opcache_reset();
+            @opcache_reset();
+        }
+    }
+
+    /**
+     * Delete compiled view files for a specific email template.
+     *
+     * This method physically removes the compiled PHP view files from the
+     * storage/framework/views directory. This is more aggressive than view:clear
+     * and ensures that Blade will recompile the views on the next request.
+     *
+     * @param string $key The template key
+     * @return void
+     */
+    protected static function deleteCompiledViewsForTemplate($key)
+    {
+        try {
+            $viewPath = config('filament-email-templates.template_view_path', 'vb-email-templates::email');
+            $compiledPath = storage_path('framework/views');
+
+            // If the compiled views directory doesn't exist, nothing to delete
+            if (!File::isDirectory($compiledPath)) {
+                return;
+            }
+
+            // Get all compiled view files
+            $files = File::files($compiledPath);
+
+            // Delete compiled files that might contain this template's content
+            // Compiled view filenames are MD5 hashes, so we can't match them exactly
+            // Instead, we look for files that contain the template's view path or key
+            foreach ($files as $file) {
+                $filePath = $file->getPathname();
+
+                // Read the file and check if it contains references to our template
+                // This is a heuristic approach since compiled views include the original path
+                $contents = @file_get_contents($filePath);
+                if ($contents === false) {
+                    continue;
+                }
+
+                // Check if this compiled view references our email template views
+                if (
+                    str_contains($contents, $viewPath) ||
+                    str_contains($contents, 'vb-email-templates') ||
+                    str_contains($contents, $key)
+                ) {
+                    @unlink($filePath);
+                }
+            }
+        } catch (\Exception $e) {
+            // If deletion fails, log but don't throw
+            // The view:clear command should have already cleared the cache
+            \Illuminate\Support\Facades\Log::warning(
+                'Failed to delete compiled views for email template',
+                [
+                    'key' => $key,
+                    'error' => $e->getMessage()
+                ]
+            );
         }
     }
 
