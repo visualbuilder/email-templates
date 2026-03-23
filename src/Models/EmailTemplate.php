@@ -127,6 +127,17 @@ class EmailTemplate extends Model
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
 
+        // Check if cache was recently cleared (within 1 second)
+        // This prevents race conditions where cache is cleared but immediately repopulated
+        $clearMarkerKey = "{$cacheKey}_cleared";
+        if (Cache::get($clearMarkerKey)) {
+            // Cache was just cleared, bypass cache and query directly
+            return self::query()
+                ->language($language ?? config('filament-email-templates.default_locale'))
+                ->where("key", $key)
+                ->firstOrFail();
+        }
+
         //For multi site domains this key will need to include the site_id
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
             return self::query()
@@ -139,6 +150,14 @@ class EmailTemplate extends Model
     public static function clearEmailTemplateCache($key, $language)
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
+
+        // Set a marker that cache was cleared (expires after 2 seconds)
+        // This prevents race conditions where the cache is repopulated immediately
+        // after being cleared but before the wizard preview runs
+        $clearMarkerKey = "{$cacheKey}_cleared";
+        Cache::put($clearMarkerKey, true, now()->addSeconds(2));
+
+        // Clear the actual cached template
         Cache::forget($cacheKey);
 
         // Clear Laravel's compiled Blade view cache

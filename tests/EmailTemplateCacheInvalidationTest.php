@@ -96,3 +96,65 @@ it('clears cache when template is deleted', function () {
     // Verify cache was cleared
     expect(Cache::has($cacheKey))->toBeFalse();
 });
+
+it('prevents race condition when template is updated and immediately retrieved', function () {
+    // This test replicates NB-1574: sam's exact scenario where:
+    // 1. User edits template in admin UI and saves
+    // 2. User immediately refreshes wizard and clicks next
+    // 3. Updated content should be visible, not cached old content
+
+    $template = EmailTemplate::factory()->create([
+        'key' => 'race-condition-test',
+        'language' => config('filament-email-templates.default_locale'),
+        'subject' => 'Test Subject',
+        'content' => '<p>Original Content v1</p>',
+        'view' => 'default',
+        'from' => ['email' => 'test@example.com', 'name' => 'Test'],
+    ]);
+
+    // Step 1: User views wizard (this caches the template)
+    $firstView = EmailTemplate::findEmailByKey('race-condition-test', config('filament-email-templates.default_locale'));
+    expect($firstView->content)->toBe('<p>Original Content v1</p>');
+
+    // Step 2: User edits template in admin and saves
+    $template->update(['content' => '<p>Updated Content v2</p>']);
+
+    // Step 3: User IMMEDIATELY refreshes and goes to wizard (within 1 second)
+    // This simulates the race condition where cache clearing hasn't propagated yet
+    $immediateView = EmailTemplate::findEmailByKey('race-condition-test', config('filament-email-templates.default_locale'));
+
+    // CRITICAL: Must get updated content, not cached original
+    expect($immediateView->content)->toBe('<p>Updated Content v2</p>')
+        ->and($immediateView->content)->not->toBe('<p>Original Content v1</p>');
+
+    // Step 4: Subsequent views should also get updated content
+    $laterView = EmailTemplate::findEmailByKey('race-condition-test', config('filament-email-templates.default_locale'));
+    expect($laterView->content)->toBe('<p>Updated Content v2</p>');
+});
+
+it('handles multiple rapid updates correctly', function () {
+    // Tests scenario where admin makes multiple quick edits
+    $template = EmailTemplate::factory()->create([
+        'key' => 'rapid-updates-test',
+        'language' => config('filament-email-templates.default_locale'),
+        'content' => '<p>Version 1</p>',
+        'view' => 'default',
+        'from' => ['email' => 'test@example.com', 'name' => 'Test'],
+    ]);
+
+    // Initial cache
+    EmailTemplate::findEmailByKey('rapid-updates-test', config('filament-email-templates.default_locale'));
+
+    // Rapid updates (like admin fixing typos quickly)
+    $template->update(['content' => '<p>Version 2</p>']);
+    $v2 = EmailTemplate::findEmailByKey('rapid-updates-test', config('filament-email-templates.default_locale'));
+    expect($v2->content)->toBe('<p>Version 2</p>');
+
+    $template->update(['content' => '<p>Version 3</p>']);
+    $v3 = EmailTemplate::findEmailByKey('rapid-updates-test', config('filament-email-templates.default_locale'));
+    expect($v3->content)->toBe('<p>Version 3</p>');
+
+    $template->update(['content' => '<p>Final Version</p>']);
+    $final = EmailTemplate::findEmailByKey('rapid-updates-test', config('filament-email-templates.default_locale'));
+    expect($final->content)->toBe('<p>Final Version</p>');
+});
