@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
@@ -139,6 +140,15 @@ class EmailTemplate extends Model
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
         Cache::forget($cacheKey);
+
+        // Clear Laravel's compiled Blade view cache
+        // This ensures that any cached compiled views are regenerated
+        Artisan::call('view:clear');
+
+        // Clear OPcache if enabled (for precompiled PHP files)
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
     }
 
     /**
