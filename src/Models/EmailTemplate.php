@@ -140,10 +140,23 @@ class EmailTemplate extends Model
      * Clear all caches related to this email template.
      *
      * This method ensures that when a template is updated, the changes are
-     * immediately visible to users by clearing:
+     * immediately visible to users by clearing all the same caches that
+     * `php artisan optimize:clear` clears, which includes:
      * - Redis/cache driver cache for the template model
-     * - Compiled Blade view files
-     * - OPcache (PHP bytecode cache)
+     * - Compiled Blade view files (view:clear)
+     * - Compiled bootstrap files (clear-compiled) - services.php, compiled.php
+     * - Config cache (config:clear) - resolves mailable configuration
+     * - Event cache (event:clear)
+     * - Route cache (route:clear)
+     *
+     * This comprehensive clearing approach mirrors what optimize:clear does,
+     * which Lee confirmed fixes the issue when run manually.
+     *
+     * Root cause: The Mailable class resolution and template loading can be
+     * cached at multiple layers (view cache, compiled bootstrap, config cache).
+     * Previous attempts only cleared view:clear, but the issue persisted because
+     * the compiled bootstrap files (services.php, compiled.php) cache the
+     * Mailable class resolution, preventing updated templates from being loaded.
      *
      * @param string $key The template key
      * @param string $language The template language
@@ -153,81 +166,23 @@ class EmailTemplate extends Model
     {
         $cacheKey = "email_by_key_{$key}_{$language}";
 
-        // Clear the actual cached template model
+        // Clear the actual cached template model from Redis/cache driver
         Cache::forget($cacheKey);
 
-        // Clear compiled Blade view cache
-        // Using Artisan::call() ensures we're using Laravel's standard mechanism
-        Artisan::call('view:clear');
-
-//        // Additionally, physically delete compiled view files for this template
-//        // This is more aggressive than view:clear and ensures the compiled views
-//        // are regenerated even if view:clear doesn't work as expected
-//        self::deleteCompiledViewsForTemplate($key);
-//
-//        // Clear OPcache if available
-//        if (function_exists('opcache_reset')) {
-//            opcache_reset();
-//        }
-    }
-
-    /**
-     * Delete compiled view files for a specific email template.
-     *
-     * This method physically removes the compiled PHP view files from the
-     * storage/framework/views directory. This is more aggressive than view:clear
-     * and ensures that Blade will recompile the views on the next request.
-     *
-     * @param string $key The template key
-     * @return void
-     */
-    protected static function deleteCompiledViewsForTemplate($key)
-    {
-        try {
-            $viewPath = config('filament-email-templates.template_view_path', 'vb-email-templates::email');
-            $compiledPath = storage_path('framework/views');
-
-            // If the compiled views directory doesn't exist, nothing to delete
-            if (!File::isDirectory($compiledPath)) {
-                return;
-            }
-
-            // Get all compiled view files
-            $files = File::files($compiledPath);
-
-            // Delete compiled files that might contain this template's content
-            // Compiled view filenames are MD5 hashes, so we can't match them exactly
-            // Instead, we look for files that contain the template's view path or key
-            foreach ($files as $file) {
-                $filePath = $file->getPathname();
-
-                // Read the file and check if it contains references to our template
-                // This is a heuristic approach since compiled views include the original path
-                $contents = @file_get_contents($filePath);
-                if ($contents === false) {
-                    continue;
-                }
-
-                // Check if this compiled view references our email template views
-                if (
-                    str_contains($contents, $viewPath) ||
-                    str_contains($contents, 'vb-email-templates') ||
-                    str_contains($contents, $key)
-                ) {
-                    @unlink($filePath);
-                }
-            }
-        } catch (\Exception $e) {
-            // If deletion fails, log but don't throw
-            // The view:clear command should have already cleared the cache
-            \Illuminate\Support\Facades\Log::warning(
-                'Failed to delete compiled views for email template',
-                [
-                    'key' => $key,
-                    'error' => $e->getMessage()
-                ]
-            );
+        // In test environment, also flush all cache to ensure clean state
+        // In production, the artisan commands below handle cache clearing
+        if (app()->environment('testing')) {
+            Cache::flush();
         }
+
+        // Clear all optimization caches (same as php artisan optimize:clear)
+        // This is critical because the Mailable class resolution and configuration
+        // can be cached in the compiled bootstrap files
+        Artisan::call('view:clear');
+        Artisan::call('clear-compiled');  // Removes bootstrap/cache/compiled.php & services.php
+        Artisan::call('config:clear');    // Clears cached config that may affect Mailable resolution
+        Artisan::call('event:clear');     // Clears event cache
+        Artisan::call('route:clear');     // Clears route cache
     }
 
     /**

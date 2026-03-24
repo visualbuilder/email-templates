@@ -25,6 +25,21 @@ class EditEmailTemplate extends EditRecord
                         'vb-email-templates::forms.components.iframe',
                         ['record' => $record],
                 ))->form(null),
+                Actions\Action::make('clear_all_caches')
+                        ->label(__('Clear All Caches'))
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading(__('Clear All Template Caches'))
+                        ->modalDescription(__('This will clear all caches for this email template, ensuring the latest changes are immediately visible. Use this if you\'ve updated the template but the changes aren\'t appearing.'))
+                        ->action(function (EmailTemplate $record) {
+                            EmailTemplate::clearEmailTemplateCache($record->key, $record->language);
+                            \Filament\Notifications\Notification::make()
+                                    ->title(__('Caches Cleared'))
+                                    ->body(__('All caches for this template have been cleared successfully. The updated template will now be used immediately.'))
+                                    ->success()
+                                    ->send();
+                        }),
                 Actions\DeleteAction::make(),
                 Actions\ForceDeleteAction::make()
                         ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
