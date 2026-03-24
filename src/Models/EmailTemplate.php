@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
@@ -155,15 +156,15 @@ class EmailTemplate extends Model
 
         // Clear the actual cached template model
         Cache::forget($cacheKey);
+        Log::info("Email template cache cleared for key: {$key}");
 
-        // Clear compiled Blade view cache
-        // Using Artisan::call() ensures we're using Laravel's standard mechanism
-        Artisan::call('view:clear');
-        Artisan::call('clear-compiled');
+        Artisan::call('optimize:clear');
+        Log::info("Blade view cache cleared for key: {$key}");
 
         // Clear OPcache if available
         if (function_exists('opcache_reset')) {
             opcache_reset();
+            Log::info("OPcache cleared");
         }
     }
 
