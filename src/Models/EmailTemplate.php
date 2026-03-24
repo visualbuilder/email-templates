@@ -159,16 +159,12 @@ class EmailTemplate extends Model
         // Clear compiled Blade view cache
         // Using Artisan::call() ensures we're using Laravel's standard mechanism
         Artisan::call('view:clear');
+        Artisan::call('clear-compiled');
 
-//        // Additionally, physically delete compiled view files for this template
-//        // This is more aggressive than view:clear and ensures the compiled views
-//        // are regenerated even if view:clear doesn't work as expected
-//        self::deleteCompiledViewsForTemplate($key);
-//
-//        // Clear OPcache if available
-//        if (function_exists('opcache_reset')) {
-//            opcache_reset();
-//        }
+        // Clear OPcache if available
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
     }
 
     /**
