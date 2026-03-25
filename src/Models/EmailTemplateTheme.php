@@ -5,11 +5,16 @@ namespace Visualbuilder\EmailTemplates\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateThemeFactory;
 
-class EmailTemplateTheme extends Model
+class EmailTemplateTheme extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
     use SoftDeletes;
 
     /**
@@ -45,6 +50,20 @@ class EmailTemplateTheme extends Model
     public function setTableFromConfig()
     {
         $this->table = config('filament-email-templates.theme_table_name');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('screenshot')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/png', 'image/jpeg', 'image/webp']);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->fit(Fit::Contain, 400, 600)
+            ->nonQueued();
     }
 
     protected static function newFactory()

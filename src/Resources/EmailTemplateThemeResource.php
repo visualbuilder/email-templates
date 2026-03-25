@@ -2,13 +2,16 @@
 
 namespace Visualbuilder\EmailTemplates\Resources;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Group;
@@ -16,6 +19,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -100,6 +105,17 @@ class EmailTemplateThemeResource extends Resource
                                                                 ->offColor('danger'),
                                                 ]),
 
+                                        Section::make(__('Screenshot'))
+                                                ->schema([
+                                                        SpatieMediaLibraryFileUpload::make('screenshot')
+                                                                ->collection('screenshot')
+                                                                ->image()
+                                                                ->imageEditor()
+                                                                ->label(__('Theme Screenshot'))
+                                                                ->helperText(__('Upload or auto-capture a preview of this theme')),
+                                                ])
+                                                ->collapsed(),
+
                                         Section::make(__('vb-email-templates::email-templates.theme-form-fields-labels.set-colors'))
                                                 ->schema([
                                                         ColorPicker::make('colours.header_bg_color')
@@ -157,19 +173,138 @@ class EmailTemplateThemeResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-                ->columns([
-                        Tables\Columns\TextColumn::make('id')->sortable()->searchable(),
-                        Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                        Tables\Columns\IconColumn::make('is_default')->boolean(),
+                ->contentGrid([
+                        'md' => 2,
+                        'lg' => 3,
+                        'xl' => 4,
                 ])
+                ->columns([
+                        Stack::make([
+                                SpatieMediaLibraryImageColumn::make('screenshot')
+                                        ->collection('screenshot')
+                                        ->conversion('thumb')
+                                        ->circular(false)
+                                        ->width('100%')
+                                        ->height(180)
+                                        ->extraImgAttributes(['style' => 'object-fit: cover; object-position: top; border-radius: 8px; margin: 0 auto; margin-bottom: 0.5rem;'])
+                                        ->defaultImageUrl(fn () => 'data:image/svg+xml,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" fill="none"><rect width="400" height="250" rx="8" fill="#1f2937"/><text x="200" y="130" text-anchor="middle" fill="#6b7280" font-size="14">No preview</text></svg>'))
+                                        ->label(__('Preview')),
+                                Tables\Columns\TextColumn::make('name')
+                                        ->weight('bold')
+                                        ->sortable()
+                                        ->searchable()
+                                        ->alignment('center'),
+                                Tables\Columns\TextColumn::make('is_default')
+                                        ->label('')
+                                        ->badge()
+                                        ->state(fn ($record) => $record->is_default ? __('Default') : null)
+                                        ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : null)
+                                        ->color('success')
+                                        ->alignment('center'),
+                        ]),
+                ])
+                ->actionsAlignment('end')
                 ->filters([
                     //
                 ])
                 ->actions([
+                        Action::make('captureScreenshot')
+                                ->label(__('Capture'))
+                                ->icon('heroicon-o-camera')
+                                ->color('info')
+                                ->visible(fn () => EmailTemplatesPlugin::get()->hasScreenshotCapture())
+                                ->action(function ($record): void {
+                                    $emailTemplate = EmailTemplate::first();
+
+                                    if (! $emailTemplate) {
+                                        Notification::make()
+                                                ->title(__('No email template found'))
+                                                ->body(__('Create at least one email template to generate a preview.'))
+                                                ->danger()
+                                                ->send();
+                                        return;
+                                    }
+
+                                    // Render the email HTML with this theme's colours
+                                    $data = $emailTemplate->getEmailPreviewData();
+                                    $data['theme'] = $record->colours;
+                                    $html = view($emailTemplate->view_path, ['data' => $data])->render();
+
+                                    $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
+                                    $result = $callback($html);
+
+                                    if (! $result || ! isset($result['image'])) {
+                                        Notification::make()
+                                                ->title(__('Screenshot capture failed'))
+                                                ->body(__('The screenshot service did not return an image.'))
+                                                ->danger()
+                                                ->persistent()
+                                                ->send();
+                                        return;
+                                    }
+
+                                    $extension = str_contains($result['contentType'] ?? '', 'jpeg') ? 'jpg' : 'png';
+                                    $tempPath = tempnam(sys_get_temp_dir(), 'theme_screenshot_') . '.' . $extension;
+                                    file_put_contents($tempPath, $result['image']);
+
+                                    $record->addMedia($tempPath)
+                                            ->toMediaCollection('screenshot');
+
+                                    Notification::make()
+                                            ->title(__('Screenshot captured successfully'))
+                                            ->success()
+                                            ->send();
+                                }),
                         EditAction::make(),
                 ])
                 ->bulkActions([
                         BulkActionGroup::make([
+                                \Filament\Actions\BulkAction::make('captureScreenshots')
+                                        ->label(__('Capture Screenshots'))
+                                        ->icon('heroicon-o-camera')
+                                        ->color('info')
+                                        ->visible(fn () => EmailTemplatesPlugin::get()->hasScreenshotCapture())
+                                        ->deselectRecordsAfterCompletion()
+                                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                                            $emailTemplate = EmailTemplate::first();
+
+                                            if (! $emailTemplate) {
+                                                Notification::make()
+                                                        ->title(__('No email template found'))
+                                                        ->danger()
+                                                        ->send();
+                                                return;
+                                            }
+
+                                            $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
+                                            $captured = 0;
+                                            $failed = 0;
+
+                                            foreach ($records as $record) {
+                                                $data = $emailTemplate->getEmailPreviewData();
+                                                $data['theme'] = $record->colours;
+                                                $html = view($emailTemplate->view_path, ['data' => $data])->render();
+
+                                                $result = $callback($html);
+
+                                                if ($result && isset($result['image'])) {
+                                                    $extension = str_contains($result['contentType'] ?? '', 'jpeg') ? 'jpg' : 'png';
+                                                    $tempPath = tempnam(sys_get_temp_dir(), 'theme_screenshot_') . '.' . $extension;
+                                                    file_put_contents($tempPath, $result['image']);
+
+                                                    $record->addMedia($tempPath)
+                                                            ->toMediaCollection('screenshot');
+                                                    $captured++;
+                                                } else {
+                                                    $failed++;
+                                                }
+                                            }
+
+                                            Notification::make()
+                                                    ->title(__(':count screenshots captured', ['count' => $captured]) . ($failed ? __(', :count failed', ['count' => $failed]) : ''))
+                                                    ->color($failed ? 'warning' : 'success')
+                                                    ->send();
+                                        }),
                                 DeleteBulkAction::make(),
                         ]),
                 ])

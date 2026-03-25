@@ -18,6 +18,7 @@
     "require": {
         "php": "^8.2",
         "filament/filament": "^4.0",
+        "filament/spatie-laravel-media-library-plugin": "^3.0|^4.0",
         "visualbuilder/filament-tinyeditor": "^4.0",
         "spatie/laravel-package-tools": "^1.16"
     },

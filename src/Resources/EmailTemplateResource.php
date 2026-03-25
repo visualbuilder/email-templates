@@ -3,6 +3,7 @@
 namespace Visualbuilder\EmailTemplates\Resources;
 
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -24,6 +25,8 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -87,38 +90,34 @@ class EmailTemplateResource extends Resource
     {
         return $table
                 ->query(EmailTemplate::query())
+                ->contentGrid([
+                        'md' => 2,
+                        'lg' => 3,
+                        'xl' => 4,
+                ])
                 ->columns(
                         [
-                                TextColumn::make('id')
-                                        ->sortable()
-                                        ->searchable()
-                                        ->toggleable(),
-                                TextColumn::make('key')
-                                        ->limit(50)
-                                        ->sortable()
-                                        ->searchable()
-                                        ->toggleable(isToggledHiddenByDefault: true),
-                                TextColumn::make('name')
-                                        ->limit(50)
-                                        ->sortable()
-                                        ->searchable()
-                                        ->toggleable(),
-                                TextColumn::make('title')
-                                        ->limit(50)
-                                        ->searchable()
-                                        ->toggleable(isToggledHiddenByDefault: true),
-                                TextColumn::make('language')
-                                        ->limit(50)
-                                        ->toggleable(isToggledHiddenByDefault: true),
-                                TextColumn::make('subject')
-                                        ->searchable()
-                                        ->limit(50)
-                                        ->toggleable(),
-                                TextColumn::make('content')
-                                        ->limit(200)
-                                        ->wrap()
-                                        ->searchable()
-                                        ->toggleable(),
+                                Stack::make([
+                                        SpatieMediaLibraryImageColumn::make('screenshot')
+                                                ->collection('screenshot')
+                                                ->conversion('thumb')
+                                                ->circular(false)
+                                                ->width('100%')
+                                                ->height(180)
+                                                ->extraImgAttributes(['style' => 'object-fit: cover; object-position: top; border-radius: 8px; margin: 0 auto; margin-bottom: 0.5rem;'])
+                                                ->defaultImageUrl(fn () => 'data:image/svg+xml,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" fill="none"><rect width="400" height="250" rx="8" fill="#1f2937"/><text x="200" y="130" text-anchor="middle" fill="#6b7280" font-size="14">No preview</text></svg>'))
+                                                ->label(__('Preview')),
+                                        TextColumn::make('name')
+                                                ->weight('bold')
+                                                ->sortable()
+                                                ->searchable()
+                                                ->alignment('center'),
+                                        TextColumn::make('subject')
+                                                ->color('gray')
+                                                ->searchable()
+                                                ->limit(60)
+                                                ->alignment('center'),
+                                ]),
                         ]
                 )
                 ->filters(
@@ -126,54 +125,119 @@ class EmailTemplateResource extends Resource
                                 Tables\Filters\TrashedFilter::make(),
                         ]
                 )
+                ->actionsAlignment('end')
                 ->actions(
                         [
-                                Action::make('create-mail-class')
-                                        ->label("Build Class")
-                                        //Only show the button if the file does not exist
-                                        ->visible(function (EmailTemplate $record) {
-                                            return !$record->mailable_exists;
-                                        })
-                                        ->icon('heroicon-o-document-text')
-                                        // ->action('createMailClass'),
-                                        ->action(function (EmailTemplate $record) {
-                                            $notify = app(CreateMailableInterface::class)->createMailable($record);
-                                            Notification::make()
-                                                    ->title($notify->title)
-                                                    ->icon($notify->icon)
-                                                    ->iconColor($notify->icon_color)
-                                                    ->duration(10000)
-                                                    //Fix for bug where body hides the icon
-                                                    ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
-                                                    ->send();
-                                        }),
-                                ViewAction::make('Preview')
-                                        ->icon('heroicon-o-magnifying-glass')
-                                        ->modalContent(fn(EmailTemplate $record): View => view(
-                                                'vb-email-templates::forms.components.iframe',
-                                                ['record' => $record],
-                                        ))
-                                        ->modalHeading(fn(EmailTemplate $record): string => 'Preview Email: '.$record->name)
-                                        ->modalSubmitAction(false)
-                                        ->modalCancelAction(false)
-                                        ->slideOver(),
+                                ActionGroup::make([
+                                        Action::make('create-mail-class')
+                                                ->label(__('Build Class'))
+                                                ->visible(fn (EmailTemplate $record) => ! $record->mailable_exists)
+                                                ->icon('heroicon-o-document-text')
+                                                ->action(function (EmailTemplate $record) {
+                                                    $notify = app(CreateMailableInterface::class)->createMailable($record);
+                                                    Notification::make()
+                                                            ->title($notify->title)
+                                                            ->icon($notify->icon)
+                                                            ->iconColor($notify->icon_color)
+                                                            ->duration(10000)
+                                                            ->body("<span style='overflow-wrap: anywhere;'>".$notify->body."</span>")
+                                                            ->send();
+                                                }),
+                                        Action::make('captureScreenshot')
+                                                ->label(__('Capture Screenshot'))
+                                                ->icon('heroicon-o-camera')
+                                                ->color('info')
+                                                ->visible(fn () => EmailTemplatesPlugin::get()->hasScreenshotCapture())
+                                                ->action(function (EmailTemplate $record): void {
+                                                    $data = $record->getEmailPreviewData();
+                                                    $html = view($record->view_path, ['data' => $data])->render();
 
-                                EditAction::make(),
-                                DeleteAction::make(),
-                                ForceDeleteAction::make()
-                                        ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
-                                            $emailTemplateResource->handleLogoDelete($record->logo);
-                                        }),
-                                RestoreAction::make(),
+                                                    $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
+                                                    $result = $callback($html);
+
+                                                    if (! $result || ! isset($result['image'])) {
+                                                        Notification::make()
+                                                                ->title(__('Screenshot capture failed'))
+                                                                ->danger()
+                                                                ->send();
+                                                        return;
+                                                    }
+
+                                                    $extension = str_contains($result['contentType'] ?? '', 'jpeg') ? 'jpg' : 'png';
+                                                    $tempPath = tempnam(sys_get_temp_dir(), 'email_screenshot_') . '.' . $extension;
+                                                    file_put_contents($tempPath, $result['image']);
+
+                                                    $record->addMedia($tempPath)
+                                                            ->toMediaCollection('screenshot');
+
+                                                    Notification::make()
+                                                            ->title(__('Screenshot captured'))
+                                                            ->success()
+                                                            ->send();
+                                                }),
+                                        ViewAction::make('Preview')
+                                                ->icon('heroicon-o-magnifying-glass')
+                                                ->modalContent(fn (EmailTemplate $record): View => view(
+                                                        'vb-email-templates::forms.components.iframe',
+                                                        ['record' => $record],
+                                                ))
+                                                ->modalHeading(fn (EmailTemplate $record): string => 'Preview Email: ' . $record->name)
+                                                ->modalSubmitAction(false)
+                                                ->modalCancelAction(false)
+                                                ->slideOver(),
+                                        EditAction::make(),
+                                        DeleteAction::make(),
+                                        ForceDeleteAction::make()
+                                                ->before(function (EmailTemplate $record, EmailTemplateResource $emailTemplateResource) {
+                                                    $emailTemplateResource->handleLogoDelete($record->logo);
+                                                }),
+                                        RestoreAction::make(),
+                                ]),
                         ]
                 )
                 ->bulkActions(
                         [
+                                \Filament\Actions\BulkAction::make('captureScreenshots')
+                                        ->label(__('Capture Screenshots'))
+                                        ->icon('heroicon-o-camera')
+                                        ->color('info')
+                                        ->visible(fn () => EmailTemplatesPlugin::get()->hasScreenshotCapture())
+                                        ->deselectRecordsAfterCompletion()
+                                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                                            $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
+                                            $captured = 0;
+                                            $failed = 0;
+
+                                            foreach ($records as $record) {
+                                                $data = $record->getEmailPreviewData();
+                                                $html = view($record->view_path, ['data' => $data])->render();
+                                                $result = $callback($html);
+
+                                                if ($result && isset($result['image'])) {
+                                                    $extension = str_contains($result['contentType'] ?? '', 'jpeg') ? 'jpg' : 'png';
+                                                    $tempPath = tempnam(sys_get_temp_dir(), 'email_screenshot_') . '.' . $extension;
+                                                    file_put_contents($tempPath, $result['image']);
+
+                                                    $record->addMedia($tempPath)
+                                                            ->toMediaCollection('screenshot');
+                                                    $captured++;
+                                                } else {
+                                                    $failed++;
+                                                }
+                                            }
+
+                                            Notification::make()
+                                                    ->title(__(':count screenshots captured', ['count' => $captured]) . ($failed ? __(', :count failed', ['count' => $failed]) : ''))
+                                                    ->color($failed ? 'warning' : 'success')
+                                                    ->send();
+                                        }),
                                 DeleteBulkAction::make(),
                                 ForceDeleteBulkAction::make(),
                                 RestoreBulkAction::make(),
                         ]
-                );
+                )
+                ->defaultPaginationPageOption(12)
+                ->paginationPageOptions([12, 24, 48]);
     }
 
     public static function form(Schema $schema): Schema

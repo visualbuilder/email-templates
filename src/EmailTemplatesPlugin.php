@@ -17,6 +17,29 @@ class EmailTemplatesPlugin implements Plugin
 
     protected bool|Closure|null $navigation = null;
 
+    protected ?Closure $screenshotCaptureCallback = null;
+
+    /**
+     * Configure a callback to capture screenshots of email themes.
+     * The callback receives HTML string and should return ['image' => binary, 'contentType' => 'image/png'] or null.
+     */
+    public function screenshotCapture(Closure $callback): static
+    {
+        $this->screenshotCaptureCallback = $callback;
+
+        return $this;
+    }
+
+    public function getScreenshotCaptureCallback(): ?Closure
+    {
+        return $this->screenshotCaptureCallback;
+    }
+
+    public function hasScreenshotCapture(): bool
+    {
+        return $this->screenshotCaptureCallback !== null;
+    }
+
     public static function make(): static
     {
         return app(static::class);

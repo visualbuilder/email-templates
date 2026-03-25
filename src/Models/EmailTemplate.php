@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -15,7 +19,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 use Visualbuilder\EmailTemplates\Facades\TokenHelper;
-
 
 /**
  * @property int $id
@@ -34,9 +37,10 @@ use Visualbuilder\EmailTemplates\Facades\TokenHelper;
  * @property string $updated_at
  * @property string $deleted_at
  */
-class EmailTemplate extends Model
+class EmailTemplate extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
     use SoftDeletes;
 
     /**
@@ -80,6 +84,20 @@ class EmailTemplate extends Model
      * @var array
      */
     protected $with = ['theme'];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('screenshot')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/png', 'image/jpeg', 'image/webp']);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->fit(Fit::Contain, 400, 600)
+            ->nonQueued();
+    }
 
     public function __construct(array $attributes = [])
     {
@@ -156,10 +174,8 @@ class EmailTemplate extends Model
 
         // Clear the actual cached template model
         Cache::forget($cacheKey);
-        Log::info("Email template cache cleared for key: {$key}");
 
         Artisan::call('optimize:clear');
-        Log::info("Blade view cache cleared for key: {$key}");
 
         // Clear OPcache if available
         if (function_exists('opcache_reset')) {
@@ -367,7 +383,7 @@ class EmailTemplate extends Model
     public function viewPath(): Attribute
     {
         return new Attribute(
-            get: fn() => config('filament-email-templates.template_view_path') . '.' . $this->view
+            get: fn () => config('filament-email-templates.template_view_path') . '.' . $this->view
         );
     }
 

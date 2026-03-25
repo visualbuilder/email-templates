@@ -148,6 +148,47 @@ Or you can use a closure to enable navigation only for specific users:
     ])
 ```
 
+### Theme Screenshots
+
+The package supports optional screenshot capture for email template themes. When configured, a "Capture" button appears on the theme list page that generates a preview image of how emails look with that theme's colours. Screenshots are stored via Spatie MediaLibrary on the `EmailTemplateTheme` model.
+
+#### Configuring Screenshot Capture
+
+Provide a `screenshotCapture` closure on the plugin. The closure receives the rendered email HTML string and should return `['image' => binary, 'contentType' => 'image/png']` or `null`.
+
+```php
+// AdminPanelProvider.php
+->plugins([
+    EmailTemplatesPlugin::make()
+        ->screenshotCapture(function (string $html): ?array {
+            // Example using a screenshot service (Browsershot, Puppeteer Lambda, etc.)
+            return app(ScreenshotService::class)->htmlToBase64($html, [
+                'viewport' => 'mobile',
+                'fullPage' => true,
+            ]);
+        }),
+])
+```
+
+When configured, the theme list page will show:
+- A **preview thumbnail** column showing the captured screenshot
+- A **Capture** button on each row to capture/recapture a single theme
+- A **Capture Screenshots** bulk action to capture multiple themes at once
+- A **manual upload** field in the theme edit form
+
+When `screenshotCapture` is not configured, these features are hidden and the package works exactly as before.
+
+#### Screenshot Storage
+
+Screenshots are stored as a `screenshot` media collection (single file) on the `EmailTemplateTheme` model. A `thumb` conversion (400x600, contain) is generated automatically for the list view.
+
+The model implements `Spatie\MediaLibrary\HasMedia`, so you can access screenshots programmatically:
+
+```php
+$theme->getFirstMediaUrl('screenshot');           // Original
+$theme->getFirstMediaUrl('screenshot', 'thumb');  // Thumbnail
+```
+
 ## Usage
 
 
