@@ -204,31 +204,24 @@ class EmailTemplateResource extends Resource
                                         ->visible(fn () => EmailTemplatesPlugin::get()->hasScreenshotCapture())
                                         ->deselectRecordsAfterCompletion()
                                         ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
-                                            $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
-                                            $captured = 0;
-                                            $failed = 0;
+                                            $dispatched = 0;
 
                                             foreach ($records as $record) {
-                                                $data = $record->getEmailPreviewData();
-                                                $html = view($record->view_path, ['data' => $data])->render();
-                                                $result = $callback($html);
+                                                try {
+                                                    $data = $record->getEmailPreviewData();
+                                                    $html = view($record->view_path, ['data' => $data])->render();
 
-                                                if ($result && isset($result['image'])) {
-                                                    $extension = str_contains($result['contentType'] ?? '', 'jpeg') ? 'jpg' : 'png';
-                                                    $tempPath = tempnam(sys_get_temp_dir(), 'email_screenshot_') . '.' . $extension;
-                                                    file_put_contents($tempPath, $result['image']);
-
-                                                    $record->addMedia($tempPath)
-                                                            ->toMediaCollection('screenshot');
-                                                    $captured++;
-                                                } else {
-                                                    $failed++;
+                                                    \Visualbuilder\EmailTemplates\Jobs\CaptureEmailScreenshot::dispatch($record, $html);
+                                                    $dispatched++;
+                                                } catch (\Throwable $e) {
+                                                    // Skip templates that fail to render
                                                 }
                                             }
 
                                             Notification::make()
-                                                    ->title(__(':count screenshots captured', ['count' => $captured]) . ($failed ? __(', :count failed', ['count' => $failed]) : ''))
-                                                    ->color($failed ? 'warning' : 'success')
+                                                    ->title(__(':count screenshot jobs queued', ['count' => $dispatched]))
+                                                    ->body(__('Screenshots will appear as they complete.'))
+                                                    ->success()
                                                     ->send();
                                         }),
                                 DeleteBulkAction::make(),

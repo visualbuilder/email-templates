@@ -276,33 +276,25 @@ class EmailTemplateThemeResource extends Resource
                                                 return;
                                             }
 
-                                            $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
-                                            $captured = 0;
-                                            $failed = 0;
+                                            $dispatched = 0;
 
                                             foreach ($records as $record) {
-                                                $data = $emailTemplate->getEmailPreviewData();
-                                                $data['theme'] = $record->colours;
-                                                $html = view($emailTemplate->view_path, ['data' => $data])->render();
+                                                try {
+                                                    $data = $emailTemplate->getEmailPreviewData();
+                                                    $data['theme'] = $record->colours;
+                                                    $html = view($emailTemplate->view_path, ['data' => $data])->render();
 
-                                                $result = $callback($html);
-
-                                                if ($result && isset($result['image'])) {
-                                                    $extension = str_contains($result['contentType'] ?? '', 'jpeg') ? 'jpg' : 'png';
-                                                    $tempPath = tempnam(sys_get_temp_dir(), 'theme_screenshot_') . '.' . $extension;
-                                                    file_put_contents($tempPath, $result['image']);
-
-                                                    $record->addMedia($tempPath)
-                                                            ->toMediaCollection('screenshot');
-                                                    $captured++;
-                                                } else {
-                                                    $failed++;
+                                                    \Visualbuilder\EmailTemplates\Jobs\CaptureEmailScreenshot::dispatch($record, $html);
+                                                    $dispatched++;
+                                                } catch (\Throwable $e) {
+                                                    // Skip themes that fail to render
                                                 }
                                             }
 
                                             Notification::make()
-                                                    ->title(__(':count screenshots captured', ['count' => $captured]) . ($failed ? __(', :count failed', ['count' => $failed]) : ''))
-                                                    ->color($failed ? 'warning' : 'success')
+                                                    ->title(__(':count screenshot jobs queued', ['count' => $dispatched]))
+                                                    ->body(__('Screenshots will appear as they complete.'))
+                                                    ->success()
                                                     ->send();
                                         }),
                                 DeleteBulkAction::make(),
