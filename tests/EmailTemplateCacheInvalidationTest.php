@@ -62,7 +62,7 @@ it('clears cache when template is updated', function () {
 
     // Cache the template
     EmailTemplate::findEmailByKey('cache-test', config('filament-email-templates.default_locale'));
-    $cacheKey = "email_by_key_cache-test_" . config('filament-email-templates.default_locale');
+    $cacheKey = "email_by_key_cache-test_" . config('filament-email-templates.default_locale') . "_none";
 
     // Verify cache exists
     expect(Cache::has($cacheKey))->toBeTrue();
@@ -85,7 +85,7 @@ it('clears cache when template is deleted', function () {
 
     // Cache the template
     EmailTemplate::findEmailByKey('delete-test', config('filament-email-templates.default_locale'));
-    $cacheKey = "email_by_key_delete-test_" . config('filament-email-templates.default_locale');
+    $cacheKey = "email_by_key_delete-test_" . config('filament-email-templates.default_locale') . "_none";
 
     // Verify cache exists
     expect(Cache::has($cacheKey))->toBeTrue();

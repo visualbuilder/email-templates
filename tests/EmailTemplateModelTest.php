@@ -23,7 +23,7 @@ it('returns default language when locale missing and caches result', function ()
     $template = EmailTemplate::findEmailByKey($key);
 
     expect($template->id)->toBe($default->id);
-    $cacheKey = "email_by_key_{$key}_";
+    $cacheKey = "email_by_key_{$key}_{$defaultLang}_none";
     expect(Cache::has($cacheKey))->toBeTrue();
 });
 
@@ -39,7 +39,7 @@ it('can clear the email template cache', function () {
     ]);
 
     EmailTemplate::findEmailByKey($key, $lang);
-    $cacheKey = "email_by_key_{$key}_{$lang}";
+    $cacheKey = "email_by_key_{$key}_{$lang}_none";
     expect(Cache::has($cacheKey))->toBeTrue();
 
     EmailTemplate::clearEmailTemplateCache($key, $lang);

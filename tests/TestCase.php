@@ -76,6 +76,22 @@ class TestCase extends Orchestra
         $this->withFactories(__DIR__ . '/factories');
     }
 
+    protected function enableMultitenancy(): void
+    {
+        Config::set('filament-email-templates.multitenancy.enabled', true);
+        Config::set('filament-email-templates.multitenancy.tenant_model', \Visualbuilder\EmailTemplates\Tests\Models\Tenant::class);
+        Config::set('filament-email-templates.multitenancy.tenant_foreign_key', 'tenant_id');
+        Config::set('filament-email-templates.multitenancy.ownership_relationship', 'tenant');
+    }
+
+    protected function createTenant(array $attributes = []): \Visualbuilder\EmailTemplates\Tests\Models\Tenant
+    {
+        return \Visualbuilder\EmailTemplates\Tests\Models\Tenant::create(array_merge([
+            'name' => 'Test Tenant',
+            'slug' => 'test-tenant',
+        ], $attributes));
+    }
+
     public function makeTheme()
     {
         EmailTemplateTheme::factory()->create(
