@@ -45,6 +45,43 @@ class EmailTemplateTheme extends Model implements HasMedia
     {
         parent::__construct($attributes);
         $this->setTableFromConfig();
+
+        if (EmailTemplate::isMultitenancyEnabled()) {
+            $this->fillable[] = EmailTemplate::getTenantForeignKeyName();
+        }
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        if (EmailTemplate::isMultitenancyEnabled()) {
+            $fk = EmailTemplate::getTenantForeignKeyName();
+            $tenantModel = EmailTemplate::getTenantModelClass();
+            $relationship = EmailTemplate::getOwnershipRelationshipName();
+
+            if ($tenantModel && $relationship) {
+                static::resolveRelationUsing($relationship, function ($model) use ($tenantModel, $fk) {
+                    return $model->belongsTo($tenantModel, $fk);
+                });
+            }
+
+            static::creating(function ($model) use ($fk) {
+                if (is_null($model->$fk)) {
+                    try {
+                        $tenant = class_exists(\Filament\Facades\Filament::class)
+                            ? \Filament\Facades\Filament::getTenant()
+                            : null;
+                    } catch (\Throwable) {
+                        $tenant = null;
+                    }
+
+                    if ($tenant) {
+                        $model->$fk = $tenant->getKey();
+                    }
+                }
+            });
+        }
     }
 
     public function setTableFromConfig()
@@ -64,6 +101,20 @@ class EmailTemplateTheme extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->fit(Fit::Contain, 400, 600)
             ->nonQueued();
+    }
+
+    /**
+     * Check if this theme is a global (system) theme.
+     */
+    public function isGlobal(): bool
+    {
+        if (! EmailTemplate::isMultitenancyEnabled()) {
+            return true;
+        }
+
+        $fk = EmailTemplate::getTenantForeignKeyName();
+
+        return is_null($this->$fk);
     }
 
     protected static function newFactory()

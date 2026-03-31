@@ -105,6 +105,11 @@ class EmailTemplate extends Model implements HasMedia
         $this->setTableFromConfig();
         // Include the theme foreign key as a fillable attribute
         $this->fillable[] = config('filament-email-templates.theme_table_name') . '_id';
+
+        // Include the tenant foreign key when multitenancy is enabled
+        if (static::isMultitenancyEnabled()) {
+            $this->fillable[] = static::getTenantForeignKeyName();
+        }
     }
 
     /**
@@ -126,14 +131,37 @@ class EmailTemplate extends Model implements HasMedia
     {
         parent::boot();
 
+        if (static::isMultitenancyEnabled()) {
+            $fk = static::getTenantForeignKeyName();
+            $tenantModel = static::getTenantModelClass();
+            $relationship = static::getOwnershipRelationshipName();
+
+            // Register dynamic tenant relationship
+            if ($tenantModel && $relationship) {
+                static::resolveRelationUsing($relationship, function ($model) use ($tenantModel, $fk) {
+                    return $model->belongsTo($tenantModel, $fk);
+                });
+            }
+
+            // Auto-assign tenant on creation
+            static::creating(function ($model) use ($fk) {
+                if (is_null($model->$fk)) {
+                    $tenant = static::resolveCurrentTenant();
+                    if ($tenant) {
+                        $model->$fk = $tenant->getKey();
+                    }
+                }
+            });
+        }
+
         // When an email template is updated
         static::updated(function ($template) {
-            self::clearEmailTemplateCache($template->key, $template->language);
+            self::clearEmailTemplateCache($template->key, $template->language, static::getTenantIdFromModel($template));
         });
 
         // When an email template is deleted
         static::deleted(function ($template) {
-            self::clearEmailTemplateCache($template->key, $template->language);
+            self::clearEmailTemplateCache($template->key, $template->language, static::getTenantIdFromModel($template));
         });
     }
 
@@ -142,38 +170,66 @@ class EmailTemplate extends Model implements HasMedia
         $this->table = config('filament-email-templates.table_name');
     }
 
-    public static function findEmailByKey($key, $language = null)
+    /**
+     * Find an email template by key with optional tenant-aware fallback.
+     *
+     * When multitenancy is enabled, searches for a tenant-specific template first,
+     * then falls back to the global template (null tenant_id).
+     *
+     * @param string $key
+     * @param string|null $language
+     * @param int|null $tenantId Explicit tenant ID, or null to auto-resolve from Filament context
+     */
+    public static function findEmailByKey($key, $language = null, $tenantId = null)
     {
-        $cacheKey = "email_by_key_{$key}_{$language}";
+        $language = $language ?? config('filament-email-templates.default_locale');
+        $multitenancy = static::isMultitenancyEnabled();
 
-        //For multi site domains this key will need to include the site_id
-        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language) {
-            return self::query()
-                ->language($language ?? config('filament-email-templates.default_locale'))
-                ->where("key", $key)
-                ->firstOrFail();
+        if ($multitenancy && $tenantId === null) {
+            $tenant = static::resolveCurrentTenant();
+            $tenantId = $tenant?->getKey();
+        }
+
+        $tenantPart = $multitenancy ? ($tenantId ?? 'global') : 'none';
+        $cacheKey = "email_by_key_{$key}_{$language}_{$tenantPart}";
+
+        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language, $tenantId, $multitenancy) {
+            $query = self::query()
+                ->where('key', $key)
+                ->language($language);
+
+            if ($multitenancy && $tenantId) {
+                $fk = static::getTenantForeignKeyName();
+                // Include both tenant-specific and global templates, prefer tenant-specific
+                $query->where(function ($q) use ($fk, $tenantId) {
+                    $q->where($fk, $tenantId)->orWhereNull($fk);
+                })->orderByRaw("CASE WHEN {$fk} IS NOT NULL THEN 0 ELSE 1 END");
+            }
+
+            return $query->first();
         });
     }
 
     /**
      * Clear all caches related to this email template.
      *
-     * This method ensures that when a template is updated, the changes are
-     * immediately visible to users by clearing:
-     * - Redis/cache driver cache for the template model
-     * - Compiled Blade view files
-     * - OPcache (PHP bytecode cache)
-     *
      * @param string $key The template key
      * @param string $language The template language
+     * @param int|null $tenantId The tenant ID (null for global templates)
      * @return void
      */
-    public static function clearEmailTemplateCache($key, $language)
+    public static function clearEmailTemplateCache($key, $language, $tenantId = null)
     {
-        $cacheKey = "email_by_key_{$key}_{$language}";
+        $multitenancy = static::isMultitenancyEnabled();
 
-        // Clear the actual cached template model
-        Cache::forget($cacheKey);
+        if ($multitenancy) {
+            $tenantPart = $tenantId ?? 'global';
+            Cache::forget("email_by_key_{$key}_{$language}_{$tenantPart}");
+            // Also clear the global cache as the fallback chain may have changed
+            Cache::forget("email_by_key_{$key}_{$language}_global");
+        } else {
+            Cache::forget("email_by_key_{$key}_{$language}_none");
+        }
 
         Artisan::call('optimize:clear');
 
@@ -187,10 +243,6 @@ class EmailTemplate extends Model implements HasMedia
     /**
      * Delete compiled view files for a specific email template.
      *
-     * This method physically removes the compiled PHP view files from the
-     * storage/framework/views directory. This is more aggressive than view:clear
-     * and ensures that Blade will recompile the views on the next request.
-     *
      * @param string $key The template key
      * @return void
      */
@@ -200,28 +252,20 @@ class EmailTemplate extends Model implements HasMedia
             $viewPath = config('filament-email-templates.template_view_path', 'vb-email-templates::email');
             $compiledPath = storage_path('framework/views');
 
-            // If the compiled views directory doesn't exist, nothing to delete
             if (!File::isDirectory($compiledPath)) {
                 return;
             }
 
-            // Get all compiled view files
             $files = File::files($compiledPath);
 
-            // Delete compiled files that might contain this template's content
-            // Compiled view filenames are MD5 hashes, so we can't match them exactly
-            // Instead, we look for files that contain the template's view path or key
             foreach ($files as $file) {
                 $filePath = $file->getPathname();
 
-                // Read the file and check if it contains references to our template
-                // This is a heuristic approach since compiled views include the original path
                 $contents = @file_get_contents($filePath);
                 if ($contents === false) {
                     continue;
                 }
 
-                // Check if this compiled view references our email template views
                 if (
                     str_contains($contents, $viewPath) ||
                     str_contains($contents, 'vb-email-templates') ||
@@ -231,9 +275,7 @@ class EmailTemplate extends Model implements HasMedia
                 }
             }
         } catch (\Exception $e) {
-            // If deletion fails, log but don't throw
-            // The view:clear command should have already cleared the cache
-            \Illuminate\Support\Facades\Log::warning(
+            Log::warning(
                 'Failed to delete compiled views for email template',
                 [
                     'key' => $key,
@@ -286,12 +328,6 @@ class EmailTemplate extends Model implements HasMedia
      */
     public function getBase64EmailPreviewData()
     {
-        /**
-         * Iframes normally use src attribute to load content from a url
-         * This means an extra http request
-         *  Below method includes the content directly as base64 encoded
-         */
-
         $data = $this->getEmailPreviewData();
         $content = view($this->view_path, ['data' => $data])->render();
 
@@ -307,7 +343,6 @@ class EmailTemplate extends Model implements HasMedia
 
         $previewOverrides = config('filament-email-templates.preview_data', []);
 
-        // Apply static overrides: replace ##prefix.attr## before TokenHelper runs
         $applyOverrides = function (string $content) use ($previewOverrides): string {
             foreach ($previewOverrides as $tokenPath => $value) {
                 $content = str_replace("##{$tokenPath}##", (string) $value, $content);
@@ -335,17 +370,14 @@ class EmailTemplate extends Model implements HasMedia
         $models = (object)[];
 
         $userModel = config('filament-email-templates.recipients')[0] ?? null;
-        //Setup some data for previewing email template
         if ($userModel) {
             $models->user = $userModel::first();
         }
         $models->tokenUrl = URL::to('/');
         $models->verificationUrl = URL::to('/');
         $models->expiresAt = now()->addDays(7)->format('d/m/Y H:i');
-        /* Not used in preview but need to add something */
         $models->plainText = Str::random(32);
 
-        // Load registered preview models (first record of each)
         foreach (config('filament-email-templates.preview_models', []) as $prefix => $modelClass) {
             if (class_exists($modelClass)) {
                 $record = $modelClass::first();
@@ -418,11 +450,80 @@ class EmailTemplate extends Model implements HasMedia
 
     public function getLogoAttribute(): string
     {
-        //Get Database logo or config logo
         $logo = $this->attributes['logo'] ?? config('filament-email-templates.logo');
 
-        // Return the logo if it's a full URL, otherwise, return the asset URL.
         return Str::isUrl($logo) ? $logo : asset($logo);
     }
 
+    // ── Multitenancy helpers (config-driven, no Plugin dependency) ──
+
+    public static function isMultitenancyEnabled(): bool
+    {
+        return (bool) config('filament-email-templates.multitenancy.enabled', false);
+    }
+
+    public static function getTenantForeignKeyName(): string
+    {
+        if ($key = config('filament-email-templates.multitenancy.tenant_foreign_key')) {
+            return $key;
+        }
+
+        $model = config('filament-email-templates.multitenancy.tenant_model');
+
+        return $model ? Str::snake(class_basename($model)) . '_id' : 'tenant_id';
+    }
+
+    public static function getTenantModelClass(): ?string
+    {
+        return config('filament-email-templates.multitenancy.tenant_model');
+    }
+
+    public static function getOwnershipRelationshipName(): string
+    {
+        if ($rel = config('filament-email-templates.multitenancy.ownership_relationship')) {
+            return $rel;
+        }
+
+        $model = config('filament-email-templates.multitenancy.tenant_model');
+
+        return $model ? Str::camel(class_basename($model)) : 'tenant';
+    }
+
+    /**
+     * Check if a template is a global (system) template.
+     */
+    public function isGlobal(): bool
+    {
+        if (! static::isMultitenancyEnabled()) {
+            return true;
+        }
+
+        $fk = static::getTenantForeignKeyName();
+
+        return is_null($this->$fk);
+    }
+
+    protected static function resolveCurrentTenant(): ?Model
+    {
+        try {
+            if (class_exists(\Filament\Facades\Filament::class)) {
+                return \Filament\Facades\Filament::getTenant();
+            }
+        } catch (\Throwable) {
+            // Not in a Filament context (e.g. queue worker, artisan command)
+        }
+
+        return null;
+    }
+
+    protected static function getTenantIdFromModel(self $template): ?int
+    {
+        if (! static::isMultitenancyEnabled()) {
+            return null;
+        }
+
+        $fk = static::getTenantForeignKeyName();
+
+        return $template->$fk;
+    }
 }

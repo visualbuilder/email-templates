@@ -22,6 +22,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
@@ -314,13 +315,26 @@ class EmailTemplateThemeResource extends Resource
         ];
     }
 
+    public static function isScopedToTenant(): bool
+    {
+        return false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-                ->withoutGlobalScopes(
-                        [
-                                SoftDeletingScope::class,
-                        ]
-                );
+        $query = parent::getEloquentQuery()
+                ->withoutGlobalScopes([SoftDeletingScope::class]);
+
+        if (EmailTemplate::isMultitenancyEnabled()) {
+            $tenant = Filament::getTenant();
+            if ($tenant) {
+                $fk = EmailTemplate::getTenantForeignKeyName();
+                $query->where(function ($q) use ($fk, $tenant) {
+                    $q->where($fk, $tenant->getKey())->orWhereNull($fk);
+                });
+            }
+        }
+
+        return $query;
     }
 }

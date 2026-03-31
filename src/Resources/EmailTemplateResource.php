@@ -29,6 +29,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\File;
@@ -269,7 +270,11 @@ class EmailTemplateResource extends Resource
                                                                                         column: 'key',
                                                                                         ignoreRecord: true,
                                                                                         modifyRuleUsing: function (Unique $rule, $get) {
-                                                                                            return $rule->where('language', $get('language'));
+                                                                                            $rule->where('language', $get('language'));
+                                                                                            if (EmailTemplate::isMultitenancyEnabled() && Filament::getTenant()) {
+                                                                                                $rule->where(EmailTemplate::getTenantForeignKeyName(), Filament::getTenant()->getKey());
+                                                                                            }
+                                                                                            return $rule;
                                                                                         })
                                                                                 ->maxLength(191),
                                                                         Select::make('language')
@@ -375,14 +380,28 @@ class EmailTemplateResource extends Resource
         ];
     }
 
+    public static function isScopedToTenant(): bool
+    {
+        // We handle tenant scoping ourselves to support global+tenant template visibility
+        return false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-                ->withoutGlobalScopes(
-                        [
-                                SoftDeletingScope::class,
-                        ]
-                );
+        $query = parent::getEloquentQuery()
+                ->withoutGlobalScopes([SoftDeletingScope::class]);
+
+        if (EmailTemplate::isMultitenancyEnabled()) {
+            $tenant = Filament::getTenant();
+            if ($tenant) {
+                $fk = EmailTemplate::getTenantForeignKeyName();
+                $query->where(function ($q) use ($fk, $tenant) {
+                    $q->where($fk, $tenant->getKey())->orWhereNull($fk);
+                });
+            }
+        }
+
+        return $query;
     }
 
     public function handleLogo(array $data): array

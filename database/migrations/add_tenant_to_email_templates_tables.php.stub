@@ -1,0 +1,70 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        $templatesTable = config('filament-email-templates.table_name', 'vb_email_templates');
+        $themesTable = config('filament-email-templates.theme_table_name', 'vb_email_templates_themes');
+        $foreignKey = config('filament-email-templates.multitenancy.tenant_foreign_key');
+
+        if (! $foreignKey) {
+            $tenantModel = config('filament-email-templates.multitenancy.tenant_model');
+            $foreignKey = $tenantModel
+                ? \Illuminate\Support\Str::snake(class_basename($tenantModel)) . '_id'
+                : 'tenant_id';
+        }
+
+        Schema::table($templatesTable, function (Blueprint $table) use ($foreignKey, $templatesTable) {
+            $table->unsignedBigInteger($foreignKey)->nullable()->after('id');
+            $table->index($foreignKey);
+
+            // Update unique constraint to include tenant
+            // Drop the old unique index on key+language if it exists
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $indexes = collect($sm->listTableIndexes($templatesTable));
+            foreach ($indexes as $index) {
+                $columns = $index->getColumns();
+                if ($columns === ['key', 'language'] || $columns === ['language', 'key']) {
+                    $table->dropUnique($index->getName());
+                    break;
+                }
+            }
+
+            $table->unique([$foreignKey, 'key', 'language'], "{$templatesTable}_tenant_key_language_unique");
+        });
+
+        Schema::table($themesTable, function (Blueprint $table) use ($foreignKey) {
+            $table->unsignedBigInteger($foreignKey)->nullable()->after('id');
+            $table->index($foreignKey);
+        });
+    }
+
+    public function down(): void
+    {
+        $templatesTable = config('filament-email-templates.table_name', 'vb_email_templates');
+        $themesTable = config('filament-email-templates.theme_table_name', 'vb_email_templates_themes');
+        $foreignKey = config('filament-email-templates.multitenancy.tenant_foreign_key');
+
+        if (! $foreignKey) {
+            $tenantModel = config('filament-email-templates.multitenancy.tenant_model');
+            $foreignKey = $tenantModel
+                ? \Illuminate\Support\Str::snake(class_basename($tenantModel)) . '_id'
+                : 'tenant_id';
+        }
+
+        Schema::table($templatesTable, function (Blueprint $table) use ($foreignKey, $templatesTable) {
+            $table->dropUnique("{$templatesTable}_tenant_key_language_unique");
+            $table->dropColumn($foreignKey);
+            $table->unique(['key', 'language']);
+        });
+
+        Schema::table($themesTable, function (Blueprint $table) use ($foreignKey) {
+            $table->dropColumn($foreignKey);
+        });
+    }
+};

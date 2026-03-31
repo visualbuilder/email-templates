@@ -17,8 +17,14 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
+        $migrations = ['create_email_templates_themes_table', 'create_email_templates_table'];
+
+        if (config('filament-email-templates.multitenancy.enabled')) {
+            $migrations[] = 'add_tenant_to_email_templates_tables';
+        }
+
         $package->name("filament-email-templates")
-            ->hasMigrations(['create_email_templates_themes_table','create_email_templates_table'])
+            ->hasMigrations($migrations)
             ->hasConfigFile(['filament-email-templates'])
             ->hasAssets()
             ->hasTranslations()

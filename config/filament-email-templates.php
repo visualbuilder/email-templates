@@ -10,6 +10,26 @@ return [
     'table_name' => 'vb_email_templates',
     'theme_table_name' => 'vb_email_templates_themes',
 
+    /**
+     * Multitenancy Support
+     *
+     * Enable this to allow tenants to have their own email templates
+     * while falling back to global (system) templates.
+     *
+     * tenant_model:              The tenant model class (e.g. App\Models\Team::class)
+     *                            If null, uses Filament::getTenantModel()
+     * tenant_foreign_key:        Column name on the templates/themes tables (e.g. 'team_id')
+     *                            If null, derived from the tenant model class name
+     * ownership_relationship:    Relationship name on EmailTemplate/Theme models (e.g. 'team')
+     *                            If null, derived from the tenant model class name
+     */
+    'multitenancy' => [
+        'enabled' => false,
+        'tenant_model' => null,
+        'tenant_foreign_key' => null,
+        'ownership_relationship' => null,
+    ],
+
 
     /**
      * Mail Classes will be generated into this directory
