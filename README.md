@@ -61,6 +61,83 @@ Edit email content in the admin and use tokens to inject model or config content
 | 4.x | 4.x | 11.x | 8.2+ |
 | 3.x | 3.x | 10.x, 11.x | 8.1+ |
 
+## Multitenancy
+
+This package supports Filament's built-in multi-tenancy. When enabled, tenants can customise their own email templates while falling back to global system templates.
+
+### Enabling Multitenancy
+
+#### Via Config
+
+In `config/filament-email-templates.php`:
+
+```php
+'multitenancy' => [
+    'enabled' => true,
+    'tenant_model' => App\Models\Team::class,
+    // Optional - derived automatically from tenant model if not set:
+    // 'tenant_foreign_key' => 'team_id',
+    // 'ownership_relationship' => 'team',
+],
+```
+
+#### Via Plugin (Panel Provider)
+
+```php
+use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->plugins([
+            EmailTemplatesPlugin::make()
+                ->multitenancy()
+                ->tenantModel(Team::class),
+        ]);
+}
+```
+
+### Running the Migration
+
+After enabling multitenancy, publish and run the migration to add the tenant column:
+
+```bash
+php artisan migrate
+```
+
+The migration adds a nullable tenant foreign key to both the `vb_email_templates` and `vb_email_templates_themes` tables.
+
+### How It Works
+
+**Template Fallback Chain**
+
+When retrieving a template (e.g. for sending an email), the package checks:
+
+1. **Tenant-specific template** — a template with the matching key AND the current tenant's ID
+2. **Global template** — a template with the matching key and a NULL tenant ID
+
+This means tenants only need to create templates they want to customise. All other emails automatically use the global system templates.
+
+**In Filament Panels**
+
+Tenant users see both their own templates and global system templates in the resource list. When a tenant creates a new template, it is automatically assigned to their tenant.
+
+**Sending Emails**
+
+Pass the tenant ID explicitly when outside a Filament context (e.g. in queue workers or artisan commands):
+
+```php
+$template = EmailTemplate::findEmailByKey('user-welcome', 'en_GB', $tenantId);
+```
+
+Within a Filament panel, the tenant is resolved automatically from `Filament::getTenant()`.
+
+### Cache Behaviour
+
+Cache keys include the tenant context to prevent cross-tenant cache pollution. When a template is updated or deleted, both the tenant-specific and global cache entries are cleared to ensure the fallback chain stays consistent.
+
+After enabling multitenancy on an existing installation, run `php artisan cache:clear` to reset stale cache keys.
+
 ## Installation
 Get the package via composer:
 
