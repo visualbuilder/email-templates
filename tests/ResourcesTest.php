@@ -16,7 +16,7 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\EditEmail
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
 
 beforeEach(function () {
-    $this->markTestSkipped('Livewire tests temporarily disabled');
+    // Re-enabled for Filament 5 compatibility testing
 });
 
 // listing tests
