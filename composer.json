@@ -52,7 +52,6 @@
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
         "format": "vendor/bin/pint"
-
     },
     "config": {
         "sort-packages": true,
@@ -69,6 +68,9 @@
             "aliases": {
                 "EmailTemplates": "Visualbuilder\\EmailTemplates\\EmailTemplatesFacade"
             }
+        },
+        "branch-alias": {
+            "5.x-dev": "5.0.x-dev"
         }
     },
     "minimum-stability": "dev",
