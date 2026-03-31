@@ -6,7 +6,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/visualbuilder/email-templates)
 
 
-![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/3.x/media/social-card.jpg)
+![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/5.x/media/social-card.jpg)
 
 
 ### Why businesses and applications should use Email Templates
@@ -44,13 +44,13 @@ We use the standard Laravel mail sending capability, the package simply allows c
 template Classes
 
 ### Theme Editor
-![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/3.x/media/ThemeEditor.jpg)
+![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/5.x/media/ThemeEditor.jpg)
 
 ### HTML Email Template Editor
 
 Edit email content in the admin and use tokens to inject model or config content.
 
-![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/3.x/media/EmailEditor.png)
+![Email Preview](https://raw.githubusercontent.com/visualbuilder/email-templates/5.x/media/EmailEditor.png)
 
 
 ## Version Compatibility
@@ -463,7 +463,7 @@ Languages that should be shown on the language picker can be set in the config
     ]
 ```
 
-![Language Picker](https://raw.githubusercontent.com/visualbuilder/email-templates/3.x/media/Languages.png)
+![Language Picker](https://raw.githubusercontent.com/visualbuilder/email-templates/5.x/media/Languages.png)
 
 Flag icons are loaded from CDN: https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css
 see https://www.npmjs.com/package/flag-icons
@@ -474,7 +474,7 @@ We've currently opted to keep using a separate Mailable Class for each email typ
 template in the admin, it will require a new php Class.
 The package provides an action to build the class if the file does not exist in app\Mail\VisualBuilder\EmailTemplates.
 
-![Build Class](https://raw.githubusercontent.com/visualbuilder/email-templates/3.x/media/BuildClass.png)
+![Build Class](https://raw.githubusercontent.com/visualbuilder/email-templates/5.x/media/BuildClass.png)
 Currently generated Mailable Classes will use the BuildGenericEmail Trait
 
 ```php
@@ -646,7 +646,7 @@ You should also include the filetype.
     }
 ```
 
-To maximise compatibility we've kept with the L9 mailable methods -> which still work on L10.
+Compatible with Laravel 11.x and 12.x mailable methods.
 
 ### Testing
 
