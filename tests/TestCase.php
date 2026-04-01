@@ -46,10 +46,9 @@ class TestCase extends Orchestra
         View::share('errors', new ViewErrorBag);
 
         // Ensure Livewire DataStore is a singleton - Orchestra Testbench can
-        // resolve it before LivewireServiceProvider registers its instance
-        if (! app()->bound(DataStore::class) || app(DataStore::class) !== app(DataStore::class)) {
-            app()->singleton(DataStore::class);
-        }
+        // resolve it before LivewireServiceProvider registers its instance,
+        // causing different WeakMap instances and null ErrorBag during render.
+        app()->singleton(DataStore::class);
     }
 
     protected function getPackageProviders($app): array

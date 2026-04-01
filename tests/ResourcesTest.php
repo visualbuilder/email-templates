@@ -1,10 +1,9 @@
 <?php
 
 use Filament\Actions;
-use Filament\Pages\Actions\DeleteAction;
-use Filament\Pages\Actions\ForceDeleteAction;
-
-use Filament\Pages\Actions\RestoreAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
