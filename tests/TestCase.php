@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ViewErrorBag;
 use Livewire\LivewireServiceProvider;
 use Livewire\Mechanisms\DataStore;
+use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
@@ -45,10 +46,12 @@ class TestCase extends Orchestra
         View::addNamespace('vb-email-templates', __DIR__.'/../resources/views');
         View::share('errors', new ViewErrorBag);
 
-        // Ensure Livewire DataStore is a singleton - Orchestra Testbench can
-        // resolve it before LivewireServiceProvider registers its instance,
-        // causing different WeakMap instances and null ErrorBag during render.
-        app()->singleton(DataStore::class);
+        // Ensure Livewire DataStore is a proper singleton. Livewire's Mechanism::register()
+        // uses app()->instance() but Orchestra Testbench can resolve DataStore before that,
+        // or the instance can be lost between Livewire component renders within a single test.
+        // Re-register the current instance as a singleton to prevent new instances being created.
+        $dataStore = app(DataStore::class);
+        app()->instance(DataStore::class, $dataStore);
     }
 
     protected function getPackageProviders($app): array
@@ -69,6 +72,7 @@ class TestCase extends Orchestra
             ActionsServiceProvider::class,
             WidgetsServiceProvider::class,
             TinyEditorServiceProvider::class,
+            MediaLibraryServiceProvider::class,
 
         ];
     }

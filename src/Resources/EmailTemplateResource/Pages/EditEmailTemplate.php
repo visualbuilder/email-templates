@@ -15,7 +15,7 @@ class EditEmailTemplate extends EditRecord
 {
     protected static string $resource = EmailTemplateResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
                 Actions\Action::make('back')->label(__('Back'))
