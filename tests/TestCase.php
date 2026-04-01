@@ -13,11 +13,13 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Schemas\SchemasServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ViewErrorBag;
 use Livewire\LivewireServiceProvider;
+use Livewire\Mechanisms\DataStore;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
@@ -42,6 +44,12 @@ class TestCase extends Orchestra
         Config::set('auth.providers.users.model', User::class);
         View::addNamespace('vb-email-templates', __DIR__.'/../resources/views');
         View::share('errors', new ViewErrorBag);
+
+        // Ensure Livewire DataStore is a singleton - Orchestra Testbench can
+        // resolve it before LivewireServiceProvider registers its instance
+        if (! app()->bound(DataStore::class) || app(DataStore::class) !== app(DataStore::class)) {
+            app()->singleton(DataStore::class);
+        }
     }
 
     protected function getPackageProviders($app): array

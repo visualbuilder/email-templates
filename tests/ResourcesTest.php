@@ -16,7 +16,7 @@ use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\EditEmail
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
 
 beforeEach(function () {
-    $this->markTestSkipped('Livewire 4 ViewErrorBag::put() bug - SupportValidation passes null MessageBag during render');
+    //
 });
 
 // listing tests
