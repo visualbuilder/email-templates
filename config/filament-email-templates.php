@@ -11,6 +11,17 @@ return [
     'theme_table_name' => 'vb_email_templates_themes',
 
     /**
+     * Flag-icon stylesheet
+     *
+     * The language picker uses `.flag-icon` classes (flag-icon-css). By default
+     * the package loads the stylesheet from a CDN. If you self-host flag icons,
+     * or have a strict Content-Security-Policy that disallows the CDN, set this
+     * to null/false to stop the package injecting it (and load your own), or
+     * point it at your own URL.
+     */
+    'flag_icon_stylesheet' => 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css',
+
+    /**
      * Multitenancy Support
      *
      * Enable this to allow tenants to have their own email templates

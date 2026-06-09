@@ -87,9 +87,16 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
      */
     protected function getAssets(): array
     {
-        return [
-                Css::make('vb-email-templates-styles', 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css'),
+        // Flag-icon stylesheet — configurable so self-hosting / strict-CSP
+        // consumers can override the URL or disable it (null/false) and load
+        // their own. See config('filament-email-templates.flag_icon_stylesheet').
+        $stylesheet = config(
+            'filament-email-templates.flag_icon_stylesheet',
+            'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css'
+        );
 
-        ];
+        return $stylesheet
+            ? [Css::make('vb-email-templates-styles', $stylesheet)]
+            : [];
     }
 }
