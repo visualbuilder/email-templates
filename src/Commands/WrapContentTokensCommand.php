@@ -75,19 +75,27 @@ class WrapContentTokensCommand extends Command
     {
         $count = 0;
 
-        // Alternation order matters: existing badge spans, then any HTML
-        // tag (protects tokens inside attributes), then {{...}} pseudo
-        // tokens, and only then bare tokens - which are the ones wrapped.
+        // Alternation order matters: existing badge spans first (protects
+        // against double-wrapping), then any HTML tag (protects tokens
+        // inside attributes), then {{button}} pseudo tokens (wrapped as
+        // button chips), then other {{...}} tokens (left alone), and only
+        // then bare ##tokens##.
         $result = preg_replace_callback(
-            '/<span[^>]*\bvb-token\b[^>]*>.*?<\/span>|<[^>]*>|\{\{.*?\}\}|##[^#]+##/is',
+            '/<span[^>]*\bvb-token\b[^>]*>.*?<\/span>|<[^>]*>|\{\{button\b.*?\}\}|\{\{.*?\}\}|##[^#]+##/is',
             function (array $match) use (&$count) {
-                if (! str_starts_with($match[0], '##')) {
-                    return $match[0];
+                if (str_starts_with($match[0], '##')) {
+                    $count++;
+
+                    return '<span class="vb-token" contenteditable="false">'.$match[0].'</span>';
                 }
 
-                $count++;
+                if (preg_match('/^\{\{button\b/i', $match[0])) {
+                    $count++;
 
-                return '<span class="vb-token" contenteditable="false">'.$match[0].'</span>';
+                    return '<span class="vb-token vb-button-token" contenteditable="false">'.$match[0].'</span>';
+                }
+
+                return $match[0];
             },
             $content
         );

@@ -49,9 +49,28 @@ it('registers the email-template editor profile with the vbtokens plugin', funct
     $profile = config('filament-tinyeditor.profiles.email-template');
 
     expect($profile)->not->toBeNull()
-        ->and($profile['toolbar'])->toStartWith('vbtokens | ')
+        ->and($profile['toolbar'])->toStartWith('vbtokens vbbutton | ')
         ->and($profile['plugins'])->toContain('vbtokens')
         ->and($profile['external_plugins']['vbtokens'])->toContain('vendor/filament-email-templates/tiny-plugins/vbtokens.js');
+});
+
+it('renders a chip-wrapped button token as the styled email button', function () {
+    $helper = new DefaultTokenHelper;
+
+    $models = badgeModels();
+    $models->emailTemplate = (object) [
+        'theme' => (object) ['colours' => ['button_bg_color' => '#000000', 'button_color' => '#ffffff']],
+    ];
+
+    $wrapped = '<span class="vb-token vb-button-token" contenteditable="false">'
+        ."{{button url='https://example.com' title='Activate'}}</span>";
+
+    $result = $helper->replaceTokens($wrapped, $models);
+
+    expect($result)->toContain('https://example.com')
+        ->and($result)->toContain('Activate')
+        ->and($result)->not->toContain('vb-button-token')
+        ->and($result)->not->toContain('{{button');
 });
 
 it('feeds the token catalogue to the content editor on the create page', function () {

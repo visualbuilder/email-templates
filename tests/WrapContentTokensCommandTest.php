@@ -33,10 +33,9 @@ it('is idempotent and never double-wraps', function () {
         ->and(substr_count($once, 'vb-token'))->toBe(1);
 });
 
-it('skips tokens inside html attributes and button pseudo tokens', function () {
+it('skips tokens inside html attributes', function () {
     $template = makeTemplateWithContent(
         '<p><a href="##config.app.url##" title="x">Visit ##config.app.name##</a></p>'
-        ."<p>{{button url='##tokenUrl##' title='Activate'}}</p>"
     );
 
     $this->artisan('filament-email-templates:wrap-tokens')->assertSuccessful();
@@ -44,8 +43,28 @@ it('skips tokens inside html attributes and button pseudo tokens', function () {
     $content = $template->refresh()->content;
 
     expect($content)->toContain('href="##config.app.url##"')
-        ->and($content)->toContain("{{button url='##tokenUrl##' title='Activate'}}")
         ->and($content)->toContain('<span class="vb-token" contenteditable="false">##config.app.name##</span>');
+});
+
+it('wraps button pseudo tokens as button chips without touching their inner tokens', function () {
+    $template = makeTemplateWithContent(
+        "<p>{{button url='##tokenUrl##' title='Activate'}}</p><p>Not a button: {{other thing}}</p>"
+    );
+
+    $this->artisan('filament-email-templates:wrap-tokens')->assertSuccessful();
+
+    $content = $template->refresh()->content;
+
+    expect($content)->toContain(
+        '<span class="vb-token vb-button-token" contenteditable="false">'
+        ."{{button url='##tokenUrl##' title='Activate'}}</span>"
+    )->and($content)->toContain('Not a button: {{other thing}}');
+
+    $this->artisan('filament-email-templates:wrap-tokens')
+        ->expectsOutputToContain('Wrapped 0 token(s) across 0 template(s).')
+        ->assertSuccessful();
+
+    expect(substr_count($template->refresh()->content, 'vb-button-token'))->toBe(1);
 });
 
 it('reports without saving on dry run', function () {

@@ -92,7 +92,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
 
         config()->set('filament-tinyeditor.profiles.email-template', array_merge($base, [
             'plugins' => trim(($base['plugins'] ?? $defaultPlugins).' vbtokens'),
-            'toolbar' => 'vbtokens | '.($base['toolbar'] ?? $defaultToolbar),
+            'toolbar' => 'vbtokens vbbutton | '.($base['toolbar'] ?? $defaultToolbar),
             'external_plugins' => array_merge($base['external_plugins'] ?? [], [
                 'vbtokens' => asset('vendor/filament-email-templates/tiny-plugins/vbtokens.js'),
             ]),
