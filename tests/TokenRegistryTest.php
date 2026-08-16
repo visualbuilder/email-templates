@@ -32,11 +32,22 @@ it('never exposes hidden attributes', function () {
         ->and($tokens)->not->toContain('##user.password##');
 });
 
-it('includes appended accessor attributes', function () {
+it('includes appended accessor attributes and declared tokenAttributes', function () {
     config()->set('filament-email-templates.token_models', ['order' => Order::class]);
 
     expect((new TokenRegistry)->groups()->get('Order')->pluck('token')->all())
-        ->toBe(['##order.reference##', '##order.summary##', '##order.total##']);
+        ->toBe(['##order.contact_name##', '##order.reference##', '##order.summary##', '##order.total##']);
+});
+
+it('still applies hidden and denylist to declared tokenAttributes', function () {
+    config()->set('filament-email-templates.token_models', ['order' => Order::class]);
+
+    $tokens = (new TokenRegistry)->tokens()->pluck('token');
+
+    // Order::tokenAttributes() deliberately declares secret_note (hidden)
+    // and api_token (denylisted) - neither may surface.
+    expect($tokens)->not->toContain('##order.secret_note##')
+        ->and($tokens)->not->toContain('##order.api_token##');
 });
 
 it('enumerates whitelisted config keys under the Config group', function () {

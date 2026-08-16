@@ -191,8 +191,15 @@ class TokenRegistry
         /** @var Model $model */
         $model = new $class;
 
+        // Models can expose accessor-backed attributes the derivation
+        // cannot see (e.g. first_name delegating to a related contact)
+        // by declaring a tokenAttributes() method - see HasTokenAttributes.
+        $declared = method_exists($model, 'tokenAttributes')
+            ? (array) $model->tokenAttributes()
+            : [];
+
         return array_values(array_diff(
-            array_unique(array_merge($model->getFillable(), $model->getAppends())),
+            array_unique(array_merge($model->getFillable(), $model->getAppends(), $declared)),
             $model->getHidden(),
             $this->excludedAttributes()
         ));

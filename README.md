@@ -304,6 +304,10 @@ The catalogue is powered by the `TokenRegistry` singleton and built from:
 - `recipients` and `preview_models` config (attributes derived from each model's
   fillable + appended attributes, minus hidden and a secrets denylist:
   `token_excluded_attributes`),
+- a `tokenAttributes(): array` method on the model (optionally via the
+  `HasTokenAttributes` contract) for accessor-backed attributes the derivation
+  can't see - e.g. a `first_name` accessor delegating to a related contact
+  model. Declared names are merged in; hidden + denylist still apply,
 - `token_models` config for anything else (explicit attribute lists supported),
 - `config_keys` and `known_tokens`,
 - runtime registrations:
