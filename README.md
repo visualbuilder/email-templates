@@ -339,6 +339,45 @@ profile plus the token plugin). Define your own `email-template` profile in
 > markup this package produces. TinyMCE with a native plugin delivers the same UX with
 > zero content migration.
 
+### Custom token helpers - IMPORTANT badge-stripping requirement
+
+You can replace the token engine by pointing `tokenHelperClass` config at your own
+class. If your helper **overrides `replaceTokens()` without calling the parent**, you
+MUST strip the editor's badge wrapper yourself as the first step - otherwise the
+`<span class="vb-token">` chip markup around inserted tokens leaks into sent emails:
+
+```php
+namespace App\Helpers;
+
+use Visualbuilder\EmailTemplates\DefaultTokenHelper;
+
+class MyTokenHelper extends DefaultTokenHelper
+{
+    public function replaceTokens(string $content, $models): string
+    {
+        // REQUIRED when not calling parent::replaceTokens():
+        // unwrap the editor's badge spans before any replacement.
+        $content = $this->stripTokenBadges($content);
+
+        // ... your custom replacements ...
+
+        return $this->replaceButtonTokens($models, $content);
+    }
+}
+```
+
+If you simply extend behaviour, prefer calling the parent (which strips badges for
+you) and post-processing its output:
+
+```php
+public function replaceTokens(string $content, $models): string
+{
+    $content = parent::replaceTokens($content, $models);
+
+    return str_replace('##customThing##', 'value', $content);
+}
+```
+
 ### Implementing out of the box templates
 
 Emails may be sent directly, via a notification or an event listener.

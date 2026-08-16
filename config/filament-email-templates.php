@@ -48,19 +48,24 @@ return [
     "mailable_directory" => 'Mail/Visualbuilder/EmailTemplates',
 
     /**
-     * If you want to use your own token helper replace this class
-     *  Eg create a file like this:-
+     * If you want to use your own token helper replace this class.
+     * Extend DefaultTokenHelper and either call parent::replaceTokens()
+     * (which strips the editor's vb-token badge spans for you) or, when
+     * fully reimplementing replaceTokens(), call $this->stripTokenBadges()
+     * FIRST - otherwise badge markup leaks into sent emails.
+     * See "Custom token helpers" in the README for a full example:
      *
-     *  namespace App\Helpers
+     *  namespace App\Helpers;
      *
-     *  use Visualbuilder\EmailTemplates\Contracts\TokenReplacementInterface;
+     *  use Visualbuilder\EmailTemplates\DefaultTokenHelper;
      *
-     *  class MyTokenHelper implements TokenReplacementInterface
+     *  class MyTokenHelper extends DefaultTokenHelper
      *  {
-     *      public function replaceTokens($content, $models)
-     *          {
-     *           // First, call the parent method if you want to retain and build upon its functionality
-     *              $content = parent::replaceTokens($content, $models);
+     *      public function replaceTokens(string $content, $models): string
+     *      {
+     *          $content = parent::replaceTokens($content, $models);
+     *
+     *          return str_replace('##customThing##', 'value', $content);
      *      }
      *  }
      */
