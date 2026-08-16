@@ -39,6 +39,14 @@ it('includes appended accessor attributes and declared tokenAttributes', functio
         ->toBe(['##order.contact_name##', '##order.reference##', '##order.summary##', '##order.total##']);
 });
 
+it('supports wildcard patterns in the excluded attributes denylist', function () {
+    config()->set('filament-email-templates.token_models', ['order' => Order::class]);
+    config()->set('filament-email-templates.token_excluded_attributes', ['*_note', 'summary']);
+
+    expect((new TokenRegistry)->groups()->get('Order')->pluck('token')->all())
+        ->toBe(['##order.contact_name##', '##order.reference##', '##order.total##']);
+});
+
 it('still applies hidden and denylist to declared tokenAttributes', function () {
     config()->set('filament-email-templates.token_models', ['order' => Order::class]);
 

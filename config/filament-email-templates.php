@@ -200,6 +200,7 @@ return [
     /**
      * Attributes never exposed in the token catalogue when deriving a
      * model's attribute list, even if a model forgets to $hidden them.
+     * Shell wildcards are supported, e.g. '*_id' hides every foreign key.
      * Explicit attribute lists (above) bypass this safety net.
      */
     'token_excluded_attributes' => [

@@ -198,17 +198,34 @@ class TokenRegistry
             ? (array) $model->tokenAttributes()
             : [];
 
-        return array_values(array_diff(
-            array_unique(array_merge($model->getFillable(), $model->getAppends(), $declared)),
-            $model->getHidden(),
-            $this->excludedAttributes()
+        $candidates = array_unique(array_merge($model->getFillable(), $model->getAppends(), $declared));
+        $excluded = array_merge($model->getHidden(), $this->excludedAttributes());
+
+        return array_values(array_filter(
+            $candidates,
+            fn (string $attribute) => ! $this->isExcluded($attribute, $excluded)
         ));
     }
 
     /**
+     * @param  array<int, string>  $excluded
+     */
+    protected function isExcluded(string $attribute, array $excluded): bool
+    {
+        foreach ($excluded as $pattern) {
+            if ($pattern === $attribute || fnmatch($pattern, $attribute)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Secrets that must never surface in the token catalogue, even when a
-     * model forgets to hide them. Applies only to derived attribute lists;
-     * an explicit attribute list is taken as intentional.
+     * model forgets to hide them. Supports shell wildcards, e.g. '*_id'
+     * to exclude every foreign key column. Applies only to derived
+     * attribute lists; an explicit attribute list is taken as intentional.
      *
      * @return array<int, string>
      */
