@@ -7,6 +7,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
+use Visualbuilder\EmailTemplates\Commands\WrapContentTokensCommand;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 
@@ -32,6 +33,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
             ->runsMigrations()
             ->hasCommands([
                 InstallCommand::class,
+                WrapContentTokensCommand::class,
             ]);
     }
 
