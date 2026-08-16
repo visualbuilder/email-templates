@@ -44,6 +44,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->singleton(FormHelperInterface::class, FormHelper::class);
+        $this->app->singleton(TokenRegistry::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
 
         // Add the binding for TokenReplacementInterface
@@ -66,6 +67,34 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         }
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vb-email-templates');
+
+        $this->registerEditorProfile();
+    }
+
+    /**
+     * TinyEditor profile for template editing: the default profile plus the
+     * vbtokens plugin (Insert Token menu, ## autocompleter, badge display).
+     * Define your own 'email-template' profile in filament-tinyeditor
+     * config to take full control - the package then leaves it untouched.
+     */
+    protected function registerEditorProfile(): void
+    {
+        if (config('filament-tinyeditor.profiles.email-template')) {
+            return;
+        }
+
+        $base = config('filament-tinyeditor.profiles.default', []);
+
+        $defaultPlugins = 'accordion autoresize codesample directionality advlist autolink link image lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media table emoticons help';
+        $defaultToolbar = 'undo redo removeformat | styles | bold italic | rtl ltr | alignjustify alignright aligncenter alignleft | numlist bullist outdent indent accordion | forecolor backcolor | blockquote table toc hr | image link anchor media codesample emoticons | visualblocks print preview wordcount fullscreen help';
+
+        config()->set('filament-tinyeditor.profiles.email-template', array_merge($base, [
+            'plugins' => trim(($base['plugins'] ?? $defaultPlugins).' vbtokens'),
+            'toolbar' => 'vbtokens | '.($base['toolbar'] ?? $defaultToolbar),
+            'external_plugins' => array_merge($base['external_plugins'] ?? [], [
+                'vbtokens' => asset('vendor/filament-email-templates/tiny-plugins/vbtokens.js'),
+            ]),
+        ]));
     }
 
     protected function publishResources()

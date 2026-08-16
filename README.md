@@ -290,6 +290,51 @@ You can also include config values in the format ##config.file.key## eg ##config
         'email-templates.customer-services'
 ```
 
+### Insert Token control & token catalogue
+
+Template authors no longer need to remember token names. The content editor has an
+**Insert token** toolbar menu listing every available token (grouped by model / Config /
+General, sorted alphabetically), and typing `##` opens an inline autocompleter to search
+and insert without leaving the keyboard. Inserted tokens render as non-editable badge
+chips so they can't be mistyped or half-deleted; the badge wrapper is stripped
+automatically at send time.
+
+The catalogue is powered by the `TokenRegistry` singleton and built from:
+
+- `recipients` and `preview_models` config (attributes derived from each model's
+  fillable + appended attributes, minus hidden and a secrets denylist:
+  `token_excluded_attributes`),
+- `token_models` config for anything else (explicit attribute lists supported),
+- `config_keys` and `known_tokens`,
+- runtime registrations:
+
+```php
+use Visualbuilder\EmailTemplates\TokenRegistry;
+
+app(TokenRegistry::class)
+    ->registerModel('order', Order::class, ['reference', 'total'], 'Sales Order')
+    ->registerConfigKeys(['mail.from.address'])
+    ->registerToken('##unsubscribeUrl##', 'Unsubscribe link', 'Campaign');
+```
+
+After upgrading, publish the editor plugin asset:
+
+```bash
+php artisan vendor:publish --tag="filament-email-templates-assets" --force
+```
+
+The editor uses a `filament-tinyeditor` profile named `email-template` (your default
+profile plus the token plugin). Define your own `email-template` profile in
+`filament-tinyeditor` config to take full control.
+
+> **Why still TinyMCE?** Filament 5's RichEditor was evaluated for this feature: its
+> native merge tags are flat `{{ name }}` keys that cannot express dotted
+> `##model.attribute##` paths (which would force a migration of all existing template
+> content), badge chips would need a custom TipTap node with a JS build pipeline, and
+> its document sanitizer still normalizes the table-based/inline-styled HTML email
+> markup this package produces. TinyMCE with a native plugin delivers the same UX with
+> zero content migration.
+
 ### Implementing out of the box templates
 
 Emails may be sent directly, via a notification or an event listener.

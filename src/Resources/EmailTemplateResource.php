@@ -323,7 +323,10 @@ class EmailTemplateResource extends Resource
 
                                                                         TinyEditor::make('content')
                                                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
-                                                                                ->profile('default')
+                                                                                ->profile('email-template')
+                                                                                ->setCustomConfigs(fn () => [
+                                                                                        'vbtokens_list' => app(\Visualbuilder\EmailTemplates\TokenRegistry::class)->menu(),
+                                                                                ])
                                                                                 ->default("<p>Dear ##user.first_name##, </p>"),
 
                                                                         Radio::make('logo_type')

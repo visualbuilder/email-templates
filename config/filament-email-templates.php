@@ -186,6 +186,32 @@ return [
     'preview_models' => [],
 
     /**
+     * Extra models to expose in the token catalogue (TokenRegistry) that
+     * powers the editor's Insert Token control. Recipients and
+     * preview_models are included automatically; use this for anything else.
+     * Attributes default to the model's fillable + appended attributes
+     * (minus hidden) — pass an explicit list to override.
+     *
+     * e.g. 'order' => \App\Models\Order::class,
+     *      'subscriber' => ['class' => \App\Models\Subscriber::class, 'attributes' => ['first_name', 'last_name'], 'label' => 'Subscriber'],
+     */
+    'token_models' => [],
+
+    /**
+     * Attributes never exposed in the token catalogue when deriving a
+     * model's attribute list, even if a model forgets to $hidden them.
+     * Explicit attribute lists (above) bypass this safety net.
+     */
+    'token_excluded_attributes' => [
+        'password',
+        'password_confirmation',
+        'remember_token',
+        'api_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+    ],
+
+    /**
      * Static overrides for computed/URL tokens that can't come from a model.
      * Applied before model-based token replacement in previews.
      * e.g. 'order.edit_url' => 'https://example.com/orders/1/edit',

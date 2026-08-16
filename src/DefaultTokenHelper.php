@@ -20,6 +20,8 @@ class DefaultTokenHelper implements TokenReplacementInterface
      */
     public function replaceTokens(string $content, $models): string
     {
+        $content = $this->stripTokenBadges($content);
+
         $content = $this->replaceSingularTokens($models, $content);
 
         $content = $this->replaceConfigTokens($models,$content);
@@ -30,6 +32,20 @@ class DefaultTokenHelper implements TokenReplacementInterface
     }
 
 
+
+    /**
+     * The editor's Insert Token control wraps tokens in a non-editable
+     * badge span for display. Unwrap them before replacement so sent
+     * emails contain plain replaced text, never the badge markup.
+     */
+    protected function stripTokenBadges(string $content): string
+    {
+        return preg_replace(
+            '/<span[^>]*\bvb-token\b[^>]*>(.*?)<\/span>/is',
+            '$1',
+            $content
+        ) ?? $content;
+    }
 
     /**
      *
