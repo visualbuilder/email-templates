@@ -11,7 +11,6 @@ use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -229,14 +228,6 @@ class EmailTemplate extends Model implements HasMedia
             Cache::forget("email_by_key_{$key}_{$language}_global");
         } else {
             Cache::forget("email_by_key_{$key}_{$language}_none");
-        }
-
-        Artisan::call('optimize:clear');
-
-        // Clear OPcache if available
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
-            Log::info("OPcache cleared");
         }
     }
 
