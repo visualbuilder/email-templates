@@ -158,3 +158,24 @@ it('handles multiple rapid updates correctly', function () {
     $final = EmailTemplate::findEmailByKey('rapid-updates-test', config('filament-email-templates.default_locale'));
     expect($final->content)->toBe('<p>Final Version</p>');
 });
+
+it('serves updated content to a lookup that fell back from another language', function () {
+    $default = config('filament-email-templates.default_locale');
+
+    $template = EmailTemplate::factory()->create([
+        'key' => 'fallback-cache-invalidation',
+        'language' => $default,
+        'subject' => 'Original Subject',
+        'content' => '<p>Original Content</p>',
+        'view' => 'default',
+        'from' => ['email' => 'test@example.com', 'name' => 'Test'],
+    ]);
+
+    // A lookup in a language with no template falls back to the default one
+    // and is cached under the requested language.
+    expect(EmailTemplate::findEmailByKey('fallback-cache-invalidation', 'xx')->content)->toBe('<p>Original Content</p>');
+
+    $template->update(['content' => '<p>Updated Content</p>']);
+
+    expect(EmailTemplate::findEmailByKey('fallback-cache-invalidation', 'xx')->content)->toBe('<p>Updated Content</p>');
+});

@@ -192,7 +192,7 @@ class EmailTemplate extends Model implements HasMedia
         $tenantPart = $multitenancy ? ($tenantId ?? 'global') : 'none';
         $cacheKey = "email_by_key_{$key}_{$language}_{$tenantPart}";
 
-        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language, $tenantId, $multitenancy) {
+        $template = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($key, $language, $tenantId, $multitenancy) {
             $query = self::query()
                 ->where('key', $key)
                 ->language($language);
@@ -207,6 +207,31 @@ class EmailTemplate extends Model implements HasMedia
 
             return $query->first();
         });
+
+        // A lookup that fell back to another language is cached under the
+        // REQUESTED language, which the template's own save hook cannot name.
+        // Remember the language so clearEmailTemplateCache() can forget it.
+        if ($template && $template->language !== $language) {
+            static::rememberFallbackLanguage($key, $language);
+        }
+
+        return $template;
+    }
+
+    /** Languages that resolved to this key through the default-locale fallback. */
+    protected static function fallbackLanguages(string $key): array
+    {
+        return (array) Cache::get("email_by_key_fallback_languages_{$key}", []);
+    }
+
+    protected static function rememberFallbackLanguage(string $key, string $language): void
+    {
+        $languages = static::fallbackLanguages($key);
+
+        if (! in_array($language, $languages, true)) {
+            $languages[] = $language;
+            Cache::forever("email_by_key_fallback_languages_{$key}", $languages);
+        }
     }
 
     /**
@@ -228,6 +253,17 @@ class EmailTemplate extends Model implements HasMedia
             Cache::forget("email_by_key_{$key}_{$language}_global");
         } else {
             Cache::forget("email_by_key_{$key}_{$language}_none");
+        }
+
+        // Lookups in other languages that fell back to this template were
+        // cached under those languages; forget them too.
+        foreach (static::fallbackLanguages($key) as $fallbackLanguage) {
+            if ($multitenancy) {
+                Cache::forget("email_by_key_{$key}_{$fallbackLanguage}_".($tenantId ?? 'global'));
+                Cache::forget("email_by_key_{$key}_{$fallbackLanguage}_global");
+            } else {
+                Cache::forget("email_by_key_{$key}_{$fallbackLanguage}_none");
+            }
         }
     }
 

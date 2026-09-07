@@ -2,6 +2,9 @@
 
 All notable changes to `email-templates` will be documented in this file
 
+## 5.6.2 - 2026-09-07
+ - Cache invalidation now covers lookups that fell back from another language. A lookup for a language with no template is cached under the requested language, which the save hook could not name; those languages are now remembered per key and forgotten on update and delete. Cache key format is unchanged.
+
 ## 5.6.1 - 2026-09-07
  - Updating or deleting a template no longer runs `optimize:clear` and `opcache_reset()`. The template cache is keyed per template and is forgotten on save, which is all the invalidation needs; the global clear wiped every compiled view, config and route cache on each save and logged "OPcache cleared" dozens of times during a seeded build.
 
