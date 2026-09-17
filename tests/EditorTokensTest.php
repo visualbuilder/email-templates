@@ -1,6 +1,7 @@
 <?php
 
 use Visualbuilder\EmailTemplates\DefaultTokenHelper;
+use Visualbuilder\EmailTemplates\EmailTemplatesServiceProvider;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 
 use function Pest\Laravel\get;
@@ -51,7 +52,19 @@ it('registers the email-template editor profile with the vbtokens plugin', funct
     expect($profile)->not->toBeNull()
         ->and($profile['toolbar'])->toStartWith('vbtokens vbbutton | ')
         ->and($profile['plugins'])->toContain('vbtokens')
-        ->and($profile['external_plugins']['vbtokens'])->toContain('vendor/filament-email-templates/tiny-plugins/vbtokens.js');
+        ->and($profile['external_plugins']['vbtokens'])->toBe('/vendor/filament-email-templates/tiny-plugins/vbtokens.js');
+});
+
+it('serves the vbtokens plugin root-relative unless an asset cdn is configured', function () {
+    config()->set('app.asset_url', null);
+
+    expect(EmailTemplatesServiceProvider::tokenPluginUrl())
+        ->toBe('/vendor/filament-email-templates/tiny-plugins/vbtokens.js');
+
+    config()->set('app.asset_url', 'https://cdn.example.com/');
+
+    expect(EmailTemplatesServiceProvider::tokenPluginUrl())
+        ->toBe('https://cdn.example.com/vendor/filament-email-templates/tiny-plugins/vbtokens.js');
 });
 
 it('renders a chip-wrapped button token as the styled email button', function () {

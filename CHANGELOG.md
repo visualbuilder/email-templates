@@ -2,6 +2,9 @@
 
 All notable changes to `email-templates` will be documented in this file
 
+## 5.6.3 - 2026-09-17
+ - The vbtokens editor plugin URL is root-relative unless `app.asset_url` is set. It was built with `asset()` at boot, and under `config:cache` that runs in the console, where the host comes from `APP_URL`; a panel on another domain then fetched the plugin cross-host, where a CSP or an auth gate blocked it and the Insert token menu disappeared. `EmailTemplatesServiceProvider::tokenPluginUrl()` is public for applications registering their own profiles.
+
 ## 5.6.2 - 2026-09-07
  - Cache invalidation now covers lookups that fell back from another language. A lookup for a language with no template is cached under the requested language, which the save hook could not name; those languages are now remembered per key and forgotten on update and delete. Cache key format is unchanged.
 

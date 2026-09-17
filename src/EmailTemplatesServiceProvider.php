@@ -94,9 +94,29 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
             'plugins' => trim(($base['plugins'] ?? $defaultPlugins).' vbtokens'),
             'toolbar' => 'vbtokens vbbutton | '.($base['toolbar'] ?? $defaultToolbar),
             'external_plugins' => array_merge($base['external_plugins'] ?? [], [
-                'vbtokens' => asset('vendor/filament-email-templates/tiny-plugins/vbtokens.js'),
+                'vbtokens' => static::tokenPluginUrl(),
             ]),
         ]));
+    }
+
+    /**
+     * URL of the vbtokens TinyMCE plugin, for the editor profile above and for
+     * any profile an application registers itself.
+     *
+     * Root-relative unless an asset CDN (app.asset_url) is configured. The
+     * profile is registered at boot, and a deploy that runs config:cache does
+     * that in the console, where asset() takes its host from APP_URL rather
+     * than the request. The cached absolute URL then sends every panel domain
+     * to APP_URL's host for the script, and a CSP or an auth gate in front of
+     * that host blocks it, so the Insert token menu silently disappears. A
+     * root-relative URL always loads from the page's own host.
+     */
+    public static function tokenPluginUrl(): string
+    {
+        $path = 'vendor/filament-email-templates/tiny-plugins/vbtokens.js';
+        $assetUrl = rtrim((string) config('app.asset_url'), '/');
+
+        return $assetUrl !== '' ? $assetUrl.'/'.$path : '/'.$path;
     }
 
     protected function publishResources()
