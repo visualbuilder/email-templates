@@ -46,6 +46,16 @@ class EditEmailTemplate extends EditRecord
         return $data;
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Block mode off stores no layout; content is kept, so switching back restores the old body.
+        if (! ($this->data['use_layout'] ?? false)) {
+            $data['layout'] = null;
+        }
+
+        return $data;
+    }
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $emailTemplateResource = new EmailTemplateResource();

@@ -8,6 +8,7 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Visualbuilder\EmailTemplates\Commands\InstallCommand;
 use Visualbuilder\EmailTemplates\Commands\WrapContentTokensCommand;
+use Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry;
 use Visualbuilder\EmailTemplates\Contracts\CreateMailableInterface;
 use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 
@@ -18,7 +19,12 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        $migrations = ['create_email_templates_themes_table', 'create_email_templates_table'];
+        $migrations = [
+            'create_email_templates_themes_table',
+            'create_email_templates_table',
+            'add_layout_to_email_templates_table',
+            'create_email_blocks_table',
+        ];
 
         if (config('filament-email-templates.multitenancy.enabled')) {
             $migrations[] = 'add_tenant_to_email_templates_tables';
@@ -47,6 +53,7 @@ class EmailTemplatesServiceProvider extends PackageServiceProvider
         $this->app->singleton(CreateMailableInterface::class, CreateMailableHelper::class);
         $this->app->singleton(FormHelperInterface::class, FormHelper::class);
         $this->app->singleton(TokenRegistry::class);
+        $this->app->singleton(EmailBlockRegistry::class);
         $this->app->register(EmailTemplatesEventServiceProvider::class);
 
         // Add the binding for TokenReplacementInterface

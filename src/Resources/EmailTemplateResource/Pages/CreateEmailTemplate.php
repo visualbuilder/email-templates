@@ -10,6 +10,15 @@ class CreateEmailTemplate extends CreateRecord
 {
     protected static string $resource = EmailTemplateResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if (! ($this->data['use_layout'] ?? false)) {
+            $data['layout'] = null;
+        }
+
+        return $data;
+    }
+
     protected function handleRecordCreation(array $data): Model
     {
         $emailTemplateResource = new EmailTemplateResource();

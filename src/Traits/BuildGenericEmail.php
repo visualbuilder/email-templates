@@ -5,6 +5,7 @@ namespace Visualbuilder\EmailTemplates\Traits;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Visualbuilder\EmailTemplates\Facades\TokenHelper;
+use Visualbuilder\EmailTemplates\Layout\EmailLayoutRenderer;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 
 trait BuildGenericEmail
@@ -44,6 +45,14 @@ trait BuildGenericEmail
                 'logo'          => $this->emailTemplate->logo,
         ];
 
+        // Block mode: the body is the rendered layout; content is still set but unused by layout.blade.php.
+        if ($this->emailTemplate->usesLayout()) {
+            $data['blocks'] = app(EmailLayoutRenderer::class)
+                    ->withTheme($this->emailTemplate->theme->colours ?? [])
+                    ->render($this->emailTemplate->layout, $this);
+            $data['unsubscribeUrl'] = property_exists($this, 'unsubscribeUrl') ? ($this->unsubscribeUrl ?? null) : null;
+        }
+
         if(is_array($this->emailTemplate->cc)&&count($this->emailTemplate->cc)){
             $this->cc($this->emailTemplate->cc);
         };
@@ -53,7 +62,7 @@ trait BuildGenericEmail
         };
 
         return $this->from($this->emailTemplate->from['email'], $this->emailTemplate->from['name'])
-                    ->view($this->emailTemplate->view_path)
+                    ->view($this->emailTemplate->renderViewPath())
                     ->subject(TokenHelper::replace($this->emailTemplate->subject, $this))
                     ->to($this->sendTo)
                     ->with(['data' => $data]);

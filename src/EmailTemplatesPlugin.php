@@ -8,6 +8,7 @@ use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Str;
+use Visualbuilder\EmailTemplates\Resources\EmailBlockResource;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateThemeResource;
 
@@ -168,6 +169,7 @@ class EmailTemplatesPlugin implements Plugin
         $panel->resources([
             EmailTemplateResource::class,
             EmailTemplateThemeResource::class,
+            EmailBlockResource::class,
         ]);
     }
 
