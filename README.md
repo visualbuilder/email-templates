@@ -599,6 +599,126 @@ Not all email clients (e.g., Outlook) render CSS from a stylesheet effectively. 
 best to **put styles inline**. For checking how your email looks across different
 clients, [Litmus Email Previews](https://www.litmus.com/landing-page/email-previews) is highly recommended.
 
+### Email blocks
+
+A template can build its body from an ordered list of blocks instead of the single rich text `content` field. On the
+template form, switch on **Build the body from blocks**: the current body is copied into a first Text block, and the
+Builder replaces the editor. Switching it off stores no layout and the original `content` is used again. Templates
+without a layout send exactly as before. Block mode is not offered on templates where `is_quote_template` is true.
+
+In block mode the email still renders the theme's logo header, hero title, "Need help?" support block and footer around
+the blocks. A mailable with a public `$unsubscribeUrl` property (for example a campaign mail) also gets an unsubscribe
+line under the footer.
+
+Each block renders as one full-width table row with inline styles, an Outlook ghost table at `content_width`, and
+explicit background colours, so it holds up in Outlook and Gmail. The package ships these block types:
+
+| Name | Label | Fields |
+|---|---|---|
+| `rich_text` | Text | rich text |
+| `hero` | Hero | image + alt, heading, text, optional button |
+| `two_column` | Two columns | image + alt and rich text per column; columns stack on narrow screens |
+| `button` | Button | label, link, alignment (bulletproof button with VML for Outlook) |
+| `image` | Image | image, alt text, optional link |
+| `divider` | Divider / spacer | small, medium or large spacing, optional line |
+| `saved_block` | Saved block | a block from the block library |
+
+Links accept an `http(s)://` URL or a single token such as `##tokenUrl##`. Tokens are replaced in text, headings,
+button labels and links when the email is sent. Builder previews and the template preview use the same renderer as the
+send, so they match the email (Builder previews show tokens unreplaced).
+
+#### Block library
+
+The **Email Blocks** resource stores reusable groups of blocks (a signature, an event banner). Add one to a template with
+a **Saved block** item; it renders from the library's current content, so editing the library block updates every
+template that uses it. A saved block cannot contain another saved block. A deleted or inactive library block is left out
+of the email (and a warning is logged).
+
+Register a policy for `Visualbuilder\EmailTemplates\Models\EmailBlock` in your application so only the users you choose
+can view and edit library blocks.
+
+Block images are uploaded with public visibility to `block_images` on `block_images_disk`. Mail clients must be able to
+fetch them, so use a disk with public URLs:
+
+```php
+'block_images' => 'media/email-templates/blocks',
+'block_images_disk' => 's3_public', // null: filament.default_filesystem_disk, then 'public'
+'font_family' => "'Lato', Helvetica, Arial, sans-serif",
+'blocks_table_name' => 'vb_email_blocks',
+```
+
+Upgrading an existing installation: add a nullable JSON `layout` column to the templates table and create the blocks
+table (stubs: `database/migrations/add_layout_to_email_templates_table.php.stub` and
+`create_email_blocks_table.php.stub`). If you published the config, copy the new keys above plus `navigation.blocks`
+and `block_types` from the package config.
+
+#### Adding a block type
+
+Block types are classes implementing `Visualbuilder\EmailTemplates\Blocks\Contracts\EmailBlockDefinition`, listed by
+`Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry`. Both the form (`EmailLayoutBuilder`) and the output
+(`EmailLayoutRenderer`) read the registry, so a new block type is one class plus one email view. Extending
+`AbstractEmailBlock` gives you token replacement (`tokenFields()`), public image URLs (`imageFields()`) and rendering
+through `resources/views/vendor/vb-email-templates/email/blocks/{name}.blade.php`:
+
+```php
+namespace App\EmailBlocks;
+
+use Filament\Forms\Components\TextInput;
+use Filament\Support\Icons\Heroicon;
+use Visualbuilder\EmailTemplates\Blocks\AbstractEmailBlock;
+
+class QuoteBlock extends AbstractEmailBlock
+{
+    public function name(): string { return 'quote'; }   // stored in layouts: never rename
+
+    public function label(): string { return 'Quote'; }
+
+    public function icon(): Heroicon { return Heroicon::OutlinedChatBubbleLeft; }
+
+    public function schema(): array
+    {
+        return [
+            TextInput::make('quote')->required()->maxLength(300),
+            TextInput::make('author')->maxLength(120),
+        ];
+    }
+
+    public function summary(array $data): ?string { return $data['author'] ?? null; }
+
+    protected function tokenFields(): array { return ['quote']; }
+}
+```
+
+The view receives `$block` (the block's data after token and image processing) and `$theme` (the theme colours). Wrap
+your markup in the shared row partials so it lines up with the other blocks:
+
+```blade
+{{-- resources/views/vendor/vb-email-templates/email/blocks/quote.blade.php --}}
+@include('vb-email-templates::email.parts._block_open', ['theme' => $theme])
+<blockquote style="margin: 0;">{{ $block['quote'] }}</blockquote>
+@include('vb-email-templates::email.parts._block_close')
+```
+
+Register the class in config (the list is also the order of the "Add block" menu):
+
+```php
+'block_types' => [
+    ...\Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry::DEFAULT_TYPES,
+    \App\EmailBlocks\QuoteBlock::class,
+],
+```
+
+or at runtime, e.g. in a service provider's `boot()`:
+
+```php
+app(\Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry::class)->register(\App\EmailBlocks\QuoteBlock::class);
+```
+
+A class whose `name()` matches a package block replaces it in the same menu position.
+
+If your `_support_block.blade.php` override is a fragment without its own `<tr><td>` wrapper, override
+`email/parts/_support_block_standalone.blade.php` to wrap it for block mode.
+
 ### Translations
 
 Each email template is identified by a key and a language:

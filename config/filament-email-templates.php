@@ -9,6 +9,7 @@ return [
      */
     'table_name' => 'vb_email_templates',
     'theme_table_name' => 'vb_email_templates_themes',
+    'blocks_table_name' => 'vb_email_blocks',
 
     /**
      * Flag-icon stylesheet
@@ -103,6 +104,14 @@ return [
             'cluster' => false,
             'position' => SubNavigationPosition::Top
         ],
+        'blocks' => [
+            'sort' => 15,
+            'label' => 'Email Blocks',
+            'icon' => 'heroicon-o-squares-2x2',
+            'group' => 'Content',
+            'cluster' => false,
+            'position' => SubNavigationPosition::Top
+        ],
     ],
 
     //Email templates will be copied to resources/views/vendor/vb-email-templates/email
@@ -133,6 +142,30 @@ return [
 
     //Content Width in Pixels
     'content_width' => '600',
+
+    //Font stack used by the email block views
+    'font_family' => "'Lato', Helvetica, Arial, sans-serif",
+
+    /**
+     * Email blocks (block composer)
+     *
+     * block_types:       the block classes offered in the "Add block" menu, in order.
+     *                    Append your own EmailBlockDefinition classes here.
+     * block_images:      upload directory for block images
+     * block_images_disk: disk for block images; null uses filament.default_filesystem_disk,
+     *                    then 'public'. Must serve public URLs that mail clients can fetch.
+     */
+    'block_types' => [
+        \Visualbuilder\EmailTemplates\Blocks\Types\RichTextBlock::class,
+        \Visualbuilder\EmailTemplates\Blocks\Types\HeroBlock::class,
+        \Visualbuilder\EmailTemplates\Blocks\Types\TwoColumnBlock::class,
+        \Visualbuilder\EmailTemplates\Blocks\Types\ButtonBlock::class,
+        \Visualbuilder\EmailTemplates\Blocks\Types\ImageBlock::class,
+        \Visualbuilder\EmailTemplates\Blocks\Types\DividerBlock::class,
+        \Visualbuilder\EmailTemplates\Blocks\Types\SavedBlock::class,
+    ],
+    'block_images' => 'media/email-templates/blocks',
+    'block_images_disk' => null,
 
     //Contact details included in default email templates
     'customer-services' => [

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Visualbuilder\EmailTemplates\Database\Factories\EmailTemplateFactory;
 use Visualbuilder\EmailTemplates\Facades\TokenHelper;
+use Visualbuilder\EmailTemplates\Layout\EmailLayoutRenderer;
 
 /**
  * @property int $id
@@ -32,6 +33,7 @@ use Visualbuilder\EmailTemplates\Facades\TokenHelper;
  * @property string $preheader
  * @property string $language
  * @property string $content
+ * @property array|null $layout
  * @property string $created_at
  * @property string $updated_at
  * @property string $deleted_at
@@ -54,6 +56,7 @@ class EmailTemplate extends Model implements HasMedia
         'title',
         'preheader',
         'content',
+        'layout',
         'language',
         'logo',
         'cc',
@@ -71,6 +74,7 @@ class EmailTemplate extends Model implements HasMedia
         'from' => 'array',
         'cc' => 'array',
         'bcc' => 'array',
+        'layout' => 'array',
     ];
     /**
      * @var string[]
@@ -356,7 +360,7 @@ class EmailTemplate extends Model implements HasMedia
     public function getBase64EmailPreviewData()
     {
         $data = $this->getEmailPreviewData();
-        $content = view($this->view_path, ['data' => $data])->render();
+        $content = view($this->renderViewPath(), ['data' => $data])->render();
 
         return base64_encode($content);
     }
@@ -378,7 +382,7 @@ class EmailTemplate extends Model implements HasMedia
             return $content;
         };
 
-        return [
+        $data = [
             'user' => $models->user ?? null,
             'content' => TokenHelper::replace($applyOverrides($this->content ?? ''), $models),
             'subject' => TokenHelper::replace($applyOverrides($this->subject ?? ''), $models),
@@ -387,6 +391,32 @@ class EmailTemplate extends Model implements HasMedia
             'theme' => $this->theme->colours,
             'logo' => $this->logo,
         ];
+
+        if ($this->usesLayout()) {
+            $data['blocks'] = app(EmailLayoutRenderer::class)->withTheme($this->theme->colours ?? [])->render($this->layout, $models);
+        }
+
+        return $data;
+    }
+
+    /**
+     * True when the body is built from blocks (layout) rather than the
+     * single content field.
+     */
+    public function usesLayout(): bool
+    {
+        return is_array($this->layout) && $this->layout !== [];
+    }
+
+    /**
+     * The Blade view the email renders with: the block layout view in block
+     * mode, the template's chosen view otherwise.
+     */
+    public function renderViewPath(): string
+    {
+        return $this->usesLayout()
+            ? config('filament-email-templates.template_view_path').'.layout'
+            : $this->view_path;
     }
 
     /**

@@ -16,11 +16,13 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -31,6 +33,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -41,6 +44,7 @@ use Visualbuilder\EmailTemplates\Contracts\FormHelperInterface;
 use Visualbuilder\EmailTemplates\EmailTemplatesPlugin;
 use Visualbuilder\EmailTemplates\Models\EmailTemplate;
 use Visualbuilder\EmailTemplates\Resources\EmailTemplateResource\Pages;
+use Visualbuilder\EmailTemplates\Resources\Schemas\EmailLayoutBuilder;
 use Visualbuilder\FilamentTinyEditor\TinyEditor;
 
 class EmailTemplateResource extends Resource
@@ -151,7 +155,7 @@ class EmailTemplateResource extends Resource
                                                 ->visible(fn () => EmailTemplatesPlugin::get()->hasScreenshotCapture())
                                                 ->action(function (EmailTemplate $record): void {
                                                     $data = $record->getEmailPreviewData();
-                                                    $html = view($record->view_path, ['data' => $data])->render();
+                                                    $html = view($record->renderViewPath(), ['data' => $data])->render();
 
                                                     $callback = EmailTemplatesPlugin::get()->getScreenshotCaptureCallback();
                                                     $result = $callback($html);
@@ -210,7 +214,7 @@ class EmailTemplateResource extends Resource
                                             foreach ($records as $record) {
                                                 try {
                                                     $data = $record->getEmailPreviewData();
-                                                    $html = view($record->view_path, ['data' => $data])->render();
+                                                    $html = view($record->renderViewPath(), ['data' => $data])->render();
 
                                                     \Visualbuilder\EmailTemplates\Jobs\CaptureEmailScreenshot::dispatch($record, $html);
                                                     $dispatched++;
@@ -321,13 +325,40 @@ class EmailTemplateResource extends Resource
                                                                                 ->hint(__('vb-email-templates::email-templates.form-fields-labels.title-hint'))
                                                                                 ->maxLength(191),
 
+                                                                        Toggle::make('use_layout')
+                                                                                ->label(__('Build the body from blocks'))
+                                                                                ->live()
+                                                                                ->dehydrated(false)
+                                                                                ->afterStateHydrated(fn (Toggle $component, ?Model $record) => $component->state($record instanceof EmailTemplate && $record->usesLayout()))
+                                                                                ->hidden(fn (?Model $record): bool => (bool) ($record?->is_quote_template ?? false))
+                                                                                ->afterStateUpdated(function (bool $state, Get $get, Set $set): void {
+                                                                                    // Switching on copies the current body into a first Text block.
+                                                                                    if ($state && blank($get('layout'))) {
+                                                                                        $set('layout', [
+                                                                                                (string) Str::uuid() => ['type' => 'rich_text', 'data' => ['content' => (string) $get('content')]],
+                                                                                        ]);
+                                                                                    }
+                                                                                }),
+
                                                                         TinyEditor::make('content')
                                                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.content'))
                                                                                 ->profile('email-template')
                                                                                 ->setCustomConfigs(fn () => [
                                                                                         'vbtokens_list' => app(\Visualbuilder\EmailTemplates\TokenRegistry::class)->menu(),
                                                                                 ])
-                                                                                ->default("<p>Dear ##user.first_name##, </p>"),
+                                                                                ->default("<p>Dear ##user.first_name##, </p>")
+                                                                                ->visible(fn (Get $get): bool => ! $get('use_layout')),
+
+                                                                        Text::make(__('Header: the theme logo and the title above are always shown.'))
+                                                                                ->key('layout_header')
+                                                                                ->visible(fn (Get $get): bool => (bool) $get('use_layout')),
+
+                                                                        EmailLayoutBuilder::make('layout')
+                                                                                ->visible(fn (Get $get): bool => (bool) $get('use_layout')),
+
+                                                                        Text::make(__('Footer: the "Need help?" block, footer links and address are always shown. Campaign sends also add an unsubscribe link, which cannot be removed.'))
+                                                                                ->key('layout_footer')
+                                                                                ->visible(fn (Get $get): bool => (bool) $get('use_layout')),
 
                                                                         Radio::make('logo_type')
                                                                                 ->label(__('vb-email-templates::email-templates.form-fields-labels.logo-type'))
