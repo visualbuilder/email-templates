@@ -255,3 +255,14 @@ it('summarises each block for the builder header', function () {
         ->and($registry->get('saved_block')->summary(['email_block_id' => $saved->id]))->toBe('Footer promo')
         ->and($registry->get('saved_block')->summary([]))->toBeNull();
 });
+
+it('resolves the block image disk from config, then the Filament default, then public', function () {
+    config(['filament-email-templates.block_images_disk' => 's3_public', 'filament.default_filesystem_disk' => 'local']);
+    expect(AbstractEmailBlock::imageDisk())->toBe('s3_public');
+
+    config(['filament-email-templates.block_images_disk' => null]);
+    expect(AbstractEmailBlock::imageDisk())->toBe('local');
+
+    config(['filament.default_filesystem_disk' => null]);
+    expect(AbstractEmailBlock::imageDisk())->toBe('public');
+});

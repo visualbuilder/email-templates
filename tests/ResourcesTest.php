@@ -269,3 +269,140 @@ it('deletes previous logo when updated', function () {
 
     expect(file_exists($fullPath))->toBeFalse();
 });
+
+// block composer: template form
+it('hides the block toggle on a quote template', function () {
+    $table = config('filament-email-templates.table_name');
+    if (! \Illuminate\Support\Facades\Schema::hasColumn($table, 'is_quote_template')) {
+        \Illuminate\Support\Facades\Schema::table($table, fn ($blueprint) => $blueprint->boolean('is_quote_template')->default(false));
+    }
+    $quote = EmailTemplate::factory()->create();
+    \Illuminate\Support\Facades\DB::table($table)->where('id', $quote->id)->update(['is_quote_template' => true]);
+    $classic = EmailTemplate::factory()->create();
+
+    livewire(EditEmailTemplate::class, ['record' => $quote->getRouteKey()])
+        ->assertFormFieldHidden('use_layout')
+        ->assertFormFieldVisible('content');
+
+    livewire(EditEmailTemplate::class, ['record' => $classic->getRouteKey()])
+        ->assertFormFieldVisible('use_layout');
+});
+
+it('shows the content editor and hides the builder for a classic template', function () {
+    $template = EmailTemplate::factory()->create(['layout' => null]);
+
+    livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->assertFormSet(['use_layout' => false])
+        ->assertFormFieldVisible('content')
+        ->assertFormFieldHidden('layout');
+});
+
+it('opens a layout template in block mode', function () {
+    $template = EmailTemplate::factory()->create([
+        'layout' => ['a' => ['type' => 'rich_text', 'data' => ['content' => '<p>Block body</p>']]],
+    ]);
+
+    livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->assertFormSet(['use_layout' => true])
+        ->assertFormFieldVisible('layout')
+        ->assertFormFieldHidden('content');
+});
+
+it('seeds a text block with the current content when block mode is switched on', function () {
+    $template = EmailTemplate::factory()->create(['content' => '<p>Existing body</p>', 'layout' => null]);
+
+    $component = livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->fillForm(['use_layout' => true]);
+
+    $layout = array_values($component->get('data.layout'));
+    expect($layout)->toHaveCount(1)
+        ->and($layout[0]['type'])->toBe('rich_text')
+        ->and($layout[0]['data']['content'])->toBe('<p>Existing body</p>');
+
+    $component->call('save')->assertHasNoFormErrors();
+
+    $saved = $template->fresh();
+    expect($saved->usesLayout())->toBeTrue()
+        ->and(array_values($saved->layout)[0]['type'])->toBe('rich_text')
+        ->and(array_values($saved->layout)[0]['data']['content'])->toBe('<p>Existing body</p>')
+        ->and($saved->content)->toBe('<p>Existing body</p>');
+});
+
+it('stores no layout when block mode is switched off and keeps the content', function () {
+    $template = EmailTemplate::factory()->create([
+        'content' => '<p>Old body</p>',
+        'layout' => ['a' => ['type' => 'rich_text', 'data' => ['content' => '<p>Block body</p>']]],
+    ]);
+
+    livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->fillForm(['use_layout' => false])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($template->fresh()->layout)->toBeNull()
+        ->and($template->fresh()->content)->toBe('<p>Old body</p>');
+});
+
+it('creates a template without a layout when block mode is off', function () {
+    $newData = EmailTemplate::factory()->make(['key' => 'created-without-layout']);
+
+    livewire(CreateEmailTemplate::class)
+        ->fillForm([
+            'key' => $newData->key,
+            'language' => $newData->language,
+            'view' => $newData->view,
+            'name' => $newData->name,
+            'subject' => $newData->subject,
+            'content' => '<p>Created</p>',
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    expect(EmailTemplate::where('key', $newData->key)->first()->layout)->toBeNull();
+});
+
+it('validates block fields in the composer', function () {
+    $template = EmailTemplate::factory()->create([
+        'layout' => ['a' => ['type' => 'button', 'data' => ['label' => 'Go', 'url' => 'javascript:alert(1)', 'align' => 'center']]],
+    ]);
+
+    $errors = livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->call('save')
+        ->errors()
+        ->toArray();
+
+    // Builder items are re-keyed with UUIDs when the form is filled.
+    expect(array_keys($errors))->toHaveCount(1)
+        ->and(array_keys($errors)[0])->toMatch('/^data\.layout\.[0-9a-f-]+\.data\.url$/')
+        ->and(array_values($errors)[0][0])->toContain('format is invalid')
+        ->and($template->fresh()->layout['a']['data']['url'])->toBe('javascript:alert(1)');
+});
+
+it('previews a layout template with every block', function () {
+    $this->makeTheme();
+    $template = EmailTemplate::factory()->create([
+        'title' => 'Preview title',
+        'layout' => [
+            ['type' => 'rich_text', 'data' => ['content' => '<p>Preview text block</p>']],
+            ['type' => 'hero', 'data' => ['heading' => 'Preview hero']],
+            ['type' => 'two_column', 'data' => ['left_content' => '<p>Preview left</p>', 'right_content' => '<p>Preview right</p>']],
+            ['type' => 'button', 'data' => ['label' => 'Preview button', 'url' => 'https://example.com', 'align' => 'center']],
+            ['type' => 'image', 'data' => ['image' => 'https://images.test/p.png', 'alt' => 'Preview image']],
+            ['type' => 'divider', 'data' => ['spacing' => 'medium', 'show_line' => true]],
+        ],
+    ]);
+
+    $html = base64_decode($template->getBase64EmailPreviewData());
+
+    expect($html)->toContain('<p>Preview text block</p>')
+        ->toContain('Preview hero')
+        ->toContain('<p>Preview left</p>')
+        ->toContain('Preview button')
+        ->toContain('alt="Preview image"')
+        ->toContain('<!-- BLOCK: DIVIDER -->')
+        ->toContain('<!-- SUPPORT CALLOUT -->');
+
+    livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->callAction('preview')
+        ->assertSuccessful();
+});
