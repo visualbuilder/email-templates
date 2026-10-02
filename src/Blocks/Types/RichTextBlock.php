@@ -27,7 +27,7 @@ final class RichTextBlock extends AbstractEmailBlock
     public function schema(): array
     {
         return [
-            static::richEditor('content')
+            self::richEditor('content')
                 ->label('Text')
                 ->required(),
         ];
@@ -35,7 +35,7 @@ final class RichTextBlock extends AbstractEmailBlock
 
     public function summary(array $data): ?string
     {
-        return static::textSummary($data['content'] ?? null);
+        return self::textSummary($data['content'] ?? null);
     }
 
     protected function tokenFields(): array

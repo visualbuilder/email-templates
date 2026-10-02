@@ -28,22 +28,22 @@ final class TwoColumnBlock extends AbstractEmailBlock
     public function schema(): array
     {
         return [
-            static::imageUpload('left_image')
+            self::imageUpload('left_image')
                 ->label('Left image'),
             TextInput::make('left_image_alt')
                 ->label('Left image description (alt text)')
                 ->maxLength(150)
                 ->requiredWith('left_image'),
-            static::richEditor('left_content')
+            self::richEditor('left_content')
                 ->label('Left text')
                 ->required(),
-            static::imageUpload('right_image')
+            self::imageUpload('right_image')
                 ->label('Right image'),
             TextInput::make('right_image_alt')
                 ->label('Right image description (alt text)')
                 ->maxLength(150)
                 ->requiredWith('right_image'),
-            static::richEditor('right_content')
+            self::richEditor('right_content')
                 ->label('Right text')
                 ->required(),
         ];
@@ -51,7 +51,7 @@ final class TwoColumnBlock extends AbstractEmailBlock
 
     public function summary(array $data): ?string
     {
-        return static::textSummary($data['left_content'] ?? null);
+        return self::textSummary($data['left_content'] ?? null);
     }
 
     protected function tokenFields(): array

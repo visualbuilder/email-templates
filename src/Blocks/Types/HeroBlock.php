@@ -29,7 +29,7 @@ final class HeroBlock extends AbstractEmailBlock
     public function schema(): array
     {
         return [
-            static::imageUpload('image')
+            self::imageUpload('image')
                 ->label('Image'),
             TextInput::make('image_alt')
                 ->label('Image description (alt text)')

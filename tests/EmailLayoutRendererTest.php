@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Visualbuilder\EmailTemplates\Blocks\AbstractEmailBlock;
+use Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry;
 use Visualbuilder\EmailTemplates\Blocks\Types\DividerBlock;
 use Visualbuilder\EmailTemplates\Layout\EmailLayoutRenderer;
 use Visualbuilder\EmailTemplates\Models\EmailBlock;
@@ -242,7 +243,7 @@ it('ignores a saved block nested inside a saved block', function () {
 it('summarises each block for the builder header', function () {
     $saved = EmailBlock::create(['name' => 'Footer promo', 'layout' => []]);
     $saved->delete();
-    $registry = app(\Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry::class);
+    $registry = app(EmailBlockRegistry::class);
 
     expect($registry->get('rich_text')->summary(['content' => '<p>'.str_repeat('a', 60).'</p>']))->toBe(str_repeat('a', 50))
         ->and($registry->get('rich_text')->summary(['content' => '<p> </p>']))->toBeNull()

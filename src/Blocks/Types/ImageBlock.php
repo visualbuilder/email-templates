@@ -28,7 +28,7 @@ final class ImageBlock extends AbstractEmailBlock
     public function schema(): array
     {
         return [
-            static::imageUpload('image')
+            self::imageUpload('image')
                 ->label('Image')
                 ->required(),
             TextInput::make('alt')

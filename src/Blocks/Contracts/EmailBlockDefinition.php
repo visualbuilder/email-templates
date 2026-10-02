@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Visualbuilder\EmailTemplates\Blocks\Contracts;
 
+use Filament\Schemas\Components\Component;
 use Filament\Support\Icons\Heroicon;
 use Visualbuilder\EmailTemplates\Blocks\BlockRenderContext;
 use Visualbuilder\EmailTemplates\Enums\BlockRenderMode;
@@ -22,7 +23,7 @@ interface EmailBlockDefinition
 
     public function icon(): Heroicon;
 
-    /** @return array<int, \Filament\Schemas\Components\Component> */
+    /** @return array<int, Component> */
     public function schema(): array;
 
     /** Blade view for the mode, or null when the block has no view of its own in that mode. */

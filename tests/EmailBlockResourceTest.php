@@ -4,15 +4,14 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\Testing\TestAction;
 use Filament\Forms\Components\Builder;
-
-use function Pest\Laravel\get;
-use function Pest\Livewire\livewire;
-
 use Visualbuilder\EmailTemplates\Models\EmailBlock;
 use Visualbuilder\EmailTemplates\Resources\EmailBlockResource;
 use Visualbuilder\EmailTemplates\Resources\EmailBlockResource\Pages\CreateEmailBlock;
 use Visualbuilder\EmailTemplates\Resources\EmailBlockResource\Pages\EditEmailBlock;
 use Visualbuilder\EmailTemplates\Resources\EmailBlockResource\Pages\ListEmailBlocks;
+
+use function Pest\Laravel\get;
+use function Pest\Livewire\livewire;
 
 function textLayout(string $text): array
 {
