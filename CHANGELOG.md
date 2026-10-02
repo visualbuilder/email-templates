@@ -2,7 +2,7 @@
 
 All notable changes to `email-templates` will be documented in this file
 
-## 5.7.0 - unreleased
+## 5.7.0 - 2026-10-02
  - Email block composer. A template can build its body from ordered blocks (`layout` JSON column) instead of the single `content` field: Text, Hero, Two columns, Button, Image, Divider / spacer and Saved block. Each block renders as one full-width table row with inline styles, explicit background colours and Outlook ghost tables; buttons are bulletproof (VML). Templates without a layout render exactly as before. Block mode is not offered on quote templates.
  - Block types are classes implementing `EmailBlockDefinition`, listed by the `EmailBlockRegistry` singleton (`block_types` config or `register()` at runtime). `EmailLayoutRenderer` renders a layout; the send path, the template preview and the Builder block previews all use it.
  - New **Email Blocks** resource (block library, `EmailBlock` model, `vb_email_blocks` table) for reusable saved blocks, with a preview.
