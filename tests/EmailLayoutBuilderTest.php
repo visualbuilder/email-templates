@@ -1,13 +1,23 @@
 <?php
 
+use Filament\Forms\Components\FileUpload;
 use Visualbuilder\EmailTemplates\Blocks\EmailBlockRegistry;
 use Visualbuilder\EmailTemplates\Blocks\Filament\EmailBuilderBlock;
+use Visualbuilder\EmailTemplates\Blocks\Types\ImageBlock;
 use Visualbuilder\EmailTemplates\Resources\Schemas\EmailLayoutBuilder;
 use Visualbuilder\EmailTemplates\Tests\Fixtures\QuoteBlock;
 
 function builderBlocks($builder): array
 {
     return $builder->getDefaultChildComponents();
+}
+
+/** The document a block preview iframe loads, decoded from its srcdoc attribute. */
+function previewDocument(string $html): string
+{
+    expect(preg_match('/srcdoc="([^"]*)"/', $html, $match))->toBe(1);
+
+    return html_entity_decode($match[1], ENT_QUOTES | ENT_HTML5);
 }
 
 it('has one builder block per registered block type', function () {
@@ -48,7 +58,7 @@ it('previews a block through the email renderer with tokens left in place', func
         ->renderPreview(['label' => 'Book ##user.name##', 'url' => 'https://example.com', 'align' => 'center'])
         ->render();
 
-    expect($html)->toContain('Book ##user.name##')
+    expect(previewDocument($html))->toContain('Book ##user.name##')
         ->toContain('<!-- BLOCK: BUTTON -->')
         ->toContain('v:roundrect')
         ->toContain('fillcolor="#FFEB3B"')
@@ -61,5 +71,30 @@ it('previews a block without a default theme', function () {
         ->renderPreview(['content' => '<p>No theme yet</p>'])
         ->render();
 
-    expect($html)->toContain('<p>No theme yet</p>');
+    expect(previewDocument($html))->toContain('<p>No theme yet</p>');
+});
+
+it('isolates block preview html in a sandboxed iframe', function () {
+    $html = EmailBuilderBlock::make('rich_text')
+        ->preview('vb-email-templates::forms.block-preview')
+        ->renderPreview(['content' => '<p>Hi</p><script>alert(1)</script><img src="x" onerror="alert(2)">'])
+        ->render();
+
+    expect($html)->not->toContain('<script>')
+        ->not->toContain('<img')
+        ->not->toContain('<p>Hi</p>')
+        ->toContain('&lt;script&gt;alert(1)&lt;/script&gt;')
+        ->toContain('title="Email block preview"')
+        ->and(trim($html))->toStartWith('<iframe')
+        ->and(preg_match('/<iframe\s+sandbox\s/', $html))->toBe(1)
+        ->and($html)->not->toContain('allow-scripts')
+        ->not->toContain('allow-same-origin')
+        ->and(previewDocument($html))->toContain('<script>alert(1)</script>')
+        ->toContain('onerror="alert(2)"');
+});
+
+it('accepts only raster images for block image uploads', function () {
+    $upload = collect((new ImageBlock)->schema())->first(fn ($component) => $component instanceof FileUpload);
+
+    expect($upload->getAcceptedFileTypes())->toBe(['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
 });

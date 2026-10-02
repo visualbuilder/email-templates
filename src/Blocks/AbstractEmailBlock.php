@@ -134,11 +134,12 @@ abstract class AbstractEmailBlock implements EmailBlockDefinition
         return $text === '' ? null : Str::substr($text, 0, $limit);
     }
 
-    /** Image upload stored with public visibility on the block image disk. */
+    /** Raster image upload (no SVG) stored with public visibility on the block image disk. */
     protected static function imageUpload(string $name): FileUpload
     {
         return FileUpload::make($name)
             ->image()
+            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/gif', 'image/webp'])
             ->disk(static::imageDisk())
             ->visibility('public')
             ->directory(config('filament-email-templates.block_images'))

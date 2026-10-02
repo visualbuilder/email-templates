@@ -634,6 +634,9 @@ a **Saved block** item; it renders from the library's current content, so editin
 template that uses it. A saved block cannot contain another saved block. A deleted or inactive library block is left out
 of the email (and a warning is logged).
 
+Register a policy for `Visualbuilder\EmailTemplates\Models\EmailBlock` in your application so only the users you choose
+can view and edit library blocks.
+
 Block images are uploaded with public visibility to `block_images` on `block_images_disk`. Mail clients must be able to
 fetch them, so use a disk with public URLs:
 
