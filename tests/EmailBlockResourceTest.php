@@ -31,6 +31,58 @@ it('lists blocks', function () {
     livewire(ListEmailBlocks::class)->assertCanSeeTableRecords($blocks);
 });
 
+it('searches blocks by name', function () {
+    $signature = EmailBlock::create(['name' => 'Signature', 'layout' => textLayout('Sig')]);
+    $promo = EmailBlock::create(['name' => 'Promo', 'layout' => textLayout('Promo')]);
+
+    livewire(ListEmailBlocks::class)
+        ->searchTable('Signature')
+        ->assertCanSeeTableRecords([$signature])
+        ->assertCanNotSeeTableRecords([$promo]);
+});
+
+it('sorts blocks by name', function () {
+    EmailBlock::create(['name' => 'Promo', 'layout' => textLayout('Promo')]);
+    EmailBlock::create(['name' => 'Signature', 'layout' => textLayout('Sig')]);
+
+    $ascending = EmailBlock::query()->orderBy('name')->get();
+    $descending = EmailBlock::query()->orderBy('name', 'desc')->get();
+
+    livewire(ListEmailBlocks::class)
+        ->sortTable('name')
+        ->assertCanSeeTableRecords($ascending, inOrder: true)
+        ->sortTable('name', 'desc')
+        ->assertCanSeeTableRecords($descending, inOrder: true);
+});
+
+it('filters blocks by availability', function () {
+    $active = EmailBlock::create(['name' => 'Signature', 'layout' => textLayout('Sig')]);
+    $inactive = EmailBlock::create(['name' => 'Promo', 'layout' => textLayout('Promo'), 'is_active' => false]);
+
+    livewire(ListEmailBlocks::class)
+        ->filterTable('is_active', true)
+        ->assertCanSeeTableRecords([$active])
+        ->assertCanNotSeeTableRecords([$inactive])
+        ->filterTable('is_active', false)
+        ->assertCanSeeTableRecords([$inactive])
+        ->assertCanNotSeeTableRecords([$active]);
+});
+
+it('filters trashed blocks', function () {
+    $kept = EmailBlock::create(['name' => 'Signature', 'layout' => textLayout('Sig')]);
+    $trashed = EmailBlock::create(['name' => 'Promo', 'layout' => textLayout('Promo')]);
+    $trashed->delete();
+
+    livewire(ListEmailBlocks::class)
+        ->assertCanSeeTableRecords([$kept])
+        ->assertCanNotSeeTableRecords([$trashed])
+        ->filterTable('trashed', false)
+        ->assertCanSeeTableRecords([$trashed])
+        ->assertCanNotSeeTableRecords([$kept])
+        ->filterTable('trashed', true)
+        ->assertCanSeeTableRecords([$kept, $trashed]);
+});
+
 it('can access the create and edit pages', function () {
     $block = EmailBlock::create(['name' => 'Signature', 'layout' => textLayout('Sig')]);
 

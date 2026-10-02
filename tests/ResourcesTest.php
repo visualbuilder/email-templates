@@ -378,6 +378,32 @@ it('validates block fields in the composer', function () {
         ->and($template->fresh()->layout['a']['data']['url'])->toBe('javascript:alert(1)');
 });
 
+it('accepts a token in place of a URL for block link fields', function () {
+    $template = EmailTemplate::factory()->create([
+        'layout' => ['a' => ['type' => 'button', 'data' => ['label' => 'Go', 'url' => '##endUser.magic_link##', 'align' => 'center']]],
+    ]);
+
+    livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(array_values($template->fresh()->layout)[0]['data']['url'])->toBe('##endUser.magic_link##');
+});
+
+it('requires the hero button label and URL together', function () {
+    $template = EmailTemplate::factory()->create([
+        'layout' => ['a' => ['type' => 'hero', 'data' => ['heading' => 'Spring offer', 'button_url' => 'https://example.com']]],
+    ]);
+
+    $errors = livewire(EditEmailTemplate::class, ['record' => $template->getRouteKey()])
+        ->call('save')
+        ->errors()
+        ->toArray();
+
+    expect(array_keys($errors))->toHaveCount(1)
+        ->and(array_keys($errors)[0])->toMatch('/^data\.layout\.[0-9a-f-]+\.data\.button_label$/');
+});
+
 it('previews a layout template with every block', function () {
     $this->makeTheme();
     $template = EmailTemplate::factory()->create([
