@@ -26,3 +26,4 @@ Homestead.json
 banner.psd
 .php-cs-fixer.cache
 test-results
+composer.lock
