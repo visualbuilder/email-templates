@@ -2,6 +2,9 @@
 
 All notable changes to `email-templates` will be documented in this file
 
+## 5.7.2 - 2026-10-29
+ - The vbtokens editor plugin shows tokens already in the content as badges (also released as 5.6.4). Bare `##model.attribute##` and `{{button ...}}` tokens are wrapped in the same chips when the editor loads, when content is set and on paste; tokens in a link's `href` and existing chips are left alone.
+
 ## 5.7.1 - 2026-10-02
  - Development only: `composer.lock` resolves `visualbuilder/filament-tinyeditor` from GitHub (5.0.2) instead of a local `../filament-tinyeditor` path, so `composer install` works in a fresh checkout. `composer.json` requires are sorted; constraints are unchanged (`filament-tinyeditor` stays `^5.0|^6.0`). No change for projects installing the package.
 

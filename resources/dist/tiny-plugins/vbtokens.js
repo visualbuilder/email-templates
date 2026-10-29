@@ -11,7 +11,8 @@
  *   Double-click an existing button chip to edit it.
  * - Badge display: tokens and buttons become non-editable chips that
  *   delete as a single unit; DefaultTokenHelper strips the wrapper at
- *   render time so sent emails contain the plain replaced output.
+ *   render time so sent emails contain the plain replaced output. Bare
+ *   tokens already in the content (or pasted) are wrapped on load.
  *
  * The token list arrives via the `vbtokens_list` editor option, populated
  * from PHP through the field's custom configs.
@@ -175,6 +176,74 @@ tinymce.PluginManager.add('vbtokens', (editor) => {
         if (node) {
             openButtonDialog(node);
         }
+    });
+
+    // ── Badges for tokens already in the content ────────────────────
+    //
+    // Content saved before the badges existed, or typed / pasted as plain
+    // text, holds bare ##tokens## and {{button}} tokens. Wrap them in the
+    // same chips when content loads or is pasted. Only text nodes are
+    // touched, so a token in a link's href stays as it is, and existing
+    // chips are skipped, so this is safe to run repeatedly.
+
+    const bareTokenPattern = /##[a-z0-9_.]+##|\{\{button\s+url='[^']*'\s+title='[^']*'\s*\}\}/gi;
+
+    const wrapBareTokens = (root) => {
+        const doc = root.ownerDocument;
+        const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+            acceptNode: (node) =>
+                node.parentElement && node.parentElement.closest('.vb-token, script, style, [contenteditable="false"]')
+                    ? NodeFilter.FILTER_REJECT
+                    : NodeFilter.FILTER_ACCEPT,
+        });
+        const targets = [];
+
+        while (walker.nextNode()) {
+            bareTokenPattern.lastIndex = 0;
+
+            if (bareTokenPattern.test(walker.currentNode.nodeValue)) {
+                targets.push(walker.currentNode);
+            }
+        }
+
+        targets.forEach((node) => {
+            const text = node.nodeValue;
+            const fragment = doc.createDocumentFragment();
+            let last = 0;
+
+            text.replace(bareTokenPattern, (match, offset) => {
+                if (offset > last) {
+                    fragment.appendChild(doc.createTextNode(text.slice(last, offset)));
+                }
+
+                const chip = doc.createElement('span');
+                chip.className = match.startsWith('{{') ? 'vb-token vb-button-token' : 'vb-token';
+                chip.setAttribute('contenteditable', 'false');
+                chip.textContent = match;
+                fragment.appendChild(chip);
+                last = offset + match.length;
+
+                return match;
+            });
+
+            if (last < text.length) {
+                fragment.appendChild(doc.createTextNode(text.slice(last)));
+            }
+
+            node.parentNode.replaceChild(fragment, node);
+        });
+    };
+
+    // Initial load and setContent() calls; insertContent() (selection) is
+    // already a chip or goes through PastePostProcess.
+    editor.on('SetContent', (event) => {
+        if (!event.selection) {
+            wrapBareTokens(editor.getBody());
+        }
+    });
+
+    editor.on('PastePostProcess', (event) => {
+        wrapBareTokens(event.node);
     });
 
     // ── Chip styling inside the editor ──────────────────────────────
