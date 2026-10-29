@@ -2,6 +2,9 @@
 
 All notable changes to `email-templates` will be documented in this file
 
+## 5.6.4 - 2026-10-29
+ - The vbtokens editor plugin shows tokens already in the content as badges. Content saved before the badges, or pasted as plain text, held bare `##model.attribute##` and `{{button ...}}` tokens that showed as text; they are now wrapped in the same chips when the editor loads, when content is set and on paste. Only text nodes are wrapped, so a token in a link's `href` stays as it is, and existing chips are left alone.
+
 ## 5.6.3 - 2026-09-17
  - The vbtokens editor plugin URL is root-relative unless `app.asset_url` is set. It was built with `asset()` at boot, and under `config:cache` that runs in the console, where the host comes from `APP_URL`; a panel on another domain then fetched the plugin cross-host, where a CSP or an auth gate blocked it and the Insert token menu disappeared. `EmailTemplatesServiceProvider::tokenPluginUrl()` is public for applications registering their own profiles.
 
